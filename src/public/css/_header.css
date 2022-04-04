@@ -1,0 +1,9 @@
+@import "__mainmenu.css";
+.header{
+    width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}

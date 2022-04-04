@@ -1,0 +1,14 @@
+.menu-wrap{
+
+}
+.menu-main{
+    display: flex;
+    list-style: none;
+}
+
+.menu-main-item{
+    padding: 10px 20px;
+}
+.menu-mail-link{
+    text-decoration: none;
+}
