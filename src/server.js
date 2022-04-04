@@ -2,8 +2,11 @@ var express = require('express');
 const expressHbs = require("express-handlebars");
 const hbs = require("hbs");
 var app = express();
+// routers
+const Mixology_Router = require("./mixology.js");
+// page info
+const PAGE_INFO = require("./public/pageRender/pageinfo.js")
 
-const PAGE_INFO = require("./public/page_info/page_info.js") 
 //setting up
 app.engine("hbs" , expressHbs.engine({
     layoutsDir: __dirname + "/views/layout", 
@@ -14,14 +17,16 @@ app.set("views" , __dirname + "/views")
 app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials");
 app.use(express.static( __dirname + "/public"));
-console.log(__dirname)
-// requests 
+
+
+//             REQUESTS
 app.get("/", function(req,res){  
     res.render("home.hbs" , PAGE_INFO.homePage );
 });
-app.get("/mixology" , (req,res) => {
-    res.render("mixology.hbs" , PAGE_INFO.tabaco );
-})
+
+// mixology router
+app.use("/mixology" ,  Mixology_Router);
+
 app.get("/tabaco" , (req,res) => {
     res.render("tabaco.hbs" , PAGE_INFO.mixology );
 })
