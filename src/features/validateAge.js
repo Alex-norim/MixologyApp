@@ -1,22 +1,22 @@
 function validateAge () {
     function allowAccess () {
-        let URL = window.location.href;
-        fetch(URL).then(data => {
-                document.cookie = "isAccess=true";
-            });
+        // let url = window.location.href;
+        // fetch("/allowed" , {method : 'GET'}).then(res => {
+        //     console.log(res)
+        //     document.write(res.text());
+        // });
+        document.cookie = 'isAccess=true';
         this.parentNode.parentNode.style.display = 'none';
     }
     function rejectAccess () {
-        let url = "/reject_access";
-        fetch(url , {method : "POST"})
-            .then(res => {
-                return res.text();
-
-            })
-            .then(resBody => {
-                document.cookie = "isAccess=false";
-                document.write(resBody)
-            })
+        document.cookie = 'isAccess=false';
+        fetch("/rejected" , {method : 'POST'})
+        .then(res => {
+            return res.text();
+        })
+        .then(html => {
+            document.write(html)
+        })
     }
     let background = document.createElement('div');
         background.classList.add("age-validator-back");
@@ -42,26 +42,31 @@ function validateAge () {
         border.append(borderTitle ,buttonAccept ,buttonReject);
         background.append(border);
 
-    console.log(document.cookie)
     document.body.appendChild(background);
 };
 // cookie 
 function getCookie (cookie , cookieName) {
-    
     let value = cookie.split(";").filter( el => {
         if(el.match(cookieName)){
             return el;
         };
         
     });
-
-    return value[0].trim().replace(cookieName + "=" , '');
+    if(value[0]){
+        return value[0].trim().replace(cookieName + "=" , '')
+    }else{
+        return undefined;
+    }
 }
 
-document.cookie = "isAccess=false"
-document.cookie = "name=john";
-document.cookie = "age=26"
-console.log(getCookie(document.cookie , "isAccess"))
+let access = getCookie(document.cookie , "isAccess");
+console.log(typeof access)
+if( access === 'false'){
 
-window.onload = validateAge();
-// console.log(document.cookie)
+    console.log("false")
+    validateAge();
+}else if( access === undefined){
+    console.log("undefffffffffff")
+    document.cookie = 'isAccess=false';
+}
+// let getAccess = getCookie(document.cookie , "isAccess");
