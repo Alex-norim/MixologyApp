@@ -1,3 +1,22 @@
 <div class="container">
-    <p>tabaco</p>
+    <h1 class="main-title">{{title}}</h1>
+    <p class="main-descr">{{subtitle}}</p>
+    
+    <div class="tabaco-content">
+        <div class="tabaco-left-bar">
+            <ul class="menu-main tabaco-bar_mod">
+                {{#each tabacoMaker}}
+                    <li class="menu-main-item brand-item"><a class="menu-main-link" href="/tabaco/{{this}}">{{this}}</a></li>
+                {{/each}}
+            </ul>
+        </div>
+        {{!-- <ul class="brands-list">
+            {{#each tabacoBrands }}
+                <li class="brand-item">{{this}}</li>
+            {{/each}}
+        </ul> --}}
+        <div class="tabaco-right-bar">
+            {{ content }}
+        </div>
+    </div>
 </div>
