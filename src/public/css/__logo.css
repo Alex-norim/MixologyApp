@@ -1,8 +1,19 @@
 .logotype-wrapper{
+    display: flex;
+    align-items: center;
+}
+.hookah-svg{
     width: 50px;
     height: 50px;
     border: 1px solid #000;
     border-radius: 50%;
-    background-color: lightcoral;
+    background-color: rgb(212 199 199 / 36%);
     padding: 5px;
+    border: 2px solid #fff;
+}
+.logo-name{
+    margin-left: 22px;
+    font-size: 23px;
+    text-transform: uppercase;
+    font-family: cursive;
 }

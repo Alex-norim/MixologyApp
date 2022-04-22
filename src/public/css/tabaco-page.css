@@ -1,0 +1,9 @@
+@import '_tabaco-leftbar.css';
+
+.tabaco-content{
+    display: flex;
+    justify-content: space-between;
+}
+.tabaco-right-bar{
+    flex-basis: 70%;
+}

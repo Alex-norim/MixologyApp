@@ -1,0 +1,12 @@
+.tabaco-bar_mod{
+    flex-direction: column;
+    width: 200px;
+}
+.tabaco-bar_mod .menu-main-link{
+    display: inline-block;
+    width: 100%;
+    text-transform: capitalize;
+}
+.tabaco-bar_mod > .brand-item:not(:last-child){
+    margin-bottom: 13px;
+}
