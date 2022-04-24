@@ -1,19 +1,9 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const fs = require('fs');
 const TabacoRouter = express.Router();
 
-const content = {
-    title : "Tabaco" ,
-    value : "some text of tabaco sort",
-    text : "some rext",
-    menuLinks : [
-        { name : 'Home' , link : '/'},
-        { name : 'Mixology' , link : '/mixology'},
-        { name : 'Tabaco' , link : '/tabaco'},
-        { name : 'About project' , link : '/project'},
-    ],
-};
+const PAGE_INFO = require("./public/pageRender/pageinfo.js").tabaco;
 
 let createCompanyNameFile = () => {
     const getCompanyNames = `SELECT DISTINCT company FROM brand`;
@@ -30,12 +20,15 @@ let createCompanyNameFile = () => {
 }
 
 const config = require('./features/mysql_connection');
-
 const pathToSavedRequests = './src/savedSqlRequests/';
-TabacoRouter.use( (req,res,next) => {
-    console.log(res)
+
+// middleware functions
+TabacoRouter.use('/' , (req,res,next) => {
+    
     next()
 })
+
+// common requests
 TabacoRouter.get("/" , (req,res) => {
     
     let tabacoCompanyes = fs.existsSync(pathToSavedRequests + 'companyNames.json');
@@ -48,7 +41,7 @@ TabacoRouter.get("/" , (req,res) => {
         let names = fs.readFileSync(pathToSavedRequests + 'companyNames.json');
         let parsedCompanyNames = JSON.parse(names).map(el => el.company);
         res.render("tabaco.hbs" , {
-            ...content,
+            ...PAGE_INFO,
             tabacoMaker : parsedCompanyNames,
             content : defaultContent
         });
@@ -66,7 +59,7 @@ TabacoRouter.get('/burn' , (req,res) => {
     let text = JSON.parse(history);
     let parsedCompanyNames = JSON.parse(names).map(el => el.company);
     res.render('tabaco' , {
-        ...content,
+        ...PAGE_INFO,
         tabacoMaker : parsedCompanyNames,
         content : text[url]
     })
@@ -80,7 +73,7 @@ TabacoRouter.get('/darkside' , (req,res) => {
     let text = JSON.parse(history);
     let parsedCompanyNames = JSON.parse(names).map(el => el.company);
     res.render('tabaco' , {
-        ...content,
+        ...PAGE_INFO,
         tabacoMaker : parsedCompanyNames,
         content : text[url]
     })
@@ -94,7 +87,7 @@ TabacoRouter.get('/armango' , (req,res) => {
     let text = JSON.parse(history);
     let parsedCompanyNames = JSON.parse(names).map(el => el.company);
     res.render('tabaco' , {
-        ...content,
+        ...PAGE_INFO,
         tabacoMaker : parsedCompanyNames,
         content : text[url]
     })
@@ -108,7 +101,7 @@ TabacoRouter.get('/musthave' , (req,res) => {
     let text = JSON.parse(history);
     let parsedCompanyNames = JSON.parse(names).map(el => el.company);
     res.render('tabaco' , {
-        ...content,
+        ...PAGE_INFO,
         tabacoMaker : parsedCompanyNames,
         content : text[url]
     })
