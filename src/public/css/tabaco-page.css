@@ -1,4 +1,3 @@
-@import '_tabaco-leftbar.css';
 
 .tabaco-content{
     display: flex;
@@ -6,4 +5,5 @@
 }
 .tabaco-right-bar{
     flex-basis: 70%;
+    font-size: 23px;
 }

@@ -6,8 +6,8 @@
     list-style: none;
 }
 
-.menu-main-item{
-}
+/* .menu-main-item{
+} */
 .menu-main-link{
     text-decoration: none;
     font-size: 20px;
@@ -20,4 +20,19 @@
 .menu-main-link:hover{
     border: 1px solid rgba(253, 251, 251, 0.5);
     background:  rgba(205, 203, 203, 0.05);
+}
+/* horizontal mode */
+
+/* vertical menu */
+.tabaco-vertical_mod{
+    flex-direction: column;
+    width: 200px;
+}
+.tabaco-vertical_mod .menu-main-link{
+    display: inline-block;
+    width: 100%;
+    text-transform: capitalize;
+}
+.tabaco-vertical_mod > .brand-item:not(:last-child){
+    margin-bottom: 13px;
 }

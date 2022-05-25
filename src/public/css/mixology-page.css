@@ -1,0 +1,18 @@
+
+.recipe-block{
+    padding-top: 70px;
+}
+.recipe-block > .recipe-title{
+    font-size: 36px;
+
+}
+.recipe-block > .recipe-list{
+    list-style: none;
+    padding: 15px 10px;
+}
+.recipe-block > .recipe-list :not(:last-child) {
+    margin-bottom: 30px;
+}
+.recipe-block > .recipe-list >.recipe-list-item{
+    
+}

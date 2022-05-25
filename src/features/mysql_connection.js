@@ -1,12 +1,10 @@
 
-const mysql = require('mysql');
-
-
-let connection = mysql.createConnection({
+let connectionConfig = {
     port: "3333",
     host: "127.0.0.1",
     user: "root",
-    password: "root"
-});
+    password: "root",
+    database: "mixology"
+}
 
-module.exports = connection;
+module.exports = connectionConfig;

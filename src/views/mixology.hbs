@@ -1,20 +1,27 @@
 
-<div class="container">
+<div class="container" id="mixology">
     <h1 class="main-title">Mixology</h1>
-    <p class="main-descr">Hookah mixology is important for experienced people I am here to show basic mixes</p>
+    <p class="main-descr">{{subtitle}}</p>
     <div class="mix-content">
-        <div class="menu-main">
-            <li class="menu-main-item"><a href="/mixology/fresh_taste" class="menu-main-link">Fresh</a></li>
-            <li class="menu-main-item"><a href="/mixology/tart_taste" class="menu-main-link">Tart</a></li>
-            <li class="menu-main-item"><a href="/mixology/sweet_taste" class="menu-main-link">Sweet</a></li>
-            <li class="menu-main-item"><a href="/mixology/spicy_taste" class="menu-main-link">Spicy</a></li>
-            <li class="menu-main-item"><a href="/mixology/dessert_taste" class="menu-main-link">Dessert</a></li>
-            <li class="menu-main-item"><a href="/mixology/original_mixes" class="menu-main-link">Original mixes</a></li>
-        </div>
-        <div class="mix-content-text">
-            <p>{{content}}</p>
+        <ul class="menu-main">
+            <li href="/mixology/fresh" class="menu-main-link">Fresh</li>
+            <li href="/mixology/tart" class="menu-main-link">Tart</li>
+            <li href="/mixology/sweet" class="menu-main-link">Sweet</li>
+            <li href="/mixology/spicy" class="menu-main-link">Spicy</li>
+            <li href="/mixology/dessert" class="menu-main-link">Dessert</li>
+            <li href="/mixology/original" class="menu-main-link">Original mixes</li>
+        </ul>
+        <div class="recipe-block" id="content">
+            <h2 class="recipe-title" id="list-title">Top 10 recipts</h2>
+            <ul class="recipe-list"  id="recipe-list">
+                {{#each topTen}}
+                    <li class="">{{this}}</li>
+                {{/each}}
+            </ul>
             
         </div>
     </div>
+    <script >
 
+    </script>
 </div>

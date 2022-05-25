@@ -1,24 +1,47 @@
-
+const Mainmenu = [
+    { name : 'Home' , link : '/home'},
+    { name : 'Mixology' , link : '/mixology'},
+    { name : 'Tabaco' , link : '/tabaco'},
+    { name : 'About project' , link : '/project'},
+]
 const PAGE_INFO = {
     homePage : {
-        title : "Home" 
+        title : "Home",
+        style : [
+            '_header' , '_footer' , "common"
+        ],
+        menuLinks : Mainmenu
     } ,
-    tabaco : {
-        title : "Tabaco" 
-    },
     mixology : {
         title : "Mixology" ,
+        style : [
+            '_header' , '_footer' , "common","mixology-page"
+        ],
         content : {
-            fresh : "fresh taste text", 
+            fresh : "Fresh taste aproaches by mint.", 
             tart : "tart taste text",
             sweet : "sweet taste text" ,
             spicy : "spicy" ,
-            desert : "desert taste text",
+            dessert : "desert taste text",
             original : "original taste text"
-        }
+        },
+        menuLinks : Mainmenu
+    },
+    tabaco : {
+        title : "Tabaco" ,
+        style : [
+            '_header' , '_footer' , "common", "tabaco-page"
+        ],
+        value : "some text of tabaco sort",
+        text : "some rext",
+        menuLinks : Mainmenu
     },
     project : {
-        title : "About project" 
+        title : "About project" ,
+        style : [
+            '_header' , '_footer' , "common"
+        ],
+        menuLinks : Mainmenu
     }
 }
 

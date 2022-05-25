@@ -2,20 +2,15 @@
     <h1 class="main-title">{{title}}</h1>
     <p class="main-descr">{{subtitle}}</p>
     
-    <div class="tabaco-content">
+    <div class="tabaco-content" id="tabacoContent">
         <div class="tabaco-left-bar">
-            <ul class="menu-main tabaco-bar_mod">
+            <ul class="menu-main tabaco-vertical_mod" >
                 {{#each tabacoMaker}}
-                    <li class="menu-main-item brand-item"><a class="menu-main-link" href="/tabaco/{{this}}">{{this}}</a></li>
+                    <li class="menu-main-link" data-link="/tabaco/{{this.company}}">{{this.company}}</li>
                 {{/each}}
             </ul>
         </div>
-        {{!-- <ul class="brands-list">
-            {{#each tabacoBrands }}
-                <li class="brand-item">{{this}}</li>
-            {{/each}}
-        </ul> --}}
-        <div class="tabaco-right-bar">
+        <div class="tabaco-right-bar" id="tabacoHistory">
             {{ content }}
         </div>
     </div>

@@ -1,8 +1,8 @@
 
 <nav class="menu-wrap">
-    <ul class="menu-main">
+    <ul class="menu-main" id="main-menu">
         {{#each menuLinks }}
-            <li class="menu-main-item"><a href="{{this.link}}" class="menu-main-link">{{this.name}}</a></li>
+            <a href="{{this.link}}" class="menu-main-link">{{this.name}}</a>
         {{/each}}
     </ul>
 </nav>
