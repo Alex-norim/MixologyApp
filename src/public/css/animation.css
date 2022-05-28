@@ -1,0 +1,29 @@
+@keyframes rotateCircle {
+    0%{
+        transform: rotate(0deg);
+    }
+    40%{
+        transform: rotate(170deg);
+    }
+    60%{
+        transform: rotate(190deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+.pendindAnimation{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border-top: 4px solid blue;
+    border-right: 4px solid red;
+    border-bottom: 4px solid yellow;
+    border-left: 4px solid green;
+    animation-name: rotateCircle;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    
+}
+
