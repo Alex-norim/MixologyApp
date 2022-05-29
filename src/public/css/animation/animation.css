@@ -12,18 +12,25 @@
         transform: rotate(360deg);
     }
 }
+.pendingWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .pendindAnimation{
     display: inline-block;
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border-top: 4px solid blue;
-    border-right: 4px solid red;
-    border-bottom: 4px solid yellow;
-    border-left: 4px solid green;
+    border-top: 4px solid rgb(23, 23, 23);
+    border-right: 4px solid rgb(75, 74, 74);
+    border-bottom: 4px solid rgb(130, 130, 130);
+    border-left: 4px solid rgb(213, 217, 213);
     animation-name: rotateCircle;
     animation-duration: 2s;
     animation-iteration-count: infinite;
+    margin-left: auto;
+    margin-right: auto;
     
 }
 

@@ -1,0 +1,32 @@
+@import 'common.css';
+
+@import 'parts/__logo.css';
+@import 'parts/__mainmenu.css';
+@import 'parts/_header.css';
+@import 'parts/_footer.css';
+
+@import 'animation/animation.css';
+
+@import 'modalWindow/_ageValidator.css';
+
+@import 'mainMenuContent/mixology-page.css';
+@import 'mainMenuContent/tabaco-page.css';
+
+#myVideo{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -100;
+}
+.main-title{
+    font-weight: 700;
+    font-size: 45px;
+    margin-bottom: 20px;
+}
+.main-descr{
+    font-weight: 500;
+    font-size: 25px;
+    margin-bottom: 40px;
+}
