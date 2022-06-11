@@ -37,8 +37,45 @@ let validate = (data) => {
 
     return (errorLog) ? {isError : true , error : errorLog }:processedValue;
 }
+//check is login exist in db
+let checkLogin = async (login) => {
+    let sql = `SELECT login FROM users WHERE login='${login}'`;
+    let connection = mysql.createConnection(mysqlConfig).promise();
+    let json = {}
+    await connection.execute(sql)
+        .then( ([row , field]) => {
+            return row;
+        }).then( result => {
+            connection.end();
+            if(result.length > 0){
+                json.isExist = true
+            }else{
+                json.isExist = false
+            }
+        }).catch( err => {
+            json.isExist = undefined
+        } )
+        
+    return json;
+}
+//Register new user 
+let registerNewUser = (name , login , password , email , subscribe) => {
+    let credentials = [name , login , password , email , subscribe];
+    let sql = `INSERT INTO users (name, login, password, email, subscribe) VALUES (?,?,?,?,?)`;
+
+    let connection = mysql.createConnection(mysqlConfig).promise();
+
+    let isRegistered = connection.execute(sql , credentials).then( result => {
+        connection.end();
+        return {isRegistered : true}
+    }).catch( err => {
+        return {isRegistered : false}
+    });
+
+    return isRegistered;
+}
 // Does user exist in db
-let checkUser = async (log , pass) => {
+let logIn = async (log , pass) => {
     let sqlRequest = `SELECT name,password FROM users WHERE login='${log}' AND password='${pass}'`;
     let connection = mysql.createConnection(mysqlConfig).promise();
     let userIsChecked = await connection.execute(sqlRequest)
@@ -82,7 +119,7 @@ RegistrationRouter.post('/signin' , (req,res) => {
     let login    = validate( req.body.login );
     let password = validate( req.body.password );
     
-    checkUser(login , password).then( result => {
+    logIn(login , password).then( result => {
         if(result.user){
             res.send(JSON.stringify({
                 exist : true ,
@@ -96,14 +133,51 @@ RegistrationRouter.post('/signin' , (req,res) => {
         }
     })
 })
+RegistrationRouter.post('/signup' , (req, res) => {
+    let login = validate(req.body.login);
+    let name = validate(req.body.name);
+    let email = req.body.email;
+    let password = validate(req.body.password);
+    let subscribe = (req.body.subscribe === 'on') ? 1 : 0;
+    
+    // pass login to find out whether login exists or not ,
+    // if login exists send a message login has been taken by another user
+    // also it may return an error if db conn was not established
+    checkLogin(login)
+        .then( result => {
+            return result;
+        })
+        .then( result => {
+            
+            if(result.isExist === false){
+                registerNewUser(name , login , password ,email ,subscribe) 
+                res.send(JSON.stringify({
+                    isRegistered : true , 
+                    message : 'User has been registered successfully'
+                }))
+            }else if(result.isExist === true){
+                res.send(JSON.stringify({
+                    isRegistered : false ,
+                    message : "This login already exists"
+                }))
+            }else{
+                res.send(JSON.stringify({
+                    isRegistered : false,
+                    message : 'Some trouble with db'
+                }))
+            }
+        })
+        .catch( err => {
+            console.log('errrrrrrrr')
+            throw err
+        });
+})
 RegistrationRouter.get('/create_account' , (req, res) => {
     res.render('form' , {
         layout : false,
-        action : '/registration/signin',
+        action : '/registration/signup',
         signUp : true,
     })
 })
-RegistrationRouter.post('/signup' , (req, res) => {
-    res.render()
-})
+
 module.exports = RegistrationRouter;
