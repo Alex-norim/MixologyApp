@@ -217,10 +217,13 @@ class App{
                     return result.json();
                 }).then( result => {
                     thisForm.reset();
-                    errorwrap.innerHTML = 'User have been registered successfully'
-                    return result;
+                    if(result.isRegistered){
+                        errorwrap.innerHTML = result.message
+                    }else{
+                        errorwrap.innerHTML = result.message
+                    }
                 }).catch( err => {
-                    console.log('some error')
+                    console.log('Server not found')
                 })
             }else if(typeof login === "object"){
                 errorwrap.innerHTML = 'Login ' + login.error;
@@ -234,7 +237,7 @@ class App{
                 errorwrap.innerHTML = 'Password ' + password.error;
 
             }else if(typeof confirmPassword === "object" || password !== confirmPassword){
-                errorwrap.innerHTML = 'Passwords shoul be match';
+                errorwrap.innerHTML = 'Passwords should be same';
 
             }
             
