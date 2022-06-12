@@ -76,7 +76,7 @@ let registerNewUser = (name , login , password , email , subscribe) => {
 }
 // Does user exist in db
 let logIn = async (log , pass) => {
-    let sqlRequest = `SELECT name,password FROM users WHERE login='${log}' AND password='${pass}'`;
+    let sqlRequest = `SELECT name,login,favoriteRecipe FROM users WHERE login='${log}' AND password='${pass}'`;
     let connection = mysql.createConnection(mysqlConfig).promise();
     let userIsChecked = await connection.execute(sqlRequest)
         .then( ([row,field])  => {
