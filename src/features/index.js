@@ -1,14 +1,18 @@
-import SessionStorage from './SessionStorage.mjs';
+import LocalStorage from './LocalStorage.mjs';
+import CreateNewDOM from './creareDomElements.js';
+
 import {hangFormHandlerOn as formHandler} from './registration.js';
 // images
 import likeImage from "../public/svg/like.svg";
-
+// style
+import '../public/css/style.css';
 class App{
     constructor(initElement){
         this.root = initElement; 
         this.hangFormHandlerOn = formHandler;
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendindAnimation"></div></div>';
-        this._Session = new SessionStorage();
+        this._LocalStore = new LocalStorage();
+        this._CreateNewDom = new CreateNewDOM();
     }
     // methods 
     hangHundlerOnMixologyMenu(){
@@ -118,14 +122,16 @@ class App{
 
     }
     hangHundlerOnHomeMenuItem(){
-        let UserNameInSessionStorage =  this._Session.getData('userName');
+        let UserNameInSessionStorage =  this._LocalStore.getData('userName');
         let title = this.root.getElementsByClassName('main-title')[0];
 
         (UserNameInSessionStorage) ? title.innerHTML = "Welcome " + UserNameInSessionStorage[0].toUpperCase() + UserNameInSessionStorage.slice(1) : ''
     }
     hangHundlerOnMineMenu(){
-        let mineMenuItems = document.getElementById('main-menu').getElementsByClassName('menu-main-link');
-        
+        let mainMenu = this.root.getElementsByClassName('menu-wrap')[0];
+        let mineMenuItems = Object.values( mainMenu.getElementsByClassName('menu-main-link') );
+        let smallScreenMenuButton = mainMenu.getElementsByClassName('smallScreenButton')[0];
+
         let getpage = async (event) => {
             event.preventDefault();
             let bodyContent = document.getElementById('body-content');
@@ -159,13 +165,20 @@ class App{
             return false;
         }
 
-        for (const item of mineMenuItems) {
-            item.addEventListener('click' , getpage )
-        }
-        return false;
+        smallScreenMenuButton.addEventListener('click' , () => {
+            let menu = mainMenu.getElementsByClassName('menu-main')[0];
+            
+        })
+        mineMenuItems.forEach( menuitem => {
+            
+            menuitem.addEventListener('click' , getpage )
+        })
+        
+
     }
     init(){
         this.hangHundlerOnMineMenu();
+        this._CreateNewDom.createFavoriteRecipeList(document.getElementsByTagName('body'))
     }
 }
 

@@ -1,9 +1,11 @@
-import SessionStorage from "./SessionStorage.mjs";
+import LocalStorage from "./LocalStorage.mjs";
 function hangFormHandlerOn () {
-    let Session = new SessionStorage();
+    let registrationButton = this.root.getElementsByClassName('registration')[0];
+    let _LocalStore = new LocalStorage();
     let localRoot = this.root.getElementsByClassName('body-content')[0];
     let getSignupForm = this.root.getElementsByClassName('getRegistrationForm')[0];
     let signInHandler = this.root.getElementsByClassName('sign-in')[0];
+
     let validator = (value , type) => {
         let errorLog = {};
         let specificValidator;
@@ -60,6 +62,11 @@ function hangFormHandlerOn () {
         }
         return value;
     };
+    // logout
+    let logOut = () => {
+        
+        _LocalStore.removeData(['login' , 'name' , 'favoriteRecipe'])
+    }
     // only sign up handler
     let signUpFormHandler = async (e) => {
         e.preventDefault();
@@ -151,13 +158,16 @@ function hangFormHandlerOn () {
                     let name    = response.name;
                     let favoriteRecipe = response.favoriteRecipe;
                     // save user's data
-                    Session.setData({
+                    _LocalStore.setData({
                         login : login,
                         name : name,
                         favoriteRecipe : favoriteRecipe
                     })
                     // i will add some code in the futere
-                    errorwrap.innerHTML = 'user has been logged successfully'
+                    errorwrap.innerHTML = 'user has been logged successfully';
+                    registrationButton.innerHTML = "Log out";
+                    registrationButton.setAttribute('href' , '#')
+                    registrationButton.addEventListener('click' , logOut)
                     setTimeout( () => {
                         let directToHome = this.root.getElementsByClassName('menu-main-link')[0];
                         directToHome.click();
