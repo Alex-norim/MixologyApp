@@ -1,7 +1,7 @@
-import LocalStorage from './LocalStorage.mjs';
-import CreateNewDOM from './creareDomElements.js';
 
+import ChangeDom from './changeExistingElement.js';
 import {hangFormHandlerOn as formHandler} from './registration.js';
+
 // images
 import likeImage from "../public/svg/like.svg";
 // style
@@ -11,8 +11,7 @@ class App{
         this.root = initElement; 
         this.hangFormHandlerOn = formHandler;
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendindAnimation"></div></div>';
-        this._LocalStore = new LocalStorage();
-        this._CreateNewDom = new CreateNewDOM();
+        this._changeDom = new ChangeDom(this.root);
     }
     // methods 
     hangHundlerOnMixologyMenu(){
@@ -121,14 +120,11 @@ class App{
         }
 
     }
-    hangHundlerOnHomeMenuItem(){
-        let UserNameInSessionStorage =  this._LocalStore.getData('userName');
-        let title = this.root.getElementsByClassName('main-title')[0];
+    hangHundlerOnPersonalCab(e){
 
-        (UserNameInSessionStorage) ? title.innerHTML = "Welcome " + UserNameInSessionStorage[0].toUpperCase() + UserNameInSessionStorage.slice(1) : ''
     }
     hangHundlerOnMineMenu(){
-        let mainMenu = this.root.getElementsByClassName('menu-wrap')[0];
+        let mainMenu = this.root.getElementsByClassName('mainMenuWrap')[0];
         let mineMenuItems = Object.values( mainMenu.getElementsByClassName('menu-main-link') );
         let smallScreenMenuButton = mainMenu.getElementsByClassName('smallScreenButton')[0];
 
@@ -138,17 +134,37 @@ class App{
             let request = event.target.getAttribute('href');
             //animation of waiting
             bodyContent.innerHTML = this.pendingAnimation;
-            let data = await fetch(request).then( result => {
-                let text = result.text();
-                return text;
-            } ).catch( err => {
-                throw err;
-            })
+            let data;
+            // local store
+            let favoriteRec = localStorage.getItem('favoriteRecipe');
+            let username = localStorage.getItem('name')
+            if(request === '/auth/personalData'){
+                data = await fetch(request , {
+                    method: "POST",
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    body : JSON.stringify({ arrayOfID : favoriteRec , name : username})
+                }).then( result => {
+                    let text = result.text();
+                    return text;
+                } ).catch( err => {
+                    throw err;
+                })
+            }else{
+                data = await fetch(request , {
+                }).then( result => {
+                    let text = result.text();
+                    return text;
+                } ).catch( err => {
+                    throw err;
+                })
+            }
 
             bodyContent.innerHTML = data;
             switch (request) {
                 case '/home' :
-                    this.hangHundlerOnHomeMenuItem();
+                    // this.hangHundlerOnHomeMenuItem();
                     break;
                 case '/mixology':
                     this.hangHundlerOnMixologyMenu();
@@ -159,26 +175,27 @@ class App{
                 case '/registration':
                     this.hangFormHandlerOn();
                     break;
+                case '/auth/personalData':
+                    this.hangHundlerOnPersonalCab();
+                    break;
                 default:
                     break;
             }
             return false;
         }
-
-        smallScreenMenuButton.addEventListener('click' , () => {
-            let menu = mainMenu.getElementsByClassName('menu-main')[0];
-            
-        })
         mineMenuItems.forEach( menuitem => {
             
             menuitem.addEventListener('click' , getpage )
         })
-        
+        // "POST" , JSON.stringify({ arrayOfID : localStorage.getItem('favoriteRecipe')})
 
     }
     init(){
+        let isAuthorized = localStorage.getItem('name') ? true : false;
+        if(isAuthorized){
+            this._changeDom.changeRegistrationButton();
+        }
         this.hangHundlerOnMineMenu();
-        this._CreateNewDom.createFavoriteRecipeList(document.getElementsByTagName('body'))
     }
 }
 

@@ -1,7 +1,8 @@
-import LocalStorage from "./LocalStorage.mjs";
+import ChangeDom from "./changeExistingElement";
+
 function hangFormHandlerOn () {
+    let _changeDOM = new ChangeDom(this.root);
     let registrationButton = this.root.getElementsByClassName('registration')[0];
-    let _LocalStore = new LocalStorage();
     let localRoot = this.root.getElementsByClassName('body-content')[0];
     let getSignupForm = this.root.getElementsByClassName('getRegistrationForm')[0];
     let signInHandler = this.root.getElementsByClassName('sign-in')[0];
@@ -62,11 +63,6 @@ function hangFormHandlerOn () {
         }
         return value;
     };
-    // logout
-    let logOut = () => {
-        
-        _LocalStore.removeData(['login' , 'name' , 'favoriteRecipe'])
-    }
     // only sign up handler
     let signUpFormHandler = async (e) => {
         e.preventDefault();
@@ -157,20 +153,17 @@ function hangFormHandlerOn () {
                     let login = response.login;
                     let name    = response.name;
                     let favoriteRecipe = response.favoriteRecipe;
+
                     // save user's data
-                    _LocalStore.setData({
-                        login : login,
-                        name : name,
-                        favoriteRecipe : favoriteRecipe
-                    })
+                    localStorage.setItem("name" , name);
+                    localStorage.setItem("login" , login);
+                    localStorage.setItem("favoriteRecipe" , favoriteRecipe);
                     // i will add some code in the futere
                     errorwrap.innerHTML = 'user has been logged successfully';
-                    registrationButton.innerHTML = "Log out";
-                    registrationButton.setAttribute('href' , '#')
-                    registrationButton.addEventListener('click' , logOut)
                     setTimeout( () => {
                         let directToHome = this.root.getElementsByClassName('menu-main-link')[0];
                         directToHome.click();
+                        _changeDOM.changeRegistrationButton();
                     } , 2000)
                 }else{
                     let error = data.error;
