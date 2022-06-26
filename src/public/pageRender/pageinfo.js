@@ -27,15 +27,6 @@ const PAGE_INFO = {
         },
         menuLinks : Mainmenu
     },
-    tabaco : {
-        title : "Tabaco" ,
-        style : [
-            '_header' , '_footer' , "common", "tabaco-page"
-        ],
-        value : "some text of tabaco sort",
-        text : "some rext",
-        menuLinks : Mainmenu
-    },
     project : {
         title : "About project" ,
         style : [

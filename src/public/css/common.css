@@ -4,8 +4,32 @@
     box-sizing: border-box;
     color: #fff;
 }
+.header{
+    max-width: 930px;
+    min-width: 320px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
 .container{
-    width: 800px;
+    max-width: 900px;
+    min-width: 320px;
     margin: 0 auto;
     padding: 40px 0;
+}
+.body-content{
+    height: 100vh;
+}
+.main-title{
+    font-weight: 700;
+    font-size: 45px;
+    margin-bottom: 20px;
+}
+.main-descr{
+    font-weight: 500;
+    font-size: 25px;
+    margin-bottom: 40px;
 }

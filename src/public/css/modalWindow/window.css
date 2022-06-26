@@ -1,0 +1,38 @@
+
+.modalWindowWrap{
+    background: rgba(207,213,221,0.4);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    backdrop-filter: blur(8px) ;
+}
+.modalWindow{
+    position: absolute;
+    width: 420px;
+    height: 300px;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 100;
+    padding: 35px 10px;
+    border: 2px solid rgb(183 180 180);
+    box-shadow: 1px 7px 36px 5px;
+    border-radius: 5px;
+}
+.modalWindow .modalWindowTitle{
+    display: inline-block;
+    width: 100%;
+    color: aliceblue;
+    font-size: 25px;
+    text-align: center;
+    margin-bottom : 25px;
+}
+.modalWindow > .button {
+    width: 163px;
+    position: static;
+    margin: 0 15px;
+}

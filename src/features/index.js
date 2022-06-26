@@ -1,7 +1,7 @@
 
 import ChangeDom from './changeExistingElement.js';
 import {hangFormHandlerOn as formHandler} from './registration.js';
-
+import CreateDom from './createDOM.js';
 // images
 import likeImage from "../public/svg/like.svg";
 // style
@@ -12,6 +12,7 @@ class App{
         this.hangFormHandlerOn = formHandler;
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendindAnimation"></div></div>';
         this._changeDom = new ChangeDom(this.root);
+        this._createDOM = new CreateDom(this.root);
     }
     // methods 
     hangHundlerOnMixologyMenu(){
@@ -121,7 +122,29 @@ class App{
 
     }
     hangHundlerOnPersonalCab(e){
+        let personalCab = this.root.getElementsByClassName('personalCab')[0];
+        let logOutButton = personalCab.getElementsByClassName('logout')[0];
 
+        logOutButton.addEventListener("click" , (e) => {
+            let rejectionFunction = (event) => {
+                let target = event.target;
+                let parentNode = target.parentNode.parentNode;
+                    parentNode.style.display = "none";
+            };
+            let acceptanceFunction = (e) => {
+                let target = e.target;
+                let parentNode = target.parentNode.parentNode;
+                    parentNode.style.display = "none";
+                localStorage.removeItem('name');
+                localStorage.removeItem('login');
+                localStorage.removeItem('favoriteRecipe');
+                this._changeDom.changeRegistrationButton("Sign in" , "/registration");
+                let toRegistrationPage = this.root.getElementsByClassName('registration')[0];
+                    toRegistrationPage.click();
+            }
+            let modalWindow = this._createDOM.confirmation( "Are you sure?" ,acceptanceFunction , rejectionFunction);
+            this.root.append(modalWindow);
+        })
     }
     hangHundlerOnMineMenu(){
         let mainMenu = this.root.getElementsByClassName('mainMenuWrap')[0];
@@ -137,7 +160,8 @@ class App{
             let data;
             // local store
             let favoriteRec = localStorage.getItem('favoriteRecipe');
-            let username = localStorage.getItem('name')
+            let username = localStorage.getItem('name');
+            // some request requires data
             if(request === '/auth/personalData'){
                 data = await fetch(request , {
                     method: "POST",
@@ -187,13 +211,13 @@ class App{
             
             menuitem.addEventListener('click' , getpage )
         })
-        // "POST" , JSON.stringify({ arrayOfID : localStorage.getItem('favoriteRecipe')})
 
     }
     init(){
         let isAuthorized = localStorage.getItem('name') ? true : false;
         if(isAuthorized){
-            this._changeDom.changeRegistrationButton();
+            let userName = localStorage.getItem('name'); 
+            this._changeDom.changeRegistrationButton(userName , '/auth/personalData');
         }
         this.hangHundlerOnMineMenu();
     }

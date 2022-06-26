@@ -162,9 +162,10 @@ function hangFormHandlerOn () {
                     errorwrap.innerHTML = 'user has been logged successfully';
                     setTimeout( () => {
                         let directToHome = this.root.getElementsByClassName('menu-main-link')[0];
+                        let userName = localStorage.getItem('name');
                         directToHome.click();
-                        _changeDOM.changeRegistrationButton();
-                    } , 2000)
+                        _changeDOM.changeRegistrationButton(userName , '/auth/personalData');
+                    } , 100)
                 }else{
                     let error = data.error;
                     errorwrap.innerHTML = error;

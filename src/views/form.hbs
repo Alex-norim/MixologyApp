@@ -1,0 +1,37 @@
+<div class="registration">
+    <div class="form-wrap">
+        <form class="form 
+            {{#if signIn}}sign-in{{/if}}
+            {{#if signUp}}sign-up{{/if}}" 
+            action="{{action}}"
+            method="POST"
+        >
+            <span class="title">
+                {{#if signIn}}Sign in{{/if}}
+                {{#if signUp}}Sign up{{/if}}
+            </span>
+            {{#if signIn}}
+                <input class="form-text" type="text" name="login" id="login" placeholder="enter login">
+                <input class="form-text" type="password" name="password" id="password" placeholder="enter password">
+                <p class="error-message"></p>
+                <input class="form-button " type="submit" value="Log in" >
+            {{/if}}
+            {{#if signUp}}
+                <input class="form-text" type="text" name="login" id="login" placeholder="enter login">
+                <input class="form-text" type="text" name="name" id="name" placeholder="enter name">
+                <input class="form-text" type="text" name="email" id="email" placeholder="enter e-mail">
+                <input class="form-text" type="password" name="password" id="password" placeholder="enter password">
+                <input class="form-text" type="password" name="confirmPassword" id="confirmpassword" placeholder="confirm password">
+                <p class="error-message"></p>
+                <input class="form-button" type="submit" value="Create account" >
+                <div class="subscribe-wrap">
+                    <input class="form-checkbox" type="checkbox" name="subscribe" id="subscribe">
+                    <label class="form-label" for="subscribe">Hit subscribe to get new recipes by e-mail</label>
+                </div>
+            {{/if}}
+            {{#if signIn}}
+                <a href="/registration/create_account" class="getRegistrationForm">I don't have account</a>
+            {{/if}}
+        </form>
+    </div>
+</div>
