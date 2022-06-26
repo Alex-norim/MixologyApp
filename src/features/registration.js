@@ -6,7 +6,22 @@ function hangFormHandlerOn () {
     let localRoot = this.root.getElementsByClassName('body-content')[0];
     let getSignupForm = this.root.getElementsByClassName('getRegistrationForm')[0];
     let signInHandler = this.root.getElementsByClassName('sign-in')[0];
+    // this piece of the cod is to get sign up form
+    getSignupForm.addEventListener('click' , async (e) => {
+        e.preventDefault();
+        let href = e.target.getAttribute('href');
+        let signUpForm = await fetch(href , {method: 'GET'}).then( result => {
+            return result.text();
+        }).catch(err => {
+            console.log('page not found')
+        })
+        localRoot.innerHTML = signUpForm ;
 
+        // hung handler on sign up form
+        this.root.getElementsByClassName('sign-up')[0].addEventListener('submit' , (e) => {signUpFormHandler(e)})
+        
+    });
+    // validator vill be moved on the individual class or something like function , i dunno
     let validator = (value , type) => {
         let errorLog = {};
         let specificValidator;
@@ -86,32 +101,42 @@ function hangFormHandlerOn () {
             typeof confirmPassword  === 'string' &&
             password === confirmPassword
         ){
+            // send form data to the server 
             await fetch( e.target.action , {
                 method: 'POST',
                 body : new URLSearchParams(new FormData(e.target))
-            }).then( result => {
+            })
+            .then( result => {
+            // even the user was not be registered the script gets json file from the server
                 return result.json();
-            }).then( result => {
+            })
+            .then( result => {
+                // in any case the form will be reset 
                 thisForm.reset();
+                // check the result , has the user successfull registration
+                // server sends true when everything is ok 
                 if(result.isRegistered){
-                    errorwrap.innerHTML = result.message
+                    errorwrap.innerHTML = result.message;
+                    setTimeout( () => {
+                        registrationButton.click();
+                    }, 1000)
                 }else{
                     errorwrap.innerHTML = result.message
                 }
-            }).catch( err => {
+            })
+            .catch( err => {
                 console.log('Server not found')
             })
+        // validator sends obj when data have not passed validation
+        // the sctipt bellow procedures errors
         }else if(typeof login === "object"){
             errorwrap.innerHTML = 'Login ' + login.error;
-
         }else if(typeof name === "object"){
             errorwrap.innerHTML = 'Name ' + name.error;
         }else if(typeof email === "object"){
             errorwrap.innerHTML = 'Email ' + email.error;
-
         }else if(typeof password === "object"){
             errorwrap.innerHTML = 'Password ' + password.error;
-
         }else if(typeof confirmPassword === "object" || password !== confirmPassword){
             errorwrap.innerHTML = 'Passwords should be same';
 
@@ -158,7 +183,7 @@ function hangFormHandlerOn () {
                     localStorage.setItem("name" , name);
                     localStorage.setItem("login" , login);
                     localStorage.setItem("favoriteRecipe" , favoriteRecipe);
-                    // i will add some code in the futere
+                    // in the future there will be kind of the modal window 
                     errorwrap.innerHTML = 'user has been logged successfully';
                     setTimeout( () => {
                         let directToHome = this.root.getElementsByClassName('menu-main-link')[0];
@@ -184,22 +209,6 @@ function hangFormHandlerOn () {
 
 
     })
-
-    // this piece of the cod is to get sign up form
-    getSignupForm.addEventListener('click' , async (e) => {
-        e.preventDefault();
-        let href = e.target.getAttribute('href');
-        let signUpForm = await fetch(href , {method: 'GET'}).then( result => {
-            return result.text();
-        }).catch(err => {
-            console.log('page not found')
-        })
-        localRoot.innerHTML = signUpForm ;
-
-        // hung handler on sign up form
-        this.root.getElementsByClassName('sign-up')[0].addEventListener('submit' , (e) => {signUpFormHandler(e)})
-        
-    });
 }
 
 export {hangFormHandlerOn}
