@@ -26,21 +26,78 @@ let getBestRecipes = async (strOfRecipes) => {
             }
         })
 
-}
-authorizedUserRouter.post('/getBestRecipes' , (req,res) => {
-    let stringOfRecipes = req.body.arrayOfID.join(',');
+}   
+let hasUserRecipe = async(id , login)=>{
+    let connection = mysql.createConnection(connectionConfig).promise() ;
     
-    getBestRecipes(stringOfRecipes).then( result => {
-        return result;
-    }).then( result => {
-        res.send( JSON.stringify({
-            list : result
-        }));
-    }).catch(err => {
-        res.send( JSON.stringify({
-            list : ['db not found(((((']
-        }));
-    })
-})
+    let sql = `SELECT id FROM users WHERE login='${login}' AND favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?`;
 
+    let arr = [ id + ',%' , '%,' + id + ",%" , "%," + id];
+    return await connection.execute(sql , arr)
+        .then( ([row,field]) => {
+            connection.end();
+            return row;
+        })
+        .then( result => {
+            if(result.length < 1){
+                return false;
+            }else if(result.length > 0){
+                return true;
+            }
+        })
+        .catch( err => {
+            throw err;
+        })
+}
+// personal cabinet
+authorizedUserRouter.post('/personalCabinet' , (req,res) => {
+
+    let stringOfRecipes = req.body.arrayOfID;
+    let name = req.body.name;
+
+    getBestRecipes(stringOfRecipes)
+        .then( result => {
+            return result;
+        }).then( result => {
+            res.render("personalCab" ,{
+                layout : false ,
+                userName : name,
+                list : result
+            })
+        }).catch(err => {
+            res.render( "personalCab", {
+                layout : false ,
+                userName : name,
+                list : ['sorry , some trouble']
+            })
+        })
+
+})
+// put like 
+authorizedUserRouter.route("/putlike")
+    .post( (req, res) => {
+        let id = req.body.id ;
+        let login = req.body.login;
+        hasUserRecipe(id , login)
+            .then( result => {
+                if(result === true ){
+                    res.send(JSON.stringify({
+                        res : false
+                    }))
+                }else if( result === false){
+                    res.send(JSON.stringify({
+                        res : true
+                    }))
+                }
+                return result;
+            })
+            .catch(err => {
+                throw err;
+            })
+        
+    })
+    .put( (req,res) => {
+        res.send('fff')
+    })
+    
 module.exports = authorizedUserRouter;

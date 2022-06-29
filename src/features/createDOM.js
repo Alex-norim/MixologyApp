@@ -1,15 +1,90 @@
+// images
+import likeImage from "../public/svg/like.svg";
 export default class CreateDom {
     constructor(root){
         this._root = root;
+    }
+    recipeList(parent , array){
+        let putLike = (e) => {
+            // send those two
+            let userName = localStorage.getItem('name');
+            let userLogin = localStorage.getItem('login')
+            if(!userName){
+                return false;
+            }
+            let _thisID = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
+            let target = e.target.classList.contains("recipeWrap") || e.target.parentNode.classList.contains('recipeWrap');
+            let userHasIt;
+            (async () => {
+                await fetch("/auth/putlike" , {
+                    method : "POST" ,
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id : _thisID,
+                        login : userLogin
+                    })
+                })
+                .then( result => {
+                    return result.json();
+                })
+                .then( result => {
+                    let hasIt = result.res;
+                    if ( hasIt === true){
+                        console.log("user has not this in own favorite list")
+                    }else if( hasIt === false){
+                        console.log("i will add some code to make a like")
+                    }
+                })
+                .catch( err => {
+                    throw err;
+                })
+            })();
+
+        }
+        let counter = 1;
+        for (const iterator of array) {
+            let recipe = iterator.recipe;
+            let rating = iterator.rating;
+            let id     = iterator.id;
+            // childs of li 
+            let recipeText = document.createElement('span')
+                recipeText.classList.add('recipeText');
+            // if the list has less than two elements
+            (array.length <=1)? recipeText.innerHTML = recipe : recipeText.innerHTML = counter+'. ' + recipe ;
+
+            let ratingTextNode  = document.createElement('span');
+                ratingTextNode.classList.add('recipeRating');
+                ratingTextNode.innerHTML = rating;
+
+            let wrapper = document.createElement('div')
+                wrapper.classList.add('recipeWrap');
+                wrapper.addEventListener('click' , putLike)
+                // put id like button as attribute
+                wrapper.setAttribute('data-id' , id)
+                // add like picture
+                wrapper.innerHTML = likeImage;
+                wrapper.prepend(ratingTextNode);
+            // main element
+            let li = document.createElement('li');
+                li.classList.add('recipe-list-item');
+                li.append(recipeText , wrapper);
+            counter++;
+            parent.append(li)
+            
+        };
     }
     confirmation(text , acceptFunc , rejectFunc){
         let acceptance = document.createElement('button');
             acceptance.classList.add('button');
             acceptance.textContent = 'accept';
+            // hung function
             acceptance.addEventListener('click' , acceptFunc);
         let rejection = document.createElement('button');
             rejection.classList.add('button');
             rejection.textContent = 'reject';
+            // hung function
             rejection.addEventListener('click' , rejectFunc);
         let title = document.createElement('span');
             title.classList.add('modalWindowTitle');
