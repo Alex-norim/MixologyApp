@@ -30,12 +30,13 @@ let getBestRecipes = async (strOfRecipes) => {
 let hasUserRecipe = async(id , login)=>{
     let connection = mysql.createConnection(connectionConfig).promise() ;
     
-    let sql = `SELECT id FROM users WHERE login='${login}' AND favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?`;
+    let sql = `SELECT id FROM users WHERE login='${login}' AND favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?`;
 
-    let arr = [ id + ',%' , '%,' + id + ",%" , "%," + id];
+    let arr = [ id + ',%' , '%,' + id + ",%" , "%," + id , id];
     return await connection.execute(sql , arr)
         .then( ([row,field]) => {
             connection.end();
+            console.log(row)
             return row;
         })
         .then( result => {
@@ -49,6 +50,41 @@ let hasUserRecipe = async(id , login)=>{
             throw err;
         })
 }
+let removeLike = async (id,login) => {
+    let connection = mysql.createConnection(connectionConfig).promise() ;
+    let UpdatingRequest = `UPDATE users SET favoriteRecipe=?  WHERE login=?;`;
+    let gettingRequest  = `SELECT favoriteRecipe FROM users WHERE login="${login}";`;
+    // make new value of favorite recipes
+    let newList = await connection.execute(gettingRequest)
+        .then( ([row,field]) => {
+            
+            return row;
+        })
+        .then( result => {
+            console.log(result)
+            if(result.length <= 0){
+                console.log("result length <= 0")
+                return false;
+            }else if(result.length >= 1){
+                console.log("result length >= 1")
+                let result2 = result[0].favoriteRecipe;
+                return result2.split(',').filter( el => el!== id).join(',');
+            }
+        })
+        .catch( err => {
+            throw err;
+        });
+    // putting new value to favorite recipts cell
+    await connection.execute(UpdatingRequest ,[newList , login])
+        .then( ([row , field]) => {
+            connection.end();
+            console.log(row)
+        })
+        .catch( err => {
+            throw err;
+        })
+    return newList;
+} 
 // personal cabinet
 authorizedUserRouter.post('/personalCabinet' , (req,res) => {
 
@@ -82,11 +118,11 @@ authorizedUserRouter.route("/putlike")
             .then( result => {
                 if(result === true ){
                     res.send(JSON.stringify({
-                        res : false
+                        res : true
                     }))
                 }else if( result === false){
                     res.send(JSON.stringify({
-                        res : true
+                        res : false
                     }))
                 }
                 return result;
@@ -97,7 +133,23 @@ authorizedUserRouter.route("/putlike")
         
     })
     .put( (req,res) => {
-        res.send('fff')
+        let ID = req.body.id;
+        console.log("put like")
+        res.send('put like')
+    })
+    .delete( (req, res) => {
+        let ID = req.body.id;
+        let Login = req.body.login;
+        removeLike(ID , Login)
+            .then( result => {
+                console.log(result)
+                res.send(JSON.stringify({
+                    res : result
+                }))
+            })
+            .catch( err => {
+                throw err;
+            })
     })
     
 module.exports = authorizedUserRouter;

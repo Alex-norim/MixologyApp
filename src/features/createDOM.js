@@ -14,7 +14,45 @@ export default class CreateDom {
             }
             let _thisID = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
             let target = e.target.classList.contains("recipeWrap") || e.target.parentNode.classList.contains('recipeWrap');
-            let userHasIt;
+            let addToFavoriteList = (id) => {
+                fetch("/auth/putlike" ,{
+                    method : "PUT",
+                    headers :{
+
+                    },
+                    body : JSON.stringify({
+                        id : _thisID,
+                        login : localStorage.getItem('login')
+                    })
+                })
+                .then( result => {
+                    console.log(result.text())
+                })
+                .catch( err => {
+                    throw err
+                })
+            }
+            let removeFromFavoriteList = (id) => {
+                fetch("/auth/putlike" , {
+                    method : "DELETE",
+                    headers : {
+                        "Content-type" : "application/json"
+                    },
+                    body : JSON.stringify({
+                        id : _thisID,
+                        login : localStorage.getItem('login')
+                    })
+                })
+                .then( result => {
+                    return result.json();
+                })
+                .then( result => {
+                    localStorage.setItem("favoriteRecipe" , result.res)
+                })
+                .catch( err => {
+                    throw err
+                })
+            }
             (async () => {
                 await fetch("/auth/putlike" , {
                     method : "POST" ,
@@ -32,9 +70,14 @@ export default class CreateDom {
                 .then( result => {
                     let hasIt = result.res;
                     if ( hasIt === true){
-                        console.log("user has not this in own favorite list")
+                        console.log("user has it")
+                        // it deletes current id
+                        removeFromFavoriteList(_thisID);
+                        
                     }else if( hasIt === false){
-                        console.log("i will add some code to make a like")
+                        console.log("user has not this in own favorite list")
+                        // it adds 
+                        addToFavoriteList(_thisID);
                     }
                 })
                 .catch( err => {
