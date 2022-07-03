@@ -7,36 +7,54 @@ const connectionConfig = require('./connection/mysql_connection.js') ;
 authorizedUserRouter.use(bodyParser.urlencoded({extended: false}));
 authorizedUserRouter.use(bodyParser.json());
 
-let getBestRecipes = async (strOfRecipes) => {
-    let sql = `SELECT recipe from coctails WHERE id IN (${strOfRecipes})`;
+let makeRequestToServer = async(sql) => {
     let connection = mysql.createConnection(connectionConfig).promise() ;
-
     return await connection.execute(sql)
         .then( ([row , field]) => {
             connection.end();
             return row;
         })
-        .then( data => {
-            let sentIt = data.map( elem => elem.recipe);
-            return sentIt;
+        .then( result => {
+            return result;
         })
         .catch( err => {
-            return {
-                res : 'DB not found'
-            }
+            return false;
         })
+}
+let getBestRecipes = async (userLogin) => {
+    //this foo has to return array of obj's like [{id : value , recipe : value , rating : value} , {obj}]
+    let sqlGetList = `SELECT favoriteRecipe FROM users WHERE login='${userLogin}'`;
+    return await makeRequestToServer(sqlGetList)
+        .then(result => {
+            return result
+        })
+        .then( result => {
+            let list = result[0].favoriteRecipe;
+            if(list.length >=1 ){
+                let sqlParts = list;
+                let getNotes = `SELECT id,recipe,rating FROM coctails WHERE id IN (${sqlParts})`;
+                return makeRequestToServer(getNotes)
+                .then(result => {
+                    return result;
+                });
+            }else if( list.length < 1 || !result){
+                return false;
+            }
 
+        })
+        .catch(err => {
+            return false;
+        });
 }   
 let hasUserRecipe = async(id , login)=>{
     let connection = mysql.createConnection(connectionConfig).promise() ;
     
     let sql = `SELECT id FROM users WHERE login='${login}' AND favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?`;
 
-    let arr = [ id + ',%' , '%,' + id + ",%" , "%," + id , id];
-    return await connection.execute(sql , arr)
+    let params = [ id + ',%' , '%,' + id + ",%" , "%," + id , id];
+    return await connection.execute(sql , params)
         .then( ([row,field]) => {
             connection.end();
-            console.log(row)
             return row;
         })
         .then( result => {
@@ -50,64 +68,25 @@ let hasUserRecipe = async(id , login)=>{
             throw err;
         })
 }
-let removeLike = async (id,login) => {
-    let connection = mysql.createConnection(connectionConfig).promise() ;
-    let UpdatingRequest = `UPDATE users SET favoriteRecipe=?  WHERE login=?;`;
-    let gettingRequest  = `SELECT favoriteRecipe FROM users WHERE login="${login}";`;
-    // make new value of favorite recipes
-    let newList = await connection.execute(gettingRequest)
-        .then( ([row,field]) => {
-            
-            return row;
-        })
-        .then( result => {
-            console.log(result)
-            if(result.length <= 0){
-                console.log("result length <= 0")
-                return false;
-            }else if(result.length >= 1){
-                console.log("result length >= 1")
-                let result2 = result[0].favoriteRecipe;
-                return result2.split(',').filter( el => el!== id).join(',');
-            }
-        })
-        .catch( err => {
-            throw err;
-        });
-    // putting new value to favorite recipts cell
-    await connection.execute(UpdatingRequest ,[newList , login])
-        .then( ([row , field]) => {
-            connection.end();
-            console.log(row)
-        })
-        .catch( err => {
-            throw err;
-        })
-    return newList;
-} 
 // personal cabinet
-authorizedUserRouter.post('/personalCabinet' , (req,res) => {
-
-    let stringOfRecipes = req.body.arrayOfID;
-    let name = req.body.name;
-
-    getBestRecipes(stringOfRecipes)
-        .then( result => {
-            return result;
-        }).then( result => {
-            res.render("personalCab" ,{
-                layout : false ,
-                userName : name,
-                list : result
-            })
-        }).catch(err => {
-            res.render( "personalCab", {
-                layout : false ,
-                userName : name,
-                list : ['sorry , some trouble']
-            })
+authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
+    let userLogin = req.body.login;
+    getBestRecipes(userLogin)
+        .then(result => {
+            res.send(JSON.stringify({
+                res : result
+            }))
         })
+})
+authorizedUserRouter.post('/personalCabinet' , (req,res) => {
+    let userLogin = req.body.login;
+    let userName  = req.body.name;
 
+    
+    res.render("personalCab" ,{
+        layout : false ,
+        userName : userName,
+    })
 })
 // put like 
 authorizedUserRouter.route("/putlike")
@@ -133,22 +112,76 @@ authorizedUserRouter.route("/putlike")
         
     })
     .put( (req,res) => {
-        let ID = req.body.id;
-        console.log("put like")
-        res.send('put like')
+        let ID = req.body.id || '';
+        let Login = req.body.login;
+        makeRequestToServer(`SELECT favoriteRecipe FROM users WHERE login='${Login}'`)
+            .then( result => {
+                return result;
+            })
+            .then(result => {
+                let list = result[0].favoriteRecipe
+                    .split(',')
+                    .filter( item => item && item!=='')
+                    .join(',');
+                let newList;
+                if(!list || list === ''){
+                    newList = (ID).toString();
+                }else{
+                    console.log("multy "+ID)
+                    newList = list + ',' + (ID).toString();
+                }
+                let WriteNewRecipeList = `UPDATE users SET favoriteRecipe = '${newList}' WHERE login='${Login}';`;
+
+                makeRequestToServer(WriteNewRecipeList)
+                    .then( result => {
+                        return result
+                    })
+                    .then( result => {
+                        if (result) {
+                            res.send(JSON.stringify({
+                                responce : true
+                            }))
+                        } else {
+                            res.send(JSON.stringify({
+                                responce : false
+                            }))
+                        }
+                    })
+                    .catch(err => {
+                        throw err
+                    })
+            });
+        
     })
     .delete( (req, res) => {
         let ID = req.body.id;
         let Login = req.body.login;
-        removeLike(ID , Login)
+
+        
+        makeRequestToServer(`SELECT favoriteRecipe FROM users WHERE login='${Login}'`)
             .then( result => {
-                console.log(result)
-                res.send(JSON.stringify({
-                    res : result
-                }))
+                return result[0].favoriteRecipe
+                    .split(',')
+                    .filter( elem => elem!==ID && elem !== '')
+                    .join(',')
+                    .trim();
             })
-            .catch( err => {
-                throw err;
+            .then( result => {
+                let newList = result; 
+                let sqlReq = `UPDATE users SET favoriteRecipe = '${newList}' WHERE login='${Login}';`;
+                makeRequestToServer(sqlReq)
+                    .then( result => {
+                        return result.changedRows;
+                    })
+                    .then( result => {
+                        (result > 0) ? 
+                            res.send(JSON.stringify({
+                                response: true
+                            }))      : 
+                            res.send(JSON.stringify({
+                                response: false
+                            })) 
+                    })
             })
     })
     
