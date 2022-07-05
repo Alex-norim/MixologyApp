@@ -189,7 +189,7 @@ function hangFormHandlerOn () {
                         let directToHome = this.root.getElementsByClassName('menu-main-link')[0];
                         let userName = localStorage.getItem('name');
                         directToHome.click();
-                        _changeDOM.changeRegistrationButton(userName , '/auth/personalData');
+                        _changeDOM.changeRegistrationButton(userName , '/auth/personalCabinet');
                     } , 100)
                 }else{
                     let error = data.error;

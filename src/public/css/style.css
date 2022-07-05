@@ -2,6 +2,7 @@
 
 @import 'parts/__logo.css';
 @import 'parts/__mainmenu.css';
+@import 'parts/recipelist.css';
 @import 'parts/_footer.css';
 
 @import 'animation/animation.css';

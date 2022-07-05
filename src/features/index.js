@@ -2,28 +2,42 @@
 import ChangeDom from './changeExistingElement.js';
 import {hangFormHandlerOn as formHandler} from './registration.js';
 import CreateDom from './createDOM.js';
-// images
-import likeImage from "../public/svg/like.svg";
+
 // style
 import '../public/css/style.css';
 class App{
     constructor(initElement){
         this.root = initElement; 
         this.hangFormHandlerOn = formHandler;
-        this.pendingAnimation = '<div class="pendingWrapper"><div class="pendindAnimation"></div></div>';
+        this.pendingAnimation = '<div class="pendingWrapper"><div class="pendingAnimation"></div></div>';
         this._changeDom = new ChangeDom(this.root);
         this._createDOM = new CreateDom(this.root);
     }
     // methods 
     hangHundlerOnMixologyMenu(){
         // getting single item
-        let parent                  = this.root.getElementsByClassName('mixologyID')[0] ;
-        let title                   = parent.getElementsByClassName('listTitleId')[0];
-        let listRoot                = parent.getElementsByClassName('recipeListId')[0];
-
+        let parent = this.root.getElementsByClassName('mixologyID')[0] ;
+        let title  = parent.getElementsByClassName('listTitleId')[0];
+        let listRoot = parent.getElementsByClassName('recipeListId')[0];
+        let showTopTenRecipes = async () => {
+            await fetch("/mixology/topten" , {
+                method : "GET",
+            })
+            .then( result => {
+                return result.json();
+            }).then( result => {
+                let category = result.category;
+                let recipes  = result.list;
+                let hasAccsessToServer = result.database;
+                this._createDOM.recipeList(listRoot , recipes)
+            })
+            .catch( err => {
+                throw err;
+            })
+        }
+        showTopTenRecipes();
         // getting multiple items
-        let mixologyMenuButtons     = parent.getElementsByClassName('menu-main-link') ;
-
+        let mixologyMenuButtons = Object.values(parent.getElementsByClassName('menu-main-link'));
         // handlers
         let getRecipe = async (event) => {
             event.preventDefault();
@@ -31,68 +45,36 @@ class App{
             //animation of waiting
             listRoot.innerHTML = this.pendingAnimation;
             // getting from server
-            let data  = await fetch( request , {method : 'GET'}).then( result => {
+            let data = await fetch( request , {method : 'GET'})
+            .then( result => {
                 listRoot.innerHTML = '';
-                return result.json()
-            }).catch(err=>{
+                return result.json();
+            })
+            .catch(err=>{
                 throw err;
             });
+            let category = data.category;
+            let recipes  = data.list;
+            let hasAccsessToServer = data.database;
             // title 
-            title.innerHTML = "Top 10 " + data.category + " recipes";
-            // make the list
-            let makeList = (root , array) => {
-                let counter = 1;
-                for (const iterator of array) {
-                    let flavorRecipe = iterator.recipe;
-                    let flavorRating = iterator.rating;
-                    // childs of li 
-                    let recipeText = document.createElement('span')
-                        recipeText.classList.add('recipeText');
-                    // if the list has more than one element
-                    (array.length <=1)? recipeText.innerHTML = flavorRecipe : recipeText.innerHTML = counter+'. ' + flavorRecipe;
-
-                    let rating  = document.createElement('span');
-                        rating.classList.add('recipeRating');
-                        rating.innerHTML = flavorRating;
-
-                    let wrapper = document.createElement('div')
-                        wrapper.classList.add('recipeWrap');
-                        // add like picture
-                        wrapper.innerHTML = likeImage;
-                        wrapper.prepend(rating);
-                    // main element
-                    let li = document.createElement('li');
-                        li.classList.add('recipe-list-item');
-                        li.append(recipeText , wrapper);
-                    root.append(li)
-                    counter++;
-                };
-            };
-            let makeErrorAlarm = (root , element) => {
-                let li = document.createElement('li');
-                    li.classList.add('recipe-list-item');
-                    li.innerHTML = element;
-                root.append(li);
-            };
-
-            // create certain type of the list
-            
-            if(data.database){
-                let recipeList = data.list;
-                makeList(listRoot , recipeList);
+            title.innerHTML = "Top 10 " + category + " recipes";
+                // if db is available;
+            if(hasAccsessToServer){
+                // there is creating the list of recipes
+                this._createDOM.recipeList(listRoot , recipes);
             }else{
                 // if database not found
                 let errorMessage = data.list[0];
-                makeErrorAlarm(listRoot , errorMessage)
+                let li = document.createElement('li');
+                    li.classList.add('recipe-list-item');
+                    li.innerHTML = errorMessage;
+                listRoot.append(li);
             }   
             
         };
-
-        
-        for (const item of mixologyMenuButtons) {
-            item.addEventListener('click' , getRecipe )
-        }
-        return false;
+        mixologyMenuButtons.forEach( item => {
+            item.addEventListener('click' , getRecipe );
+        })
     };
     // tabaco
     hangHundlerOnTabacoMenu (){
@@ -101,7 +83,7 @@ class App{
         let contentPlace        = parent.getElementsByClassName('tabacoHistoryID')[0];
         // getting multiply items
         let tabacoMenuItem      = parent.getElementsByClassName('menu-main-link');
-
+        
         // getting of data
         let getData = async (event) => {
             let URL = event.target.getAttribute('data-link');
@@ -125,6 +107,21 @@ class App{
         let personalCab = this.root.getElementsByClassName('personalCab')[0];
         let logOutButton = personalCab.getElementsByClassName('logout')[0];
 
+        // createList
+        let TheBestRecipes = fetch ("/auth/getBestRecipes", {
+            method: "POST" , 
+            headers :{
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({
+                login : localStorage.getItem('login')
+            })
+        }).then( result => {
+            return result.json();
+        }).then( body => {
+            this._createDOM.recipeList( this.root.getElementsByClassName("favoriteRecipeList")[0] , body.res)
+        })
+    
         logOutButton.addEventListener("click" , (e) => {
             let rejectionFunction = (event) => {
                 let target = event.target;
@@ -159,16 +156,16 @@ class App{
             bodyContent.innerHTML = this.pendingAnimation;
             let data;
             // local store
-            let favoriteRec = localStorage.getItem('favoriteRecipe');
+            let userlogin = localStorage.getItem('login');
             let username = localStorage.getItem('name');
             // some request requires data
-            if(request === '/auth/personalData'){
+            if(request === '/auth/personalCabinet'){
                 data = await fetch(request , {
                     method: "POST",
                     headers : {
                         'Content-Type': 'application/json'
                     },
-                    body : JSON.stringify({ arrayOfID : favoriteRec , name : username})
+                    body : JSON.stringify({ login : userlogin , name : username})
                 }).then( result => {
                     let text = result.text();
                     return text;
@@ -199,7 +196,7 @@ class App{
                 case '/registration':
                     this.hangFormHandlerOn();
                     break;
-                case '/auth/personalData':
+                case '/auth/personalCabinet':
                     this.hangHundlerOnPersonalCab();
                     break;
                 default:
@@ -217,7 +214,7 @@ class App{
         let isAuthorized = localStorage.getItem('name') ? true : false;
         if(isAuthorized){
             let userName = localStorage.getItem('name'); 
-            this._changeDom.changeRegistrationButton(userName , '/auth/personalData');
+            this._changeDom.changeRegistrationButton(userName , '/auth/personalCabinet');
         }
         this.hangHundlerOnMineMenu();
     }

@@ -3,13 +3,13 @@ const expressHbs = require("express-handlebars");
 const hbs = require("hbs");
 var app = express();
 const cookieParser = require('cookie-parser')
-const cookieSession = require('cookie-session');
+
 
 // routers
 const Mixology_Router = require("./mixologyRouter.js");
-const TabacoRouter = require('./tabacoRouter');
-// page info
-const PAGE_INFO = require("./public/pageRender/pageinfo.js");
+const TabacoRouter = require('./tabacoRouter.js');
+const RegistrationRouter = require('./registrationRouter.js');
+const authorizedUserRouter = require('./authorizedUserRouter.js');
 //setting up
 app.engine("hbs" , expressHbs.engine({
     layoutsDir: __dirname + "/views/layout", 
@@ -20,11 +20,14 @@ app.set("views" , __dirname + "/views")
 app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials");
 app.use(express.static( __dirname + "/public"));
-app.use(express.static(__dirname + "/features"));
+// app.use(express.static(__dirname + "/features"));
 // middleware
 Mixology_Router.use(express.static(__dirname + "/public"));
-Mixology_Router.use(express.static(__dirname + "/features"));
-// TabacoRouter.use( express.static( __dirname + '/jsonFiles'));
+// Mixology_Router.use(express.static(__dirname + "/features"));
+
+app.use(express.static(__dirname + "/dist"));
+Mixology_Router.use(express.static(__dirname + "/dist"));
+Mixology_Router.use(express.static(__dirname + "/dist"));
 TabacoRouter.use(express.static(__dirname + "/public"));
 app.use(cookieParser('secret key'));
 
@@ -32,9 +35,11 @@ app.use(cookieParser('secret key'));
 
 // reqs
 app.get("/", function(req,res){  
-    
-    res.setHeader('isJson' , 'false')
-    res.render("home.hbs" , {...PAGE_INFO.homePage}) 
+    res.render("home.hbs" , {
+        title : 'Mixology',
+        name : 'In short...',
+
+    }) 
     
 });
 app.get("/home", function(req,res){  
@@ -42,7 +47,7 @@ app.get("/home", function(req,res){
     
     res.render('home.hbs' , {
         layout : false , 
-        title : 'home Page'
+        name : 'In short...'
     });
     
 });
@@ -55,14 +60,8 @@ app.use("/rejected" , (req ,res) => {
 // routers
 app.use("/mixology" ,  Mixology_Router);
 app.use('/tabaco' , TabacoRouter);
+app.use('/registration' , RegistrationRouter);
+app.use('/auth' , authorizedUserRouter);
 // other reqs
-
-app.get("/project" , (req,res) => {
-    res.setHeader('Content-Type', 'application/text');
-    res.render("project.hbs" , {
-        layout : false,
-        ...PAGE_INFO.project
-    } );
-})
 
 app.listen(3000);
