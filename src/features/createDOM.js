@@ -1,5 +1,6 @@
 // images
 import likeImage from "../public/svg/like.svg";
+import hookahImage from "../public/svg/hookah.svg";
 export default class CreateDom {
     constructor(root){
         this._root = root;
@@ -193,5 +194,56 @@ export default class CreateDom {
             modalWindowWrap.classList.add('modalWindowWrap');
             modalWindowWrap.append(modalWindow);
         return modalWindowWrap;
+    }
+    logotype(){
+        let logoText = `<span class="logo-name">Mixology</span>`;
+        let logo = document.createElement('div');
+            logo.classList.add('logotype-wrapper');
+            logo.innerHTML = hookahImage + logoText;
+        
+        return logo;
+    }
+    mainMenu(){
+        let links =  {
+            "home"     : "/home" ,
+            "mixology" : "/mixology",
+            "brands"   : "/tabaco",
+            "Sign in"  : "/registration",
+        }
+        let ul = document.createElement('ul');
+            ul.classList.add('menu-main');
+        for (const key in links) {
+            let a = document.createElement('a');
+                a.classList.add(`menu-main-link` , `${links[key].slice(1)}` );
+                a.innerHTML = key ;
+                a.setAttribute('href' , links[key]);
+            ul.appendChild(a);
+        }
+        let smallScreenBtn = document.createElement('div');
+            smallScreenBtn.classList.add('smallScreenButton');
+            smallScreenBtn.innerHTML = '<div class="line"></div><div class="line"></div><div class="line"></div>'
+        let menu = document.createElement('nav');
+            menu.classList.add('mainMenuWrap');
+            menu.append( smallScreenBtn , ul );
+
+        return menu;
+    }
+    header(){
+        let header = this._root.querySelector('.header');
+            header.append(
+                this.logotype() ,
+                this.mainMenu()
+            )
+    }
+    footer(){
+        let footer = this._root.querySelector('.footer')
+        let footerText = document.createElement('p');
+            footerText.classList.add('designed_by');
+            footerText.innerHTML = "designed by Alexej Malekov";
+            
+        footer.append(
+            this.logotype(),
+            footerText
+        )
     }
 }
