@@ -1,12 +1,17 @@
 // images
 import likeImage from "../public/svg/like.svg";
 import hookahImage from "../public/svg/hookah.svg";
+import heartImg from "../public/svg/heart.svg";
+let color = '#ffffff';
+let defColor = '#938f8f'
 export default class CreateDom {
     constructor(root){
         this._root = root;
     }
     recipeList(parent , arrayListOfRecipe){
-        parent.classList.add('recipe-list');
+        let _root = parent;
+            _root.classList.add('recipe-list');
+        
         let likeHandler = (e) => {
             // send those two
             let userName = localStorage.getItem('name');
@@ -15,7 +20,7 @@ export default class CreateDom {
                 return false;
             }
             let _thisID = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
-            let target = (e.target.classList.contains('recipeWrap')) ? 
+            let target = (  e.target.classList.contains('recipeWrap')  ) ? 
                             e.target : (e.target.classList.contains('recipeRating') || e.target.classList.contains('likePicture')) ? 
                             e.target.parentNode : e.target.parentNode.parentNode;
 
@@ -36,9 +41,11 @@ export default class CreateDom {
                 })
                 .then( result => {
                     let responce = result.responce;
+                    let svg = target.querySelector('.svgpath');
+                    let ratingText = target.querySelector('.recipeRating');
                     if(responce){
-                        let likeImage = target.querySelector('.likePicture').querySelector('path');
-                            likeImage.setAttribute('fill' , 'red');
+                        svg.setAttribute('fill' , color);
+                        ratingText.setAttribute('style' , "color:" + color)
                     }
                 })
                 .catch( err => {
@@ -60,7 +67,13 @@ export default class CreateDom {
                     return result.json();
                 })
                 .then( result => {
-                    
+                    let response = result.response;
+                    let svg = target.querySelector('.svgpath');
+                    let ratingText = target.querySelector('.recipeRating');
+                    if(response){
+                        svg.setAttribute('fill' , defColor);
+                        ratingText.setAttribute("style" , "color:" + defColor);
+                    }
                 })
                 .catch( err => {
                     throw err
@@ -83,12 +96,9 @@ export default class CreateDom {
                 .then( result => {
                     let hasIt = result.res;
                     if ( hasIt === true){
-                        console.log("user has it")
                         // it deletes current id
                         removeFromFavoriteList(_thisID);
-                        
                     }else if( hasIt === false){
-                        console.log("user has not this in own favorite list")
                         // it adds 
                         addToFavoriteList(_thisID);
                     }
@@ -122,26 +132,34 @@ export default class CreateDom {
                     wrapper.addEventListener('click' , likeHandler)
                     // put id like button as attribute
                     wrapper.setAttribute('data-id' , id);
-                    if(isMatch){
-                        wrapper.setAttribute('style' , "background:red")
-                    }
-                    // add like picture
+                    // add a heart picture
                     wrapper.innerHTML = likeImage;
                     wrapper.prepend(ratingTextNode);
+                    if(isMatch){
+                        let likeBtn = wrapper.querySelector('.svgpath');
+                            likeBtn.setAttribute('fill' , color);
+            
+                        ratingTextNode.setAttribute('style' , 'color:' + color )
+                        
+                    }else{
+                        let likeBtn = wrapper.querySelector('.svgpath');
+                            likeBtn.setAttribute('fill' , defColor);
+                        ratingTextNode.setAttribute('style' , 'color:' + defColor )
+                    }
                 // main element
                 let li = document.createElement('li');
                     li.classList.add('recipe-list-item');
                     li.append(recipeText , wrapper);
                 counter++;
-                parent.append(li)
+                _root.append(li)
                 
             };
         }
         let counter = 1;
         if(typeof arrayListOfRecipe[0] === 'string'){
-            parent.textContent = 'Server not found'
+            _root.textContent = 'Server not found'
         }else if(arrayListOfRecipe === false){
-            parent.textContent = 'Empty list'
+            _root.textContent = 'Empty list'
         }else{
             fetch("/auth/getBestRecipes" , {
                 method: "POST",
@@ -156,7 +174,6 @@ export default class CreateDom {
                 return result.json();
             })
             .then( result => {
-                console.log(result.res)
                 if (result.res !== false ) {
                     let favoriteList = result.res.map( elem => {
                         return elem.id
@@ -165,8 +182,6 @@ export default class CreateDom {
                 }else{
                     renderList(arrayListOfRecipe)
                 }
-                
-                
             })
             .catch(err => {
                 throw err;

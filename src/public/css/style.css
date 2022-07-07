@@ -13,11 +13,18 @@
 @import 'mainMenuContent/tabaco-page.css';
 @import 'mainMenuContent/registration.css';
 @import 'mainMenuContent/personalCab.css';
-#myVideo{
+.blurpanel ,#myVideo {
     position: fixed;
     right: 0;
     bottom: 0;
     min-width: 100%;
     min-height: 100%;
+}
+#myVideo{
     z-index: -100;
+}
+.blurpanel{
+    z-index: -99;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
 }

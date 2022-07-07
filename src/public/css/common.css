@@ -33,3 +33,12 @@
     font-size: 25px;
     margin-bottom: 40px;
 }
+
+@media screen and (min-width: 320px) and (max-width : 1000px){
+    .header{
+        width: 94%;
+    }
+    .container{
+        width: 90%;
+    }
+}

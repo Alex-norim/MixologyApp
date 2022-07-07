@@ -14,7 +14,7 @@ class App{
         this._createDOM = new CreateDom(this.root);
     }
     // methods 
-    hangHundlerOnMixologyMenu(){
+    hangHandlerOnMixologyMenu(){
         // getting single item
         let parent = this.root.getElementsByClassName('mixologyID')[0] ;
         let title  = parent.getElementsByClassName('listTitleId')[0];
@@ -77,7 +77,7 @@ class App{
         })
     };
     // tabaco
-    hangHundlerOnTabacoMenu (){
+    hangHandlerOnTabacoMenu (){
         // getting single item
         let parent              = this.root.getElementsByClassName('tabacoID')[0];
         let contentPlace        = parent.getElementsByClassName('tabacoHistoryID')[0];
@@ -103,7 +103,7 @@ class App{
         }
 
     }
-    hangHundlerOnPersonalCab(e){
+    hangHandlerOnPersonalCab(e){
         let personalCab = this.root.getElementsByClassName('personalCab')[0];
         let logOutButton = personalCab.getElementsByClassName('logout')[0];
 
@@ -143,15 +143,15 @@ class App{
             this.root.append(modalWindow);
         })
     }
-    hangHundlerOnMineMenu(){
+    hangHandlerOnMineMenu(){
+        // vars
         let mainMenu = this.root.getElementsByClassName('mainMenuWrap')[0];
         let mineMenuItems = Object.values( mainMenu.getElementsByClassName('menu-main-link') );
-        let smallScreenMenuButton = mainMenu.getElementsByClassName('smallScreenButton')[0];
-
+        // funcs
         let getpage = async (event) => {
             event.preventDefault();
             let bodyContent = document.getElementById('body-content');
-            let request = event.target.getAttribute('href');
+            let HrefRequest = event.target.getAttribute('href');
             //animation of waiting
             bodyContent.innerHTML = this.pendingAnimation;
             let data;
@@ -159,8 +159,8 @@ class App{
             let userlogin = localStorage.getItem('login');
             let username = localStorage.getItem('name');
             // some request requires data
-            if(request === '/auth/personalCabinet'){
-                data = await fetch(request , {
+            if(HrefRequest === '/auth/personalCabinet'){
+                data = await fetch(HrefRequest , {
                     method: "POST",
                     headers : {
                         'Content-Type': 'application/json'
@@ -173,7 +173,7 @@ class App{
                     throw err;
                 })
             }else{
-                data = await fetch(request , {
+                data = await fetch(HrefRequest , {
                 }).then( result => {
                     let text = result.text();
                     return text;
@@ -183,21 +183,21 @@ class App{
             }
 
             bodyContent.innerHTML = data;
-            switch (request) {
+            switch (HrefRequest) {
                 case '/home' :
                     // this.hangHundlerOnHomeMenuItem();
                     break;
                 case '/mixology':
-                    this.hangHundlerOnMixologyMenu();
+                    this.hangHandlerOnMixologyMenu();
                     break;
                 case '/tabaco':
-                    this.hangHundlerOnTabacoMenu();
+                    this.hangHandlerOnTabacoMenu();
                     break;
                 case '/registration':
                     this.hangFormHandlerOn();
                     break;
                 case '/auth/personalCabinet':
-                    this.hangHundlerOnPersonalCab();
+                    this.hangHandlerOnPersonalCab();
                     break;
                 default:
                     break;
@@ -205,18 +205,19 @@ class App{
             return false;
         }
         mineMenuItems.forEach( menuitem => {
-            
             menuitem.addEventListener('click' , getpage )
         })
 
     }
     init(){
         let isAuthorized = localStorage.getItem('name') ? true : false;
+        this._createDOM.header();
+        this._createDOM.footer();
         if(isAuthorized){
             let userName = localStorage.getItem('name'); 
             this._changeDom.changeRegistrationButton(userName , '/auth/personalCabinet');
         }
-        this.hangHundlerOnMineMenu();
+        this.hangHandlerOnMineMenu();
     }
 }
 

@@ -26,15 +26,15 @@
     margin-right: 9px;
 }
 .recipeWrap:hover {
-    border: 2px solid #f1eef4;
-    box-shadow: 0px 0px 16px 7px;
-    background: #fefbfb;
+    border: 2px solid #f1eef466;
+    box-shadow: 0px 0px 6px 2px;;
+    background: rgba(255,255,255,0.5);
 }
 .recipeWrap:hover .recipeRating{
-    color : #424141;
+    color : #e2e2e2;
 }
-.recipeWrap:hover .likePicture{
-    fill: #424141;
+.recipeWrap:hover .svgpath{
+    fill: #e2e2e2;
 }
 .recipeWrap .likePicture{
     width: 20px;
