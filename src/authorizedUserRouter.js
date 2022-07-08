@@ -175,9 +175,11 @@ authorizedUserRouter.route("/putlike")
                     })
                     .then( result => {
                         (result > 0) ? 
+                            // was changed
                             res.send(JSON.stringify({
                                 response: true
                             }))      : 
+                            // was not changed
                             res.send(JSON.stringify({
                                 response: false
                             })) 

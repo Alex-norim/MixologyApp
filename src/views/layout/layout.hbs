@@ -7,17 +7,19 @@
     <title>{{title}}</title>
 </head>
 <body id="root">
-    <video autoplay muted loop id="myVideo">
-        <source src="video/smoke.mp4" type="video/mp4">
-    </video>
-    {{> header}}
-    
+    <div class="background">
+        <video autoplay muted loop id="myVideo">
+            <source src="video/smoke.mp4" type="video/mp4">
+        </video>
+        <div class="blurpanel"></div>
+    </div>
+
+    <header class="header"></header>
     <div  class="container body-content" id="body-content">
         {{{body}}}
     </div>
 
-    {{>footer}}
-    
+    <footer class="footer"></footer>
     <script  src="index.js" async type="text/javascript"></script>
 </body>
 </html>

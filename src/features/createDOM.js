@@ -1,7 +1,7 @@
 // images
 import likeImage from "../public/svg/like.svg";
 import hookahImage from "../public/svg/hookah.svg";
-import heartImg from "../public/svg/heart.svg";
+
 let color = '#ffffff';
 let defColor = '#938f8f'
 export default class CreateDom {
