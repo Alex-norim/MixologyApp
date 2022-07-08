@@ -40,11 +40,12 @@ export default class CreateDom {
 
                 })
                 .then( result => {
-                    let responce = result.responce;
+                    let response = result.response;
                     let svg = target.querySelector('.svgpath');
                     let ratingText = target.querySelector('.recipeRating');
-                    if(responce){
+                    if(response){
                         svg.setAttribute('fill' , color);
+                        ratingText.textContent = response;
                         ratingText.setAttribute('style' , "color:" + color)
                     }
                 })
@@ -72,6 +73,7 @@ export default class CreateDom {
                     let ratingText = target.querySelector('.recipeRating');
                     if(response){
                         svg.setAttribute('fill' , defColor);
+                        ratingText.textContent = response;
                         ratingText.setAttribute("style" , "color:" + defColor);
                     }
                 })

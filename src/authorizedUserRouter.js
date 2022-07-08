@@ -7,7 +7,7 @@ const connectionConfig = require('./connection/mysql_connection.js') ;
 authorizedUserRouter.use(bodyParser.urlencoded({extended: false}));
 authorizedUserRouter.use(bodyParser.json());
 
-let makeRequestToServer = async(sql) => {
+async function makeRequestToServer (sql) {
     let connection = mysql.createConnection(connectionConfig).promise() ;
     return await connection.execute(sql)
         .then( ([row , field]) => {
@@ -21,6 +21,7 @@ let makeRequestToServer = async(sql) => {
             return false;
         })
 }
+
 let getBestRecipes = async (userLogin) => {
     //this foo has to return array of obj's like [{id : value , recipe : value , rating : value} , {obj}]
     let sqlGetList = `SELECT favoriteRecipe FROM users WHERE login='${userLogin}'`;
@@ -112,52 +113,104 @@ authorizedUserRouter.route("/putlike")
         
     })
     .put( (req,res) => {
-        let ID = req.body.id || '';
-        let Login = req.body.login;
-        makeRequestToServer(`SELECT favoriteRecipe FROM users WHERE login='${Login}'`)
-            .then( result => {
-                return result;
-            })
-            .then(result => {
-                let list = result[0].favoriteRecipe
-                    .split(',')
-                    .filter( item => item && item!=='')
-                    .join(',');
-                let newList;
-                if(!list || list === ''){
-                    newList = (ID).toString();
-                }else{
-                    console.log("multy "+ID)
-                    newList = list + ',' + (ID).toString();
-                }
-                let WriteNewRecipeList = `UPDATE users SET favoriteRecipe = '${newList}' WHERE login='${Login}';`;
+        let ID = Number(req.body.id) || false;
+        let Login = req.body.login || false;
 
-                makeRequestToServer(WriteNewRecipeList)
+        let increaseRating = async(id) => {
+            // rating returns decreased rating number by 1 
+            let rating = await makeRequestToServer(`SELECT rating FROM coctails WHERE id="${id}"`).then( result => result[0].rating + 1);
+            // write new data in rating field
+            return await makeRequestToServer(`UPDATE coctails SET rating='${rating}' WHERE id="${id}"`)
+                .then( result => {
+                    return result.changedRows;
+                })
+                .then( result => {
+                    if(result > 0){
+                        return rating;
+                    }
+                    return false;
+                })
+
+        }
+        let updateLike = () => {
+            let rewriteList = async ( string , login) => {
+                let newlist = `UPDATE users SET favoriteRecipe = '${string}' WHERE login='${login}';`;
+                let isRewrotten = await makeRequestToServer(newlist)
                     .then( result => {
-                        return result
+                        return result.affectedRows
                     })
                     .then( result => {
-                        if (result) {
-                            res.send(JSON.stringify({
-                                responce : true
-                            }))
+                        if (result > 0) {
+                            return true;
                         } else {
-                            res.send(JSON.stringify({
-                                responce : false
-                            }))
+                            return false;
                         }
                     })
                     .catch(err => {
-                        throw err
+                        return false;
                     })
-            });
+
+                return isRewrotten;
+            };
+
+            makeRequestToServer(`SELECT favoriteRecipe FROM users WHERE login='${Login}'`)
+                .then( result => {
+                    return result;
+                })
+                .then( async (result) => {
+                    let list = result[0].favoriteRecipe
+                        .split(',')
+                        .filter( item => item && item!=='')
+                        .join(',');
+                    let newList = (!list || list === '') 
+                        ?
+                        // if user has empty field od flist
+                            (ID).toString() 
+                        :
+                        // add new item to existing list
+                            list + ',' + (ID).toString();
+                    
+                    let isRewrotten = await rewriteList(newList , Login).then( x => x);
+                    let rating      = await increaseRating(ID).then( x=> x);
+                    isRewrotten === true && rating 
+                        ?
+                            res.send(JSON.stringify({
+                                response : rating
+                            }))
+                        :
+                            res.send(JSON.stringify({
+                                response : false
+                            }))
+                });
+        };
         
+        typeof ID === 'number' && typeof Login === 'string' 
+            ? 
+            updateLike() 
+            : 
+            res.send(JSON.stringify({
+                response : false
+            }))
     })
     .delete( (req, res) => {
         let ID = req.body.id;
         let Login = req.body.login;
-
-        
+        let decreaseRating = async(id) => {
+            // rating returns decreased rating number by 1 
+            let rating = await makeRequestToServer(`SELECT rating FROM coctails WHERE id="${id}"`).then( result => result[0].rating - 1);
+            // write new data in rating field
+            return await makeRequestToServer(`UPDATE coctails SET rating='${rating}' WHERE id="${id}"`)
+                .then( result => {
+                    return result.changedRows;
+                })
+                .then( result => {
+                    if(result > 0){
+                        return rating;
+                    }
+                    return false;
+                })
+        }
+        // updating favorite list;
         makeRequestToServer(`SELECT favoriteRecipe FROM users WHERE login='${Login}'`)
             .then( result => {
                 return result[0].favoriteRecipe
@@ -174,16 +227,23 @@ authorizedUserRouter.route("/putlike")
                         return result.changedRows;
                     })
                     .then( result => {
-                        (result > 0) ? 
-                            // was changed
+                        if(result > 0){
+                            // return new rating
+                            decreaseRating(ID).then(result => {
+                                res.send(JSON.stringify({
+                                    response : result
+                                }))
+                            })
+        
+                        }else{
                             res.send(JSON.stringify({
-                                response: true
-                            }))      : 
-                            // was not changed
-                            res.send(JSON.stringify({
-                                response: false
-                            })) 
+                                response : false
+                            }))
+                        }
                     })
+            })
+            .catch(err => {
+                return false;
             })
     })
     
