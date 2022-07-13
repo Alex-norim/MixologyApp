@@ -51,7 +51,9 @@
     transition: 0.5s;
 }
 .form-wrap .form-button:hover{
-    background: rgba(246,246, 246,0.5);
+    background: rgb(249 249 249 / 60%);
+    color: #efeeee;
+    text-shadow: 2px 2px 6px #fbfbfb;
 }
 .form-wrap .form-button:active{
     background: rgba(255, 255, 255, .5s);

@@ -10,7 +10,7 @@
 .personalCab .title span{
     text-transform: capitalize;
 }
-.mix-list{
+.defbox{
     margin-top: 30px;
     border: 2px solid rgb(183 180 180);
     box-shadow: 1px 7px 36px 5px;
@@ -18,16 +18,16 @@
     padding: 40px 30px 50px 30px;
     background: rgba(0,0,0,0.5);
 }
-.mix-list .favoriteRecipeTitle{
+.defbox .favoriteRecipeTitle{
     font-size: 30px;
     text-align: center;
 }
-.mix-list .favoriteRecipeList {
+.defbox .favoriteRecipeList {
     list-style: none;
     margin-left: 20px;
     margin-top: 20px;
 }
-.mix-list .favoriteRecipeList .listItem {
+.favoriteRecipeList .listItem {
     font-size: 25px;
 }
 
@@ -45,7 +45,9 @@
     transition: .7s;
 }
 .button:hover{
-    background: rgb(249 249 249 / 23%);
+    background: rgb(249 249 249 / 60%);
+    color: #ffffff;
+    text-shadow: 6px 4px 5px #ffffff;
 }
 .button:active{
     background: rgba(255, 255, 255, .5s);

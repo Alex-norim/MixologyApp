@@ -3,6 +3,9 @@
     display: flex;
     justify-content: space-between;
 }
+.tabaco-left-bar > .menu-main{
+    flex-direction: column;
+}
 .tabaco-right-bar{
     flex-basis: 70%;
     font-size: 23px;

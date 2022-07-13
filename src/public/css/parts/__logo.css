@@ -17,3 +17,8 @@
     text-transform: uppercase;
     font-family: cursive;
 }
+@media screen and (max-width : 660px) and (min-width: 320px) {
+    .logo-name{
+        display: none;
+    }
+}

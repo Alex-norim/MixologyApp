@@ -210,6 +210,14 @@ class App{
 
     }
     init(){
+        window.addEventListener('resize' , (event) => {
+            let currentScreenWidth = window.innerWidth;
+            if(currentScreenWidth > 750 ){
+                let menuList = this.root.getElementsByClassName("mainMenuWrap")[0].getElementsByClassName('menu-main')[0];
+                    menuList.removeAttribute('style');
+            }
+
+        } , true)
         let isAuthorized = localStorage.getItem('name') ? true : false;
         this._createDOM.header();
         this._createDOM.footer();
@@ -220,7 +228,6 @@ class App{
         this.hangHandlerOnMineMenu();
     }
 }
-
 let app = new App(document.getElementById('root'));
-app.init();
 
+app.init();
