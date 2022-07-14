@@ -245,6 +245,13 @@ authorizedUserRouter.route("/putlike")
             .catch(err => {
                 return false;
             })
-    })
+    });
+
+authorizedUserRouter.post('/recomendnewrecipe' , (req, res) => {
+    let recipe = req.body.newRecipe;
+    res.send(JSON.stringify({
+        res : recipe
+    }))
+})
     
 module.exports = authorizedUserRouter;

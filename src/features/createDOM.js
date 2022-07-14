@@ -4,6 +4,7 @@ import Protos from "./prototype";
 // images
 import likeImage from "../public/svg/like.svg";
 import hookahImage from "../public/svg/hookah.svg";
+import Validator from "../features/validator.js";
 
 let color = '#ffffff';
 let defColor = '#938f8f'
@@ -11,7 +12,7 @@ export default class CreateDom extends Protos {
     constructor(root){
         super(root)
         this._root = root;
-        
+        this.formValidator = new Validator();
     }
     recipeList(parent , arrayListOfRecipe){
         let _root = parent;
@@ -211,8 +212,48 @@ export default class CreateDom extends Protos {
             modalWindowWrap.append(modalWindow);
         return modalWindowWrap;
     }
-    suggestOwnRecipe(){
-
+    suggestNewRecipe(parent){
+        let root = parent;
+        let title = this.newDom('h2' , 'deftitle' , false , "Recommend new recipe");
+        let formText = this.newDom('input' , 'form-text' , {
+            type : 'text',
+            name : 'newrecipe',
+            placeholder : "enter your recipe..."
+        });
+        let formbutton = this.newDom('input' , 'form-button' , {
+            type : 'submit' ,
+            value : 'Send'
+        })
+        let errorMessage = this.newDom('p' , "error-message");
+        // form
+        let form = this.newDom('form' , ['form-wrap' , 'recommendation'] , {
+            method : "POST" ,
+            action : "/auth/recomendnewrecipe"
+        })  
+        form.addEventListener('submit' , async (e) => {
+            e.preventDefault();
+            let formData = new FormData (e.target);
+            let newRecipe = formData.get('newrecipe');
+            console.log(newRecipe)
+            await fetch( e.target.action , {
+                method : "POST",
+                body : new URLSearchParams(new FormData(e.target))
+            })
+            .then( result => {
+                return result.json();
+            })
+            .then( result => {
+                console.log(result)
+            })
+            .catch( err => {
+                throw err
+            })
+        })
+        form.append(formText , formbutton);
+        // 
+        let mainWrap = this.newDom('div' , 'defbox');
+            mainWrap.append(title , form , errorMessage)
+        root.append(mainWrap);
     }
     logotype(){
         let logoText = `<span class="logo-name">Mixology</span>`;
