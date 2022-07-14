@@ -97,8 +97,8 @@
 @media screen and (max-width : 599px) and (min-width: 320px) {
     .mainMenuWrap .menu-main-link{
         top: 30px;
-        width: 81vw;
-        right: -32px;
+        width: 79vw;
+        right: 0px;
     }
 }
 @media screen and (max-width : 500px) and (min-width: 320px) {
