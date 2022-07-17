@@ -7,6 +7,48 @@ const connectionConfig = require('./connection/mysql_connection.js') ;
 authorizedUserRouter.use(bodyParser.urlencoded({extended: false}));
 authorizedUserRouter.use(bodyParser.json());
 
+authorizedUserRouter.use( (req,res,next) => {
+    let userLogin = req.body.login || false;
+    let userName  = req.body.name  || false;
+    (userLogin) ? res.locals.currentLogin = userLogin : '';
+    (userName)  ? res.locals.currentName  = userName  : '';
+    next();
+})
+// Does user exist in db
+let logIn = async (log , pass) => {
+    let sqlRequest = `SELECT name,login,favoriteRecipe FROM users WHERE login='${log}' AND password='${pass}'`;
+    let connection = mysql.createConnection(connectionConfig).promise();
+    let userIsChecked = await connection.execute(sqlRequest)
+        .then( ([row,field])  => {
+            return row;
+        })
+        .then(result => {
+            connection.end();
+            if(result.length > 0){
+                // in the future i m gonna add some code 
+                return {
+                    user : 'true',
+                    body : result
+                };
+            }else{
+                return {
+                    user : false ,
+                    error : "Login or password is invalid"
+                }
+            }
+            
+        })
+        .catch( err => {
+            return {
+                user : false ,
+                error : "Database not approachable"
+            }
+        });
+        
+    return userIsChecked;
+    // next 
+};
+// make default request to the db
 async function makeRequestToServer (sql) {
     let connection = mysql.createConnection(connectionConfig).promise() ;
     return await connection.execute(sql)
@@ -35,9 +77,9 @@ let getBestRecipes = async (userLogin) => {
                 let sqlParts = list;
                 let getNotes = `SELECT id,recipe,rating FROM coctails WHERE id IN (${sqlParts})`;
                 return makeRequestToServer(getNotes)
-                .then(result => {
-                    return result;
-                });
+                    .then(result => {
+                        return result;
+                    });
             }else if( list.length < 1 || !result){
                 return false;
             }
@@ -69,9 +111,29 @@ let hasUserRecipe = async(id , login)=>{
             throw err;
         })
 }
+
 // personal cabinet
+authorizedUserRouter.post('/signin' , (req,res) => {
+    let login    = req.body.login;
+    let password = req.body.password;
+    
+    logIn(login , password).then( result => {
+        if(result.user){
+            res.send(JSON.stringify({
+                exist : true ,
+                response : result.body
+            }))
+        }else{
+            res.send(JSON.stringify({
+                exist : false ,
+                error : result.error
+            }))
+        }
+    })
+})
 authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
-    let userLogin = req.body.login;
+    let userLogin = res.locals.currentLogin;
+    
     getBestRecipes(userLogin)
         .then(result => {
             res.send(JSON.stringify({
@@ -79,15 +141,14 @@ authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
             }))
         })
 })
-authorizedUserRouter.post('/personalCabinet' , (req,res) => {
-    let userLogin = req.body.login;
-    let userName  = req.body.name;
 
-    
-    res.render("personalCab" ,{
-        layout : false ,
+authorizedUserRouter.post('/personalCabinet' , (req,res) => {
+    let userLogin = res.locals.currentLogin;
+    let userName  = res.locals.currentName;
+
+    res.send( JSON.stringify({
         userName : userName,
-    })
+    }));
 })
 // put like 
 authorizedUserRouter.route("/putlike")
@@ -246,12 +307,46 @@ authorizedUserRouter.route("/putlike")
                 return false;
             })
     });
-
+authorizedUserRouter.get('/getcategory' , (req,res) => {
+    let sql = `SELECT DISTINCT category FROM coctails`;
+    makeRequestToServer( sql )
+        .then( result => {
+            return result.map( el => {
+                return el.category
+            })
+        })
+        .then( result => {
+            res.send( JSON.stringify({
+                res : result
+            }))
+        })
+        .catch( err => {
+            throw err;
+        })
+})
 authorizedUserRouter.post('/recomendnewrecipe' , (req, res) => {
-    let recipe = req.body.newRecipe;
-    res.send(JSON.stringify({
-        res : recipe
-    }))
+    let recipe = req.body.newrecipe;
+    let category = req.body.flavor;
+    let strength = req.body.strength;
+    let SQLRequest =    `INSERT INTO coctails (strength , recipe , category , brand, rating )` + 
+                        ` VALUES ('${strength}' , '${recipe}' , '${category}' , 'unknown' , 0)`
+    makeRequestToServer(SQLRequest)
+        .then( result => {
+            if (result ) {
+                res.send(JSON.stringify({
+                    res : 'added successfully',
+                    isAdded : true
+                }))
+            } else{
+                res.send(JSON.stringify({
+                    res : 'some errorr',
+                    isAdded : false
+                }))
+            }
+        })
+        .catch( err => {
+            console.log("errrrrrorrrr")
+        })
 })
     
 module.exports = authorizedUserRouter;

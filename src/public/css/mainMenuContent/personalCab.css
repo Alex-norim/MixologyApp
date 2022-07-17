@@ -10,18 +10,12 @@
 .personalCab .title span{
     text-transform: capitalize;
 }
-.defbox{
-    margin-top: 30px;
-    border: 2px solid rgb(183 180 180);
-    box-shadow: 1px 7px 36px 5px;
-    border-radius: 5px;
-    padding: 40px 30px 50px 30px;
-    background: rgba(0,0,0,0.5);
-}
-.defbox .favoriteRecipeTitle{
-    font-size: 30px;
+.recommendation {
+    width: 400px;
+    margin: 30px auto 25px;
     text-align: center;
 }
+
 .defbox .favoriteRecipeList {
     list-style: none;
     margin-left: 20px;

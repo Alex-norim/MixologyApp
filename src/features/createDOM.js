@@ -12,7 +12,24 @@ export default class CreateDom extends Protos {
     constructor(root){
         super(root)
         this._root = root;
-        this.formValidator = new Validator();
+        this.inputValidator = Validator ;
+        this.formErrorHandler = (event)=>{
+            let errorMessage = this._root.getElementsByClassName('error-message')[0];
+            let target = event.target;
+            let value  = target.value; 
+            let inputType = target.attributes.type.value.toString();
+            let isValidData = this.inputValidator(value , inputType );
+            console.log(event)
+            if(typeof isValidData === 'object') {
+                errorMessage.textContent = isValidData.error;
+                target.style.color = 'red'
+                errorMessage.style.color = 'red';
+            }else {
+                target.style.color = ''
+                target.style.color = '';
+                errorMessage.textContent = '';
+            }      
+        }
     }
     recipeList(parent , arrayListOfRecipe){
         let _root = parent;
@@ -215,45 +232,95 @@ export default class CreateDom extends Protos {
     suggestNewRecipe(parent){
         let root = parent;
         let title = this.newDom('h2' , 'deftitle' , false , "Recommend new recipe");
-        let formText = this.newDom('input' , 'form-text' , {
+        let formText = this.newDom('input' , ['form-text','form-element'] , {
             type : 'text',
             name : 'newrecipe',
-            placeholder : "enter your recipe..."
+            placeholder : "enter your recipe...",
+            autocomplete : 'off'
         });
-        let formbutton = this.newDom('input' , 'form-button' , {
+            formText.addEventListener('keyup' , this.formErrorHandler )
+        let formbutton = this.newDom('input' , ['form-button' , 'form-element'] , {
             type : 'submit' ,
             value : 'Send'
         })
-        let errorMessage = this.newDom('p' , "error-message");
+        let errorMessage = this.newDom('p' , ["error-message" , "form-element"] );
         // form
         let form = this.newDom('form' , ['form-wrap' , 'recommendation'] , {
             method : "POST" ,
             action : "/auth/recomendnewrecipe"
         })  
-        form.addEventListener('submit' , async (e) => {
+        form.addEventListener('submit' , (e) => {
             e.preventDefault();
             let formData = new FormData (e.target);
-            let newRecipe = formData.get('newrecipe');
-            console.log(newRecipe)
-            await fetch( e.target.action , {
-                method : "POST",
-                body : new URLSearchParams(new FormData(e.target))
-            })
+            let newRecipe = this.inputValidator( formData.get('newrecipe') , 'name');
+            let category  = this.inputValidator( formData.get('flavor')    , 'name');
+            let strength  = formData.get('strength');
+            let errorMessageNest = this._root.getElementsByClassName("error-message")[0]; 
+            // --->
+            typeof newRecipe !== 'object' ?
+                fetch( e.target.action , {
+                    method : "POST",
+                    body : new URLSearchParams(new FormData(e.target))
+                })
+                .then( result => {
+                    return result.json();
+                })
+                .then( result => {
+                    let isAdded = result.isAdded;
+                    let response = result.res;
+                    
+                    isAdded ?
+                        errorMessageNest.textContent = response : 
+                        errorMessageNest.textContent = response ;
+
+                    setTimeout( () => {
+                        errorMessageNest.textContent = ''
+                    } , 800)
+                })
+                .catch( err => {
+                    throw err
+                }) : 
+                '' ;
+            // <--
+
+        });
+        let mainWrap = this.newDom('div' , 'defbox');
+        fetch( '/auth/getcategory' , {method: 'GET'})
             .then( result => {
                 return result.json();
             })
             .then( result => {
-                console.log(result)
-            })
-            .catch( err => {
-                throw err
-            })
-        })
-        form.append(formText , formbutton);
-        // 
-        let mainWrap = this.newDom('div' , 'defbox');
-            mainWrap.append(title , form , errorMessage)
-        root.append(mainWrap);
+                let arr = result.res;
+                let flavorOptions = arr.reduce( (prev,curr) => {
+                    let previous = prev;
+                    let current;
+                    if (previous === ''){
+                        current = `<option selected value="${curr}">${curr}</option>`
+                    }else {
+                        current = `<option value="${curr}">${curr}</option>`
+                    }
+                    return previous + current;
+                } , '');
+                let selectFlavorDom = this.newDom('select' , ['form-select','form-element'] , {
+                    id : 'flavor',
+                    name : 'flavor'
+                } , flavorOptions );
+                
+                let selectStrengthDom = this.newDom('select' , ['form-select' , 'form-element'] , {
+                    id : 'strength' ,
+                    name : 'strength'
+                } , ( () => {
+                    let options = '';
+                    for (let i = 0; i <= 10; i++) {
+                        options += `<option>${i}</option>`
+                    };
+                    return options;
+                })() );
+        
+                form.append(formText , selectFlavorDom, selectStrengthDom , formbutton);
+                mainWrap.append(title , form , errorMessage);
+                root.append(mainWrap);
+            });
     }
     logotype(){
         let logoText = `<span class="logo-name">Mixology</span>`;

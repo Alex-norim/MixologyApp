@@ -33,7 +33,21 @@
     font-size: 25px;
     margin-bottom: 40px;
 }
-
+.defbox{
+    margin-top: 30px;
+    border: 2px solid rgb(183 180 180);
+    box-shadow: 1px 7px 36px 5px;
+    border-radius: 5px;
+    padding: 40px 30px 50px 30px;
+    background: rgba(0,0,0,0.5);
+}
+.defbox .deftitle {
+    font-size: 30px;
+    text-align: center;
+}
+.defbox .error-message{
+    text-align: center;
+}
 @media screen and (min-width: 320px) and (max-width : 1000px){
     .header , .footer{
         width: 94%;
