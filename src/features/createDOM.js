@@ -19,7 +19,7 @@ export default class CreateDom extends Protos {
             let value  = target.value; 
             let inputType = target.attributes.type.value.toString();
             let isValidData = this.inputValidator(value , inputType );
-            console.log(event)
+            
             if(typeof isValidData === 'object') {
                 errorMessage.textContent = isValidData.error;
                 target.style.color = 'red'
@@ -229,6 +229,110 @@ export default class CreateDom extends Protos {
             modalWindowWrap.append(modalWindow);
         return modalWindowWrap;
     }
+    getSighInForm(nest , getpageFunc){
+        let root = nest;
+        let textInput = this.newDom('input' , ['form-text' , 'form-element'] , {
+            type:"text",
+            name:"login",
+            placeholder : "enter login",
+            id : "login"
+        });
+        let passwordInput = this.newDom('input' , ['form-text' , 'form-element'] , {
+            type : "password", 
+            name:"password", 
+            id:"password", 
+            placeholder:"enter password"
+        })
+        let errorNest = this.newDom('p' , "error-message");
+        let submitBtn = this.newDom('input' , ["form-button" , 'form-element'] , {
+            type:"submit", 
+            value:"Log in"
+        });
+        
+        let title = this.newDom('h3' , 'deftitle' , false , "Sign in");
+        let form = this.newDom('form' , ['form','sign-in'] , {
+            action : "/auth/signin" ,
+            method : "POST"
+        });
+        let closeFormButton = this.newDom('div' , 'closeFormButton' , false , "<div class='line'></div><div class='line'></div>")
+            closeFormButton.addEventListener('click' , function(event){
+                let target = event.currentTarget.parentNode.parentNode;
+                    target.remove();
+                let registButton = this.getElementsByClassName('registration')[0];
+                    registButton.addEventListener('click' , getpageFunc)
+            }.bind(this._root))
+        form.addEventListener('submit' , async (e) => {
+            e.preventDefault();
+            let target = e.currentTarget;
+            let formData  = new FormData( e.target );
+            let login     = this.inputValidator(formData.get('login') , 'login');
+            let password  = this.inputValidator(formData.get('password') , 'password');
+            let closeFormButton = target.querySelector('.closeFormButton');
+            let thisForm = target;
+            let errorwrap = target.getElementsByClassName('error-message')[0];
+            
+            
+            if(typeof login === 'string' & typeof password === 'string'){
+                // clear up errorWrap
+                errorwrap.innerHTML = '';
+    
+                await fetch(e.target.action , {
+                    method:'POST',
+                    body : new URLSearchParams(new FormData(e.target))
+                })
+                .then(result => {
+                    thisForm.reset();
+                    return result.json();
+                })
+                .then( body => {
+                    // i will add some code to show on the page the user have been registered
+                    // for instance favorite mixes will be highlighted and name shown up somewhere;
+                    let data = body;
+                    let isLogIn  = data.exist;
+    
+                    //check the user has been logged in successfully
+                    if(isLogIn){
+                        let response = data.response[0];
+                        let login = response.login;
+                        let name    = response.name;
+                        let favoriteRecipe = response.favoriteRecipe;
+    
+                        // save user's data
+                        localStorage.setItem("name" , name);
+                        localStorage.setItem("login" , login);
+                        localStorage.setItem("favoriteRecipe" , favoriteRecipe);
+                        // in the future there will be kind of the modal window 
+                        errorwrap.innerHTML = 'user has been logged successfully';
+                        setTimeout( () => {
+                            let userName = localStorage.getItem('name');
+                            _changeDOM.changeRegistrationButton(userName , '/auth/personalCabinet');
+                            closeFormButton.click();
+                        } , 100)
+                    }else{
+                        let error = data.error;
+                        errorwrap.innerHTML = error;
+                    }
+                })
+                .catch( err => {
+                    console.log("some error after submiting")
+                    throw err
+                    
+                })
+            }else if (typeof login === 'object'){
+                errorwrap.innerHTML = "login " + login.error;
+            }else if (typeof password === 'object'){
+                errorwrap.innerHTML = "password " + password.error;
+            }
+        })
+        let linkToRegistNewUser = this.newDom('a' , 'getRegistrationForm' , {
+            href : "/registration/create_account" ,
+        } , "I don't have account")
+
+            form.append(title , textInput , passwordInput , errorNest , submitBtn , linkToRegistNewUser , closeFormButton);
+        let formWrap = this.newDom('div' , ["defbox" , "signInWrap"]);
+            formWrap.append(form);
+        root.append(formWrap);
+    }
     suggestNewRecipe(parent){
         let root = parent;
         let title = this.newDom('h2' , 'deftitle' , false , "Recommend new recipe");
@@ -339,12 +443,20 @@ export default class CreateDom extends Protos {
         for (const key in links) {
             let innerContent = key;
             let link = links[key];
-            let a = this.newDom(
-                'a' , 
-                [`menu-main-link` , `${link.slice(1)}`] , 
-                {'href' : link },
-                innerContent
-                );
+            let a = null;
+            innerContent === "Sign in" ?
+                a = this.newDom(
+                        'a' , 
+                        [`menu-main-link` , `${link.slice(1)}`] , 
+                        {href : '#'},
+                        innerContent
+                        ) :
+                a = this.newDom(
+                    'a' , 
+                    [`menu-main-link` , `${link.slice(1)}`] , 
+                    {'href' : link },
+                    innerContent
+                    )
             ul.appendChild(a);
         }
         let clickHumburgerMenu = (event) => {

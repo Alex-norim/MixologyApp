@@ -1,17 +1,88 @@
 
 import ChangeDom from './changeExistingElement.js';
-import {hangFormHandlerOn as formHandler} from './registration.js';
 import CreateDom from './createDOM.js';
 
 // style
 import '../public/css/style.css';
+let currentUserName;
 class App{
     constructor(initElement){
         this.root = initElement; 
-        this.hangFormHandlerOn = formHandler;
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendingAnimation"></div></div>';
         this._changeDom = new ChangeDom(this.root);
         this._createDOM = new CreateDom(this.root);
+        this.getpage = async (event) => {
+            event.preventDefault();
+            let bodyContent = this.root.getElementsByClassName('body-content')[0];
+            let HrefRequest = event.target.getAttribute('href');
+            // local store
+            let userlogin = localStorage.getItem('login');
+            let username = localStorage.getItem('name');
+            // some request requires data
+            if(HrefRequest === '/auth/personalCabinet'){
+                //animation of waiting
+                bodyContent.innerHTML = this.pendingAnimation;
+                fetch(HrefRequest , {
+                    method: "POST",
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    body : JSON.stringify({ login : userlogin , name : username})
+                })
+                .then( result => {
+                    return result.json();
+                } )
+                .then( result => {
+                    let name = result.userName;
+                    let HTML = ` <div class="personalCab"> ` +
+                                    `<h2 class="title">Hello <span>${name}</span></h2>`+
+                                    `<button class="button logout">Log out</button>`+
+                                    `<div class="defbox">`+
+                                        `<h3 class="deftitle">Your favorite mix list</h3>`+
+                                        `<ul class="favoriteRecipeList"></ul>`+
+                                    `</div>`+
+                                `</div> `;
+                    bodyContent.innerHTML = HTML;
+                    // attaching handlers on the Elements of personal cabinet page
+                    this.hangHandlerOnPersonalCab();
+                })
+                .catch( err => {
+                    throw err;
+                })
+            }else if(HrefRequest === '#'){
+                let buttonToDirrectHere = this.root.getElementsByClassName('registration')[0];
+                // attaching handlers on the Elements of registration page;
+                this.hangFormHandlerOn();
+                buttonToDirrectHere.removeEventListener('click' , this.getpage);
+            }else{
+                //animation of waiting
+                bodyContent.innerHTML = this.pendingAnimation;
+                fetch(HrefRequest , {
+                })
+                .then( result => {
+                    return result.text();
+                })
+                .then ( text => {
+                    bodyContent.innerHTML = text;
+                    switch (HrefRequest) {
+                        case '/home' :
+                            // this.hangHundlerOnHomeMenuItem();
+                            break;
+                        case '/mixology':
+                            this.hangHandlerOnMixologyMenu();
+                            break;
+                        case '/tabaco':
+                            this.hangHandlerOnTabacoMenu();
+                            break;
+                        default:
+                            break;
+                    }
+                })
+                .catch( err => {
+                    throw err;
+                })
+            }
+        }
     }
     // methods 
     hangHandlerOnMixologyMenu(){
@@ -104,8 +175,8 @@ class App{
 
     }
     hangHandlerOnPersonalCab(e){
-        let personalCab = this.root.getElementsByClassName('personalCab')[0];
-        let logOutButton = personalCab.getElementsByClassName('logout')[0];
+        let root = this.root.getElementsByClassName('personalCab')[0];
+        let logOutButton = root.getElementsByClassName('logout')[0];
 
         // createList
         let TheBestRecipes = fetch ("/auth/getBestRecipes", {
@@ -121,7 +192,8 @@ class App{
         }).then( body => {
             this._createDOM.recipeList( this.root.getElementsByClassName("favoriteRecipeList")[0] , body.res)
         })
-    
+        
+        // logout button handler
         logOutButton.addEventListener("click" , (e) => {
             let rejectionFunction = (event) => {
                 let target = event.target;
@@ -142,70 +214,20 @@ class App{
             let modalWindow = this._createDOM.confirmation( "Are you sure?" ,acceptanceFunction , rejectionFunction);
             this.root.append(modalWindow);
         })
+        // new recomendation 
+        this._createDOM.suggestNewRecipe(root)
+    }
+    hangFormHandlerOn(){
+        this._createDOM.getSighInForm(this.root, this.getpage);
     }
     hangHandlerOnMineMenu(){
         // vars
         let mainMenu = this.root.getElementsByClassName('mainMenuWrap')[0];
         let mineMenuItems = Object.values( mainMenu.getElementsByClassName('menu-main-link') );
         // funcs
-        let getpage = async (event) => {
-            event.preventDefault();
-            let bodyContent = document.getElementById('body-content');
-            let HrefRequest = event.target.getAttribute('href');
-            //animation of waiting
-            bodyContent.innerHTML = this.pendingAnimation;
-            let data;
-            // local store
-            let userlogin = localStorage.getItem('login');
-            let username = localStorage.getItem('name');
-            // some request requires data
-            if(HrefRequest === '/auth/personalCabinet'){
-                data = await fetch(HrefRequest , {
-                    method: "POST",
-                    headers : {
-                        'Content-Type': 'application/json'
-                    },
-                    body : JSON.stringify({ login : userlogin , name : username})
-                }).then( result => {
-                    let text = result.text();
-                    return text;
-                } ).catch( err => {
-                    throw err;
-                })
-            }else{
-                data = await fetch(HrefRequest , {
-                }).then( result => {
-                    let text = result.text();
-                    return text;
-                } ).catch( err => {
-                    throw err;
-                })
-            }
-
-            bodyContent.innerHTML = data;
-            switch (HrefRequest) {
-                case '/home' :
-                    // this.hangHundlerOnHomeMenuItem();
-                    break;
-                case '/mixology':
-                    this.hangHandlerOnMixologyMenu();
-                    break;
-                case '/tabaco':
-                    this.hangHandlerOnTabacoMenu();
-                    break;
-                case '/registration':
-                    this.hangFormHandlerOn();
-                    break;
-                case '/auth/personalCabinet':
-                    this.hangHandlerOnPersonalCab();
-                    break;
-                default:
-                    break;
-            }
-            return false;
-        }
+        
         mineMenuItems.forEach( menuitem => {
-            menuitem.addEventListener('click' , getpage )
+            menuitem.addEventListener('click' , this.getpage )
         })
 
     }
@@ -218,6 +240,7 @@ class App{
             }
 
         } , true)
+        console.log(currentUserName)
         let isAuthorized = localStorage.getItem('name') ? true : false;
         this._createDOM.header();
         this._createDOM.footer();

@@ -21,7 +21,7 @@
     padding: 40px 0;
 }
 .body-content{
-    
+    /* height: 100vh; */
 }
 .main-title{
     font-weight: 700;
@@ -34,16 +34,20 @@
     margin-bottom: 40px;
 }
 .defbox{
-    margin-top: 30px;
     border: 2px solid rgb(183 180 180);
     box-shadow: 1px 7px 36px 5px;
     border-radius: 5px;
     padding: 40px 30px 50px 30px;
     background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+}
+.defbox:not(:last-child){
+    margin-bottom: 20px;
 }
 .defbox .deftitle {
     font-size: 30px;
     text-align: center;
+    margin-bottom: 15px;
 }
 .defbox .error-message{
     text-align: center;

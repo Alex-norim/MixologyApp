@@ -1,12 +1,14 @@
-.registration .defbox {
-    width: 50%;
-    margin: 0 auto;
-}
 .form-wrap{
-    width: 100%;
+    
 }
-
-.form-wrap .form{
+.signInWrap , .signUpWrap{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+}
+.form{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,14 +16,14 @@
 .form-element:not(:last-child){
     margin-bottom: 20px;
 }
-.form-wrap .title{
+.form .title{
     margin-bottom: 25px;
     font-size: 30px;
     font-family: serif;
     font-weight: 600;
     letter-spacing: 3px;
 }
-.form-wrap .form-text{
+.form .form-text{
     width: 86%;
     border: 2px solid rgb(183 180 180);
     box-shadow: 1px 0px 8px 0px;
@@ -31,11 +33,11 @@
     padding: 5px 12px;
     background: inherit;
 }
-.form-wrap .form-text:focus{
+.form .form-text:focus{
     outline: none;
     box-shadow: 1px 0px 5px 5px;;
 }
-.form-wrap .form-select {
+.form .form-select {
     background: #000;
     border: 2px solid #fff;
     border-radius: 5px;
@@ -44,7 +46,7 @@
     width: 86%;
 }
 
-.form-wrap .form-button{
+.form .form-button{
     border: 2px solid #918d8d;
     background: inherit;
     padding: 6px 15px;
@@ -58,22 +60,22 @@
     cursor: pointer;
 }
 
-.form-wrap .form-button:hover{
+.form .form-button:hover{
     background: rgb(249 249 249 / 60%);
     color: #efeeee;
     text-shadow: 2px 2px 6px #fbfbfb;
 }
-.form-wrap .form-button:active{
+.form .form-button:active{
     background: rgba(255, 255, 255, .5s);
     border: 2px solid rgba(255, 255, 255, 1);
 }
 /* subscribe */
-.form-wrap .subscribe-wrap{
+.form .subscribe-wrap{
     display: flex;
     align-items: center;
     margin-top: 18px;
 }
-.form-wrap .form-label{
+.form .form-label{
     cursor: pointer;
     font-size: 15px;
     font-family: serif;
@@ -83,24 +85,24 @@
 .form-checkbox:checked ~ label.form-label{
     color: #fff;
 }
-.form-wrap .form-label:hover{
+.form .form-label:hover{
     color: #fff;
 }
-.form-wrap .form-checkbox{
+.form .form-checkbox{
     cursor: pointer;
     width: 15px;
     height: 15px;
     margin-right: 12px;
 }
 
-.form-wrap .createAccountLink{
+.form .createAccountLink{
     text-transform: lowercase;
     text-decoration: none;
     font-family: monospace;
     font-size: 16px;
     color: #fff;
 }
-.form-wrap .createAccountLink:hover{
+.form .createAccountLink:hover{
     text-decoration: underline;
 }
 .getRegistrationForm{
@@ -117,4 +119,28 @@
     height: 1px;
     margin-bottom: 10px;
     margin-top: -6px;
+}
+.closeFormButton {
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    cursor: pointer;
+}
+.closeFormButton >.line {
+    width: 32px;
+    height: 4px;
+    background-color: #efeeee;
+    position: absolute;
+}
+.closeFormButton >.line:first-child{
+    top: 16px;
+    left: 0;
+    transform: rotate(45deg);
+}
+.closeFormButton >.line:last-child{
+    bottom: 14px;
+    left: 0;
+    transform: rotate(135deg);
 }
