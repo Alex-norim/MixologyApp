@@ -6,6 +6,7 @@ import likeImage from "../public/svg/like.svg";
 import hookahImage from "../public/svg/hookah.svg";
 import Validator from "../features/validator.js";
 
+
 let color = '#ffffff';
 let defColor = '#938f8f'
 export default class CreateDom extends Protos {
@@ -237,12 +238,14 @@ export default class CreateDom extends Protos {
             placeholder : "enter login",
             id : "login"
         });
+            textInput.addEventListener('keyup' , this.formErrorHandler)
         let passwordInput = this.newDom('input' , ['form-text' , 'form-element'] , {
             type : "password", 
             name:"password", 
             id:"password", 
             placeholder:"enter password"
-        })
+        });
+            passwordInput.addEventListener('keyup' , this.formErrorHandler)
         let errorNest = this.newDom('p' , "error-message");
         let submitBtn = this.newDom('input' , ["form-button" , 'form-element'] , {
             type:"submit", 
@@ -263,12 +266,9 @@ export default class CreateDom extends Protos {
             }.bind(this._root))
         form.addEventListener('submit' , async (e) => {
             e.preventDefault();
-            let target = e.currentTarget;
-            let formData  = new FormData( e.target );
-            let login     = this.inputValidator(formData.get('login') , 'login');
-            let password  = this.inputValidator(formData.get('password') , 'password');
+            let target    = e.currentTarget;
             let closeFormButton = target.querySelector('.closeFormButton');
-            let thisForm = target;
+            let thisForm  = target;
             let errorwrap = target.getElementsByClassName('error-message')[0];
             
             
@@ -278,7 +278,7 @@ export default class CreateDom extends Protos {
     
                 await fetch(e.target.action , {
                     method:'POST',
-                    body : new URLSearchParams(new FormData(e.target))
+                    body : new URLSearchParams( new FormData(e.target) )
                 })
                 .then(result => {
                     thisForm.reset();
@@ -324,15 +324,58 @@ export default class CreateDom extends Protos {
                 errorwrap.innerHTML = "password " + password.error;
             }
         })
-        let linkToRegistNewUser = this.newDom('a' , 'getRegistrationForm' , {
-            href : "/registration/create_account" ,
-        } , "I don't have account")
+        let signUpHandler = (event , list = 1 , userData = {}) => {
+            const data = Object.assign ( {} , userData);
 
-            form.append(title , textInput , passwordInput , errorNest , submitBtn , linkToRegistNewUser , closeFormButton);
+            let title = this.newDom('h3' , 'deftitle' , false , "Fill in next inputs")
+            let form = event.currentTarget.parentNode;
+                form.innerHTML = '';
+                form.action = "/registration/signup";
+            let field1 = this.newDom('input' , false , {
+                class : "form-text form-element" ,
+                type        : list === 1 ? "text" : list === 2 ? "password" : list === 3 ? '' : '' ,
+                name        : list === 1 ? "login" : list === 2 ? "password" : list === 3 ? '' : '' ,
+                id          : list === 1 ? "login" : list === 2 ? "password" : list === 3 ? '' : '' , 
+                placeholder : list === 1 ? "Figure out login" : list === 2 ? "Figure out password" : list === 3 ? '' : '' ,
+            }); 
+                field1.addEventListener('keyup' , this.formErrorHandler);
+            let field2 = this.newDom('input' , false , {
+                class : "form-text form-element" ,
+                type        : list === 1 ? "text" : list === 2 ? "password" : list === 3 ? '' : '' ,
+                name        : list === 1 ? "name" : list === 2 ? "password" : list === 3 ? '' : '' ,
+                id          : list === 1 ? "name" : list === 2 ? "password" : list === 3 ? '' : '' , 
+                placeholder : list === 1 ? "Figure out name" : list === 2 ? "confirm password" : list === 3 ? '' : '' ,
+            }); 
+                field2.addEventListener('keyup' , this.formErrorHandler);
+            
+            let emailField = this.newDom('input' , false , {
+                class : "form-text form-element",
+                type : "email" ,
+                name : "email" ,
+                id : "email" ,
+                placeholder :"enter your e-mail"
+            }); 
+                emailField.addEventListener('keyup' , this.formErrorHandler);
+
+            let button = this.newDom('button' , false , {
+                class : 'form-button'
+            } , 'Next step');
+                button.addEventListener('click' , (e) => {signUpHandler (e , list + 1 , data ) })
+            
+            list === 1 ? 
+                form.append(title , field1 , field2 , emailField , button ) : 
+                form.append(title , field1 , field2 , button ) 
+        };
+        
+        let getSignUpForm = this.newDom('a' , 'getRegistrationForm' , {
+            href : "#" ,
+        } , "I don't have account");
+            getSignUpForm.addEventListener( "click" , signUpHandler);
+            form.append(title , textInput , passwordInput , errorNest , submitBtn , getSignUpForm , closeFormButton);
         let formWrap = this.newDom('div' , ["defbox" , "signInWrap"]);
             formWrap.append(form);
         root.append(formWrap);
-    }
+    };
     suggestNewRecipe(parent){
         let root = parent;
         let title = this.newDom('h2' , 'deftitle' , false , "Recommend new recipe");
