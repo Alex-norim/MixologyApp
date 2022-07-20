@@ -31,6 +31,9 @@ export default class CreateDom extends Protos {
                 errorMessage.textContent = '';
             }      
         }
+        this.registrationOfUser = (event) => {
+
+        }
     }
     recipeList(parent , arrayListOfRecipe){
         let _root = parent;
@@ -324,58 +327,96 @@ export default class CreateDom extends Protos {
                 errorwrap.innerHTML = "password " + password.error;
             }
         })
-        let signUpHandler = (event , list = 1 , userData = {}) => {
-            const data = Object.assign ( {} , userData);
-
-            let title = this.newDom('h3' , 'deftitle' , false , "Fill in next inputs")
-            let form = event.currentTarget.parentNode;
-                form.innerHTML = '';
-                form.action = "/registration/signup";
-            let field1 = this.newDom('input' , false , {
-                class : "form-text form-element" ,
-                type        : list === 1 ? "text" : list === 2 ? "password" : list === 3 ? '' : '' ,
-                name        : list === 1 ? "login" : list === 2 ? "password" : list === 3 ? '' : '' ,
-                id          : list === 1 ? "login" : list === 2 ? "password" : list === 3 ? '' : '' , 
-                placeholder : list === 1 ? "Figure out login" : list === 2 ? "Figure out password" : list === 3 ? '' : '' ,
-            }); 
-                field1.addEventListener('keyup' , this.formErrorHandler);
-            let field2 = this.newDom('input' , false , {
-                class : "form-text form-element" ,
-                type        : list === 1 ? "text" : list === 2 ? "password" : list === 3 ? '' : '' ,
-                name        : list === 1 ? "name" : list === 2 ? "password" : list === 3 ? '' : '' ,
-                id          : list === 1 ? "name" : list === 2 ? "password" : list === 3 ? '' : '' , 
-                placeholder : list === 1 ? "Figure out name" : list === 2 ? "confirm password" : list === 3 ? '' : '' ,
-            }); 
-                field2.addEventListener('keyup' , this.formErrorHandler);
-            
-            let emailField = this.newDom('input' , false , {
-                class : "form-text form-element",
-                type : "email" ,
-                name : "email" ,
-                id : "email" ,
-                placeholder :"enter your e-mail"
-            }); 
-                emailField.addEventListener('keyup' , this.formErrorHandler);
-
-            let button = this.newDom('button' , false , {
-                class : 'form-button'
-            } , 'Next step');
-                button.addEventListener('click' , (e) => {signUpHandler (e , list + 1 , data ) })
-            
-            list === 1 ? 
-                form.append(title , field1 , field2 , emailField , button ) : 
-                form.append(title , field1 , field2 , button ) 
-        };
-        
-        let getSignUpForm = this.newDom('a' , 'getRegistrationForm' , {
+        let getSignUpFormbtn = this.newDom('a' , 'getRegistrationForm' , {
             href : "#" ,
         } , "I don't have account");
-            getSignUpForm.addEventListener( "click" , signUpHandler);
-            form.append(title , textInput , passwordInput , errorNest , submitBtn , getSignUpForm , closeFormButton);
+            getSignUpFormbtn.addEventListener( "click" , this.signUpHandler );
+            form.append(title , textInput , passwordInput , errorNest , submitBtn , getSignUpFormbtn , closeFormButton);
         let formWrap = this.newDom('div' , ["defbox" , "signInWrap"]);
             formWrap.append(form);
         root.append(formWrap);
     };
+    signUpHandler = (event , fieldOrder = 1 , userData = {}) => {
+        const fields = {
+            // field : ['input name' , 'input type' , 'placeholder']
+            1 : {
+                login : ["login" , "text" , "Come up with login"] ,
+                name  : ["name" , "text"  , "Come up with name"] ,
+                email : ["email" , "email" , "Come up with e-mail"]
+            } ,
+            2 : {
+                password : ["password" , "password" , "Come up with password"] ,
+                confirmPassword : ["confirmPassword" , "password" ,  "Enter password again" ] ,
+            }
+        };
+        const currentFieldData = Object.assign ( {} , userData );
+    
+        // field order can't be bigger than fieds num
+        fieldOrder > fieldsLength ? fieldOrder = 1 : '';
+        let fieldsLength = Object.keys(fields).length; 
+        let lastStep     = fieldOrder === fieldsLength ;
+        let buttonName = fieldOrder < fieldsLength ? "Next field" : "Last step";
+        let titleName = lastStep ? "Last step" : "Fill out fields";
+
+        // foo
+        let localInputHandler = (event) => {
+            let target = event.target;
+            let value  = target.value;
+            let name   = target.name;
+            currentFieldData[name] = value;
+            console.log(currentFieldData)
+        }
+        //
+        let form = event.currentTarget.parentNode;
+            form.innerHTML = '';
+            form.action = "/registration/signup";
+        let title = this.newDom('h3' , 'deftitle' , false , titleName );
+        let errorMessageNest = this.newDom('p' , 'error-message');
+        
+        let renderfields = ( root , object ) => {
+            
+            for (const key in object) {
+                let array = object[key] ;
+
+                let name = array[0];
+                let type = array[1];
+                let placeholder = array[2];
+                let id   = array[0]
+
+                let field = this.newDom('input' , false , {
+                    class : "form-text form-element" ,
+                    type        : type,
+                    name        : name,
+                    id          : id, 
+                    placeholder : placeholder,
+                }); 
+                field.addEventListener('keyup' , this.formErrorHandler);
+                field.addEventListener('keyup' , localInputHandler);
+                root.appendChild(field);
+            }
+        }
+        // dom manipulation
+        form.append(title)
+        // render fields of the form
+        renderfields( form , fields[fieldOrder] );
+        // button
+        let button ;
+        if(lastStep){
+            button = this.newDom('input' , false , {
+                class : 'form-button' ,
+                type : "submit",
+                value : "Sign up"
+            } , buttonName );
+        } else{
+            button = this.newDom('button' , false , {
+                class : 'form-button'
+            } , buttonName );
+            button.addEventListener('click' , (e) => {this.signUpHandler (e , fieldOrder + 1 , currentFieldData ) });
+            form.addEventListener('submit' , this.registrationOfUser )
+        } 
+        form.append(errorMessageNest , button);
+        
+    }
     suggestNewRecipe(parent){
         let root = parent;
         let title = this.newDom('h2' , 'deftitle' , false , "Recommend new recipe");
