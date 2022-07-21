@@ -1,5 +1,6 @@
 
 // import protoClass
+import ChangeDom from "./changeExistingElement";
 import Protos from "./prototype";
 // images
 import likeImage from "../public/svg/like.svg";
@@ -14,6 +15,7 @@ export default class CreateDom extends Protos {
         super(root)
         this._root = root;
         this.inputValidator = Validator ;
+        this.alterDOM = new ChangeDom(root);
         this.formErrorHandler = (event)=>{
             let errorMessage = this._root.getElementsByClassName('error-message')[0];
             let target = event.target;
@@ -31,8 +33,48 @@ export default class CreateDom extends Protos {
                 errorMessage.textContent = '';
             }      
         }
-        this.registrationOfUser = (event) => {
-
+        this.registrationOfUser = (event , userData ) => {
+            event.preventDefault();
+            let form = event.currentTarget;
+            let errorMessageNest = form.querySelector('.error-message');
+            
+            let isValid = () => {
+                let response;
+                for (const key in userData) {
+                    let iterator = userData[key];
+                    typeof iterator === 'object' || typeof iterator === 'undefined' ? 
+                    response = false : response = true ;
+                }
+                return response;
+            };
+            let comparePaswords = userData.password === userData.confirmPassword ;
+            
+            isValid() && comparePaswords ? 
+                fetch("/registration/signup" , {
+                    method : 'POST' ,
+                    headers : {
+                        'content-type' : 'application/json'
+                    } ,
+                    body : JSON.stringify(userData)
+                })
+                .then( result => {
+                    return result.json();
+                })
+                .then( result => {
+                    let success = result.isRegistered;
+                    let message = result.message;
+                    errorMessageNest.style.color = 'green';
+                    success === true ? 
+                        form.parentNode.remove() :
+                        errorMessageNest.style.color = 'red' ;
+                    errorMessageNest.textContent = message
+                })
+                .catch( err => {
+                    errorMessageNest.textContent = 'server not found'
+                })
+                :
+                // some code will be added 
+                ''
         }
     }
     recipeList(parent , arrayListOfRecipe){
@@ -46,19 +88,18 @@ export default class CreateDom extends Protos {
             if(!userName){
                 return false;
             }
-            let _thisID = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
-            let target = (  e.target.classList.contains('recipeWrap')  ) ? 
-                            e.target : (e.target.classList.contains('recipeRating') || e.target.classList.contains('likePicture')) ? 
-                            e.target.parentNode : e.target.parentNode.parentNode;
+            let _thisID = e.currentTarget.dataset.id;
+            let target = e.currentTarget;
 
             let addToFavoriteList = (id) => {
+                console.log("add")
                 fetch("/auth/putlike" ,{
                     method : "PUT",
                     headers : {
                         "Content-type" : "application/json"
                     },
                     body : JSON.stringify({
-                        id : _thisID,
+                        id : id ,
                         login : localStorage.getItem('login')
                     })
                 })
@@ -81,13 +122,14 @@ export default class CreateDom extends Protos {
                 })
             }
             let removeFromFavoriteList = (id) => {
+                console.log("remove")
                 fetch("/auth/putlike" , {
                     method : "DELETE",
                     headers : {
                         "Content-type" : "application/json"
                     },
                     body : JSON.stringify({
-                        id : _thisID,
+                        id : id ,
                         login : localStorage.getItem('login')
                     })
                 })
@@ -95,6 +137,7 @@ export default class CreateDom extends Protos {
                     return result.json();
                 })
                 .then( result => {
+                    console.log(result)
                     let response = result.response;
                     let svg = target.querySelector('.svgpath');
                     let ratingText = target.querySelector('.recipeRating');
@@ -108,8 +151,8 @@ export default class CreateDom extends Protos {
                     throw err
                 })
             }
-            (async () => {
-                await fetch("/auth/putlike" , {
+            
+            fetch("/auth/putlike" , {
                     method : "POST" ,
                     headers : {
                         'Content-Type': 'application/json'
@@ -135,14 +178,14 @@ export default class CreateDom extends Protos {
                 .catch( err => {
                     throw err;
                 })
-            })();
+            
 
         }
         // it gets array to render the list as required and array of best recipes as optional 
         let renderList = (array , best = false ) => {
             for (const iterator of array) {
                 let recipe = iterator.recipe;
-                let rating = iterator.rating;
+                let rating = iterator.rating !== 0 ? iterator.rating : '0' ;
                 let id     = iterator.id;
                 let isMatch = best ? best.includes(id) : best ;
                 
@@ -235,20 +278,30 @@ export default class CreateDom extends Protos {
     }
     getSighInForm(nest , getpageFunc){
         let root = nest;
+        const currentFieldData = {};
+        let localDataHandler = (event) => {
+            let target = event.target;
+            let value  = target.value;
+            let targetType = event.target.attributes.type.nodeValue;
+            let name   = target.name;
+            currentFieldData[name] = this.inputValidator(value , targetType );
+        }
         let textInput = this.newDom('input' , ['form-text' , 'form-element'] , {
             type:"text",
             name:"login",
             placeholder : "enter login",
             id : "login"
         });
-            textInput.addEventListener('keyup' , this.formErrorHandler)
+            textInput.addEventListener('keyup' , this.formErrorHandler);
+            textInput.addEventListener('keyup' , localDataHandler)
         let passwordInput = this.newDom('input' , ['form-text' , 'form-element'] , {
             type : "password", 
             name:"password", 
             id:"password", 
             placeholder:"enter password"
         });
-            passwordInput.addEventListener('keyup' , this.formErrorHandler)
+            passwordInput.addEventListener('keyup' , this.formErrorHandler);
+            passwordInput.addEventListener('keyup' , localDataHandler);
         let errorNest = this.newDom('p' , "error-message");
         let submitBtn = this.newDom('input' , ["form-button" , 'form-element'] , {
             type:"submit", 
@@ -266,50 +319,51 @@ export default class CreateDom extends Protos {
                     target.remove();
                 let registButton = this.getElementsByClassName('registration')[0];
                     registButton.addEventListener('click' , getpageFunc)
-            }.bind(this._root))
-        form.addEventListener('submit' , async (e) => {
+            }.bind(this._root));
+
+        // this form handler ----------->
+        form.addEventListener('submit' , (e ) => {
             e.preventDefault();
-            let target    = e.currentTarget;
-            let closeFormButton = target.querySelector('.closeFormButton');
-            let thisForm  = target;
-            let errorwrap = target.getElementsByClassName('error-message')[0];
-            
-            
-            if(typeof login === 'string' & typeof password === 'string'){
-                // clear up errorWrap
-                errorwrap.innerHTML = '';
-    
-                await fetch(e.target.action , {
+            let form    = e.currentTarget;
+            let closeFormButton = form.querySelector('.closeFormButton');
+            let errorwrap = form.getElementsByClassName('error-message')[0];
+            let isvalid = () => {
+                let response ;
+                for (const key in currentFieldData) {
+                    const element = currentFieldData[key];
+                    typeof element === 'object' || typeof element === 'undefined' ?
+                    response = false : response = true;
+                }
+                return response;
+            }
+            isvalid() ? 
+                fetch( "/auth/signin" , {
                     method:'POST',
-                    body : new URLSearchParams( new FormData(e.target) )
+                    headers : {
+                        "content-type" : 'application/json'
+                    },
+                    body : JSON.stringify( currentFieldData) 
                 })
                 .then(result => {
-                    thisForm.reset();
+                    form.reset();
                     return result.json();
                 })
                 .then( body => {
-                    // i will add some code to show on the page the user have been registered
-                    // for instance favorite mixes will be highlighted and name shown up somewhere;
-                    let data = body;
-                    let isLogIn  = data.exist;
-    
+                    let isLogIn  = body.exist;
                     //check the user has been logged in successfully
                     if(isLogIn){
-                        let response = data.response[0];
+                        let response = body.response[0];
                         let login = response.login;
                         let name    = response.name;
-                        let favoriteRecipe = response.favoriteRecipe;
-    
                         // save user's data
                         localStorage.setItem("name" , name);
                         localStorage.setItem("login" , login);
-                        localStorage.setItem("favoriteRecipe" , favoriteRecipe);
                         // in the future there will be kind of the modal window 
                         errorwrap.innerHTML = 'user has been logged successfully';
                         setTimeout( () => {
                             let userName = localStorage.getItem('name');
-                            _changeDOM.changeRegistrationButton(userName , '/auth/personalCabinet');
-                            closeFormButton.click();
+                            this.alterDOM.changeRegistrationButton(userName , '/auth/personalCabinet');
+                            
                         } , 100)
                     }else{
                         let error = data.error;
@@ -319,13 +373,10 @@ export default class CreateDom extends Protos {
                 .catch( err => {
                     console.log("some error after submiting")
                     throw err
-                    
                 })
-            }else if (typeof login === 'object'){
-                errorwrap.innerHTML = "login " + login.error;
-            }else if (typeof password === 'object'){
-                errorwrap.innerHTML = "password " + password.error;
-            }
+                // else
+                : '' 
+            ;
         })
         let getSignUpFormbtn = this.newDom('a' , 'getRegistrationForm' , {
             href : "#" ,
@@ -337,6 +388,10 @@ export default class CreateDom extends Protos {
         root.append(formWrap);
     };
     signUpHandler = (event , fieldOrder = 1 , userData = {}) => {
+        const passedData = userData;
+        const currentFieldData = {};
+         // field order can't be bigger than fieds num
+        fieldOrder > fieldsLength ? fieldOrder = 1 : '' ;
         const fields = {
             // field : ['input name' , 'input type' , 'placeholder']
             1 : {
@@ -347,12 +402,10 @@ export default class CreateDom extends Protos {
             2 : {
                 password : ["password" , "password" , "Come up with password"] ,
                 confirmPassword : ["confirmPassword" , "password" ,  "Enter password again" ] ,
-            }
+            } ,
+            
         };
-        const currentFieldData = Object.assign ( {} , userData );
-    
-        // field order can't be bigger than fieds num
-        fieldOrder > fieldsLength ? fieldOrder = 1 : '';
+
         let fieldsLength = Object.keys(fields).length; 
         let lastStep     = fieldOrder === fieldsLength ;
         let buttonName = fieldOrder < fieldsLength ? "Next field" : "Last step";
@@ -360,11 +413,12 @@ export default class CreateDom extends Protos {
 
         // foo
         let localInputHandler = (event) => {
+
             let target = event.target;
             let value  = target.value;
+            let targetType = event.target.attributes.type.nodeValue;
             let name   = target.name;
-            currentFieldData[name] = value;
-            console.log(currentFieldData)
+            currentFieldData[name] = this.inputValidator(value , targetType );
         }
         //
         let form = event.currentTarget.parentNode;
@@ -407,12 +461,16 @@ export default class CreateDom extends Protos {
                 type : "submit",
                 value : "Sign up"
             } , buttonName );
+            form.addEventListener('submit' , (e) => {
+                this.registrationOfUser(e, {...passedData ,...currentFieldData});
+            });
         } else{
             button = this.newDom('button' , false , {
                 class : 'form-button'
             } , buttonName );
-            button.addEventListener('click' , (e) => {this.signUpHandler (e , fieldOrder + 1 , currentFieldData ) });
-            form.addEventListener('submit' , this.registrationOfUser )
+            button.addEventListener('click' , (e) => {
+                this.signUpHandler(e , fieldOrder + 1 ,  {...passedData ,...currentFieldData} ) 
+            });
         } 
         form.append(errorMessageNest , button);
         
@@ -433,7 +491,7 @@ export default class CreateDom extends Protos {
         })
         let errorMessage = this.newDom('p' , ["error-message" , "form-element"] );
         // form
-        let form = this.newDom('form' , ['form-wrap' , 'recommendation'] , {
+        let form = this.newDom('form' , ['form' , 'recommendation'] , {
             method : "POST" ,
             action : "/auth/recomendnewrecipe"
         })  
