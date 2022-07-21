@@ -169,10 +169,10 @@ export default class CreateDom extends Protos {
                     let hasIt = result.res;
                     if ( hasIt === true){
                         // it deletes current id
-                        removeFromFavoriteList(_thisID);
+                        removeFromFavoriteList( _thisID );
                     }else if( hasIt === false){
                         // it adds 
-                        addToFavoriteList(_thisID);
+                        addToFavoriteList( _thisID );
                     }
                 })
                 .catch( err => {
@@ -346,6 +346,7 @@ export default class CreateDom extends Protos {
                 })
                 .then(result => {
                     form.reset();
+                    closeFormButton.click();
                     return result.json();
                 })
                 .then( body => {
