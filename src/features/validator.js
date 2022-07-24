@@ -10,32 +10,41 @@ export default class Validator {
             TrimHtmlTags ,
             ChecksAmpersand
         ];
+        this.handle(); 
     }
-    errorLogger (value) {
-        this.errorLog.error = value;
-    }
-    isObj (value) {
-        typeof value === 'object' ? 
-            true :
-            false ;
-    }
-    returnErrorLog(){
-        return this.errorLog;
-    }
-    getValidValue () {
-        for (const handler of this.handlers ) {
-            
+    handle () {
+        for (const [index , handler] of this.handlers.entries() ) {
+            let key = index ;
             let validator = new handler(this.value , this.type);
                 validator.handle()
             let result = validator.getLog();
-            console.log( result);
-            
+            ErrorLogger.updateErrorLog(this , key , result)
         }
+        
+    }
+    getErrors () {
+        return ErrorLogger.getOnlyErrors(this); 
     }
     
 };
+const ErrorLogger = {
+    updateErrorLog : ( _this , key , result ) => {
+        let __this = _this;
+        __this.errorLog[ key ] = result;
+    },
+    getOriginLog : (_this) => {
+        return _this.errorLog;
+    } ,
+    getOnlyErrors : (_this) => {
+        const Log = _this.errorLog;
+        return Object.values( Log ).filter( (value ) => {
+            return typeof value === 'object' ? value : `` ;
+        })
+    }
+    
+}
 class Length {
-    Types = ['text' , 'password' , 'email'];
+    Types = ['text' , 'password'];
     minLength = 4;
     maxLength = 20;
     Log = null ;
@@ -134,9 +143,11 @@ class TrimInvalidChar {
     Types = ['text' , 'email'];
     Errorname = "has invalid characters";
     Log = null ;
-    Handler = (value) => {
+    Handler = (value , type) => {
         let oldValue = value;
-        let newValue = value.replace(/\W/g, '');
+        let newValue = (type === 'email') ? value.replace(/[^A-Za-z0-9.@]/g , '|' ) : 
+            value.replace(/\W/g, '');
+        console.log("new --- " + newValue)
         if(oldValue !== newValue){
             return false
         } else {
@@ -146,11 +157,11 @@ class TrimInvalidChar {
     constructor(value , type){
         this.value = value;
         this.type  = type;
-        this.fitByType = this.Types.includes(this.type);
+        this.getType = this.Types.includes(this.type);
     }
     handle(){
-        if(this.fitByType){
-            this.Log = this.Handler(this.value);
+        if(this.fitByType , this.type){
+            this.Log = this.Handler(this.value , this.type);
         }
     }
     getLog(){
@@ -166,7 +177,8 @@ class ChecksAmpersand {
     Log = null ;
     Handler = (value) => {
         const regex = /^((([0-9A-Za-z]{1}[-0-9A-z\.]{1,}[0-9A-Za-z]{1})|([0-9А-Яа-я]{1}[-0-9А-я\.]{1,}[0-9А-Яа-я]{1}))@([-A-Za-z]{1,}\.){1,2}[-A-Za-z]{2,})$/u;
-        if (!regex.test(value)) {
+        console.log("regex" + regex.test(value))
+        if (regex.test(value)) {
             return true;
         }else{
             return false;
@@ -178,9 +190,7 @@ class ChecksAmpersand {
         this.fitByType = this.Types.includes(this.type);
     }
     handle(){
-        
         if(this.fitByType === true){
-            console.log( "types " + this.fitByType)
             this.Log = this.Handler(this.value);
         }
     }
