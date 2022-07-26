@@ -4,12 +4,17 @@ import CreateDom from './createDOM.js';
 
 // style
 import '../public/css/style.css';
-let currentUserName;
+import Form from './form/form.js';
+
 class App{
     constructor(initElement){
+        this.USER = {
+            isLogged : false
+        };
+        // ------------
         this.root = initElement; 
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendingAnimation"></div></div>';
-        this._changeDom = new ChangeDom(this.root);
+        this.alterDom = new ChangeDom(this.root);
         this._createDOM = new CreateDom(this.root);
         this.getpage = async (event) => {
             event.preventDefault();
@@ -179,7 +184,7 @@ class App{
         let logOutButton = root.getElementsByClassName('logout')[0];
 
         // createList
-        let TheBestRecipes = fetch ("/auth/getBestRecipes", {
+        fetch ("/auth/getBestRecipes", {
             method: "POST" , 
             headers :{
                 'Content-Type': 'application/json'
@@ -206,10 +211,10 @@ class App{
                     parentNode.style.display = "none";
                 localStorage.removeItem('name');
                 localStorage.removeItem('login');
-                localStorage.removeItem('favoriteRecipe');
-                this._changeDom.changeRegistrationButton("Sign in" , "/registration");
-                let toRegistrationPage = this.root.getElementsByClassName('registration')[0];
-                    toRegistrationPage.click();
+                this.alterDom.changeRegistrationButton("Sign in" , "#");
+                this.root.querySelector('.registration').addEventListener('click' , this.getpage );
+                let toHome = this.root.getElementsByClassName('home')[0];
+                    toHome.click();
             }
             let modalWindow = this._createDOM.confirmation( "Are you sure?" ,acceptanceFunction , rejectionFunction);
             this.root.append(modalWindow);
@@ -218,14 +223,15 @@ class App{
         this._createDOM.suggestNewRecipe(root)
     }
     hangFormHandlerOn(){
-        this._createDOM.getSighInForm(this.root, this.getpage);
+        this.__form__ = new Form(this.root , 'signin');
+        this.__form__.signIn()
+        // this.__form__.getSomething()
     }
     hangHandlerOnMineMenu(){
         // vars
         let mainMenu = this.root.getElementsByClassName('mainMenuWrap')[0];
         let mineMenuItems = Object.values( mainMenu.getElementsByClassName('menu-main-link') );
         // funcs
-        
         mineMenuItems.forEach( menuitem => {
             menuitem.addEventListener('click' , this.getpage )
         })
@@ -240,13 +246,13 @@ class App{
             }
 
         } , true)
-        console.log(currentUserName)
+        
         let isAuthorized = localStorage.getItem('name') ? true : false;
         this._createDOM.header();
         this._createDOM.footer();
         if(isAuthorized){
             let userName = localStorage.getItem('name'); 
-            this._changeDom.changeRegistrationButton(userName , '/auth/personalCabinet');
+            this.alterDom.changeRegistrationButton(userName , '/auth/personalCabinet');
         }
         this.hangHandlerOnMineMenu();
     }
