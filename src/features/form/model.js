@@ -140,31 +140,43 @@ export const Model = {
     } ,
     bindMover : (elem) => {
         const element = elem ;
+        function moveAt (el, x , y , rightEdge) {
+            let left = x < 0 ? 0 : x > rightEdge ? rightEdge : x ;
+            let top  = y < 0 ? 0 : y ;
+            console.log(rightEdge)
+
+            el.style.top  = top + 'px';
+            el.style.left = left  + 'px';
+        }
+        element.ondragstart = function() {
+            return false;
+        };
         let mouseIsPressed = false;
         element.addEventListener('mousedown' , (event) => {
             mouseIsPressed = true;
             let currentElement = event.currentTarget;
-            currentElement.ondragstart = function() {
-                return false;
-            };
-            let shiftX = event.clientX - currentElement.offsetWidth 
-            let shiftY = event.clientY - currentElement.offsetHeight
-            
-            document.onmousemove = (event) => {
-                console.log(shiftX , shiftY)
-                let pageX = event.pageX;
-                let pageY = event.pageY;
+            let shiftX  = event.screenX - currentElement.getBoundingClientRect().left;
+            let shiftY  = event.screenY - 103 - currentElement.getBoundingClientRect().top ;
+            let elementWidth = currentElement.offsetWidth;
+            document.addEventListener("mousemove" , (event) => {
                 if(mouseIsPressed === true){
-                    currentElement.style.left = pageX - shiftX + 'px';
-                    currentElement.style.top = pageY  - shiftY + 'px';
+                    let pageX = event.clientX;
+                    let pageY = event.clientY;
+                    element.classList.remove('signInWrap')
+                    element.style.position = 'absolute';
+                    let x = pageX - shiftX;
+                    let y = pageY - shiftY;
+                    let rightEdge = document.body.clientWidth || document.documentElement.clientWidth || window.innerWidth ;
+                    moveAt(element , x , y , rightEdge - elementWidth )
+                    
                 }
-            }
-        });
-        element.addEventListener('mouseup' , () => {
-            document.onmousemove = null;
-            mouseIsPressed = false;
+            })
+            element.addEventListener('mouseup' , () => {
+                mouseIsPressed = false;
+                document.onmousemove = null;
+            })
+        }, false);
         
-        })
         return element;
     }
 
