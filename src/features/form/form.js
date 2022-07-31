@@ -4,7 +4,8 @@ import {Model} from "./model.js";
 import {View} from "./view.js";
 export default class Form {
     // type defines whether this form for logIn or signUp
-    constructor ( root ){
+    constructor ( root , updateUser){
+        this.updateUserStatus = updateUser;
         this.savedDom = {};
         this.currentFieldData = {
             login : {}
@@ -199,7 +200,9 @@ export default class Form {
             {
                 ...formEl.form ,
                 handler : {
-                    submit : formHandler
+                    submit : (e) => {
+                        formHandler(e , this.updateUserStatus )
+                    }
                 }
             }
         ]

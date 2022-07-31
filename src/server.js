@@ -2,7 +2,8 @@ var express = require('express');
 const expressHbs = require("express-handlebars");
 const hbs = require("hbs");
 var app = express();
-const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+
 
 
 // routers
@@ -16,20 +17,22 @@ app.engine("hbs" , expressHbs.engine({
     defaultLayout: "layout",
     extname: "hbs"
 }))
+
+// view setup
 app.set("views" , __dirname + "/views")
 app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials");
 app.use(express.static( __dirname + "/public"));
-// app.use(express.static(__dirname + "/features"));
-// middleware
-Mixology_Router.use(express.static(__dirname + "/public"));
-// Mixology_Router.use(express.static(__dirname + "/features"));
 
+// middleware
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.use(express.static(__dirname + "/dist"));
+Mixology_Router.use(express.static(__dirname + "/public"));
 Mixology_Router.use(express.static(__dirname + "/dist"));
 Mixology_Router.use(express.static(__dirname + "/dist"));
 TabacoRouter.use(express.static(__dirname + "/public"));
-app.use(cookieParser('secret key'));
+
 
 
 
@@ -51,11 +54,7 @@ app.get("/home", function(req,res){
     });
     
 });
-app.use("/rejected" , (req ,res) => {
-    const respText = `<h1 style="text-align:center ; color :'red'" >An access is rejected</h1>`;
-    res.send(respText);
-
-})
+// middleware
 
 // routers
 app.use("/mixology" ,  Mixology_Router);

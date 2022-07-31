@@ -9,6 +9,7 @@ const mysqlConfig = require('./connection/mysql_connection.js');
 RegistrationRouter.use(bodyParser.urlencoded({extended: false}));
 RegistrationRouter.use(bodyParser.json());
 
+
 // preventing html tag injection ,xss , sql injection
 let validate = (data) => {
     let errorLog = '';
@@ -74,65 +75,7 @@ let registerNewUser = (name , login , password , email , subscribe) => {
 
     return isRegistered;
 }
-// Does user exist in db
-let logIn = async (log , pass) => {
-    let sqlRequest = `SELECT name,login,favoriteRecipe FROM users WHERE login='${log}' AND password='${pass}'`;
-    let connection = mysql.createConnection(mysqlConfig).promise();
-    let userIsChecked = await connection.execute(sqlRequest)
-        .then( ([row,field])  => {
-            return row;
-        })
-        .then(result => {
-            connection.end();
-            if(result.length > 0){
-                // in the future i m gonna add some code 
-                return {
-                    user : 'true',
-                    body : result
-                };
-            }else{
-                return {
-                    user : false ,
-                    error : "Login or password is invalid"
-                }
-            }
-            
-        })
-        .catch( err => {
-            return {
-                user : false ,
-                error : "Database not approachable"
-            }
-        });
-        
-    return userIsChecked;
-    // next 
-};
-RegistrationRouter.get('/' , (req,res) => {
-    res.render('form' , {
-        layout : false,
-        action : '/registration/signin',
-        signIn : true
-    })
-})
-RegistrationRouter.post('/signin' , (req,res) => {
-    let login    = validate( req.body.login );
-    let password = validate( req.body.password );
-    
-    logIn(login , password).then( result => {
-        if(result.user){
-            res.send(JSON.stringify({
-                exist : true ,
-                response : result.body
-            }))
-        }else{
-            res.send(JSON.stringify({
-                exist : false ,
-                error : result.error
-            }))
-        }
-    })
-})
+
 RegistrationRouter.post('/signup' , (req, res) => {
     let login = validate(req.body.login);
     let name = validate(req.body.name);
@@ -172,12 +115,4 @@ RegistrationRouter.post('/signup' , (req, res) => {
             throw err
         });
 })
-RegistrationRouter.get('/create_account' , (req, res) => {
-    res.render('form' , {
-        layout : false,
-        action : '/registration/signup',
-        signUp : true,
-    })
-})
-
 module.exports = RegistrationRouter;

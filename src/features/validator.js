@@ -147,7 +147,6 @@ class TrimInvalidChar {
         let oldValue = value;
         let newValue = (type === 'email') ? value.replace(/[^A-Za-z0-9.@]/g , '|' ) : 
             value.replace(/\W/g, '');
-        console.log("new --- " + newValue)
         if(oldValue !== newValue){
             return false
         } else {
@@ -177,7 +176,6 @@ class ChecksAmpersand {
     Log = null ;
     Handler = (value) => {
         const regex = /^((([0-9A-Za-z]{1}[-0-9A-z\.]{1,}[0-9A-Za-z]{1})|([0-9А-Яа-я]{1}[-0-9А-я\.]{1,}[0-9А-Яа-я]{1}))@([-A-Za-z]{1,}\.){1,2}[-A-Za-z]{2,})$/u;
-        console.log("regex" + regex.test(value))
         if (regex.test(value)) {
             return true;
         }else{

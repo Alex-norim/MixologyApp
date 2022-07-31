@@ -63,7 +63,6 @@ async function makeRequestToServer (sql) {
             return false;
         })
 }
-
 let getBestRecipes = async (userLogin) => {
     //this foo has to return array of obj's like [{id : value , recipe : value , rating : value} , {obj}]
     let sqlGetList = `SELECT favoriteRecipe FROM users WHERE login='${userLogin}'`;
@@ -90,21 +89,20 @@ let getBestRecipes = async (userLogin) => {
         });
 }   
 let hasUserRecipe = async(id , login)=>{
-    let connection = mysql.createConnection(connectionConfig).promise() ;
-    
-    let sql = `SELECT id FROM users WHERE login='${login}' AND favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?`;
-
+    let connection = mysql.createConnection(connectionConfig).promise();
+    let sql = `SELECT id FROM users WHERE login='${login}' AND (favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?)`;
     let params = [ id + ',%' , '%,' + id + ",%" , "%," + id , id];
+    
     return await connection.execute(sql , params)
         .then( ([row,field]) => {
-            connection.end();
             return row;
         })
         .then( result => {
-            if(result.length < 1){
-                return false;
-            }else if(result.length > 0){
+            connection.end();
+            if(result.length === 1){
                 return true;
+            }else if(result.length === 0){
+                return false;
             }
         })
         .catch( err => {
@@ -114,22 +112,24 @@ let hasUserRecipe = async(id , login)=>{
 
 // personal cabinet
 authorizedUserRouter.post('/signin' , (req,res) => {
+
     let login    = req.body.login;
     let password = req.body.password;
     
-    logIn(login , password).then( result => {
-        if(result.user){
-            res.send(JSON.stringify({
-                exist : true ,
-                response : result.body
-            }))
-        }else{
-            res.send(JSON.stringify({
-                exist : false ,
-                error : result.error
-            }))
-        }
-    })
+    logIn(login , password)
+        .then( result => {
+            if(result.user){
+                res.send(JSON.stringify({
+                    exist : true ,
+                    response : result.body
+                }))
+            }else{
+                res.send(JSON.stringify({
+                    exist : false ,
+                    error : result.error
+                }))
+            }
+        })
 })
 authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
     let userLogin = res.locals.currentLogin;

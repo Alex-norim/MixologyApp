@@ -39,9 +39,9 @@ export const Model = {
     clearUserCredentials : function (event) {
         this.currentFieldData = {};
     },
-    signInFormHandler : function (e) {
+    signInFormHandler : function (e , updateUser) {
         e.preventDefault();
-        console.log('sign iiinnnn')
+        const updateUserStatus = updateUser;
         let form    = e.currentTarget;
         let closeFormButton = form.querySelector('.closeFormButton');
         let errorMessage = form.getElementsByClassName('error-message')[0];
@@ -80,6 +80,7 @@ export const Model = {
                     localStorage.setItem("name" , name);
                     localStorage.setItem("login" , login);
                     errorMessage.innerHTML = 'user has been logged successfully';
+                    updateUserStatus({isLogged : true})
                     closeFormButton.click();
                 }else{
                     errorMessage.innerHTML = body.error;

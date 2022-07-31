@@ -1,161 +1,37 @@
 
-import ChangeDom from './changeExistingElement.js';
 import CreateDom from './createDOM.js';
-
+import { Menu } from './menu/menu.js';
 // style
 import '../public/css/style.css';
-import Form from './form/form.js';
-
 class App{
     constructor(initElement){
         this.USER = {
-            isLogged : false
+            isLogged : false ,
+            path : 'home'
         };
+        this.updateUserStatus = function ( objState ) {
+            let key = Object.keys(objState)[0];
+            let val = Object.values(objState)[0];
+            // console.log(key , val)
+            this.USER[key] = val;
+            this.init();
+        }
         // ------------
         this.root = initElement; 
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendingAnimation"></div></div>';
-        this.alterDom = new ChangeDom(this.root);
+
         this._createDOM = new CreateDom(this.root);
-        this.getpage = async (event) => {
-            event.preventDefault();
-            let bodyContent = this.root.getElementsByClassName('body-content')[0];
-            let HrefRequest = event.target.getAttribute('href');
-            // local store
-            let userlogin = localStorage.getItem('login');
-            let username = localStorage.getItem('name');
-            // some request requires data
-            if(HrefRequest === '/auth/personalCabinet'){
-                //animation of waiting
-                bodyContent.innerHTML = this.pendingAnimation;
-                fetch(HrefRequest , {
-                    method: "POST",
-                    headers : {
-                        'Content-Type': 'application/json'
-                    },
-                    body : JSON.stringify({ login : userlogin , name : username})
-                })
-                .then( result => {
-                    return result.json();
-                } )
-                .then( result => {
-                    let name = result.userName;
-                    let HTML = ` <div class="personalCab"> ` +
-                                    `<h2 class="title">Hello <span>${name}</span></h2>`+
-                                    `<button class="button logout">Log out</button>`+
-                                    `<div class="defbox">`+
-                                        `<h3 class="deftitle">Your favorite mix list</h3>`+
-                                        `<ul class="favoriteRecipeList"></ul>`+
-                                    `</div>`+
-                                `</div> `;
-                    bodyContent.innerHTML = HTML;
-                    // attaching handlers on the Elements of personal cabinet page
-                    this.hangHandlerOnPersonalCab();
-                })
-                .catch( err => {
-                    throw err;
-                })
-            }else if(HrefRequest === '#'){
-                let buttonToDirrectHere = this.root.getElementsByClassName('registration')[0];
-                // attaching handlers on the Elements of registration page;
-                this.hangFormHandlerOn();
-                buttonToDirrectHere.removeEventListener('click' , this.getpage);
-            }else{
-                //animation of waiting
-                bodyContent.innerHTML = this.pendingAnimation;
-                fetch(HrefRequest , {
-                })
-                .then( result => {
-                    return result.text();
-                })
-                .then ( text => {
-                    bodyContent.innerHTML = text;
-                    switch (HrefRequest) {
-                        case '/home' :
-                            // this.hangHundlerOnHomeMenuItem();
-                            break;
-                        case '/mixology':
-                            this.hangHandlerOnMixologyMenu();
-                            break;
-                        case '/tabaco':
-                            this.hangHandlerOnTabacoMenu();
-                            break;
-                        default:
-                            break;
-                    }
-                })
-                .catch( err => {
-                    throw err;
-                })
-            }
-        }
+        this.MainMenu = new Menu(
+            this.root , 
+            this.updateUserStatus.bind(this) 
+        );
     }
     // methods 
-    hangHandlerOnMixologyMenu(){
-        // getting single item
-        let parent = this.root.getElementsByClassName('mixologyID')[0] ;
-        let title  = parent.getElementsByClassName('listTitleId')[0];
-        let listRoot = parent.getElementsByClassName('recipeListId')[0];
-        let showTopTenRecipes = async () => {
-            await fetch("/mixology/topten" , {
-                method : "GET",
-            })
-            .then( result => {
-                return result.json();
-            }).then( result => {
-                let category = result.category;
-                let recipes  = result.list;
-                let hasAccsessToServer = result.database;
-                this._createDOM.recipeList(listRoot , recipes)
-            })
-            .catch( err => {
-                throw err;
-            })
-        }
-        showTopTenRecipes();
-        // getting multiple items
-        let mixologyMenuButtons = Object.values(parent.getElementsByClassName('menu-main-link'));
-        // handlers
-        let getRecipe = async (event) => {
-            event.preventDefault();
-            let request = event.target.getAttribute('href');
-            //animation of waiting
-            listRoot.innerHTML = this.pendingAnimation;
-            // getting from server
-            let data = await fetch( request , {method : 'GET'})
-            .then( result => {
-                listRoot.innerHTML = '';
-                return result.json();
-            })
-            .catch(err=>{
-                throw err;
-            });
-            let category = data.category;
-            let recipes  = data.list;
-            let hasAccsessToServer = data.database;
-            // title 
-            title.innerHTML = "Top 10 " + category + " recipes";
-                // if db is available;
-            if(hasAccsessToServer){
-                // there is creating the list of recipes
-                this._createDOM.recipeList(listRoot , recipes);
-            }else{
-                // if database not found
-                let errorMessage = data.list[0];
-                let li = document.createElement('li');
-                    li.classList.add('recipe-list-item');
-                    li.innerHTML = errorMessage;
-                listRoot.append(li);
-            }   
-            
-        };
-        mixologyMenuButtons.forEach( item => {
-            item.addEventListener('click' , getRecipe );
-        })
-    };
     // tabaco
     hangHandlerOnTabacoMenu (){
         // getting single item
         let parent              = this.root.getElementsByClassName('tabacoID')[0];
+        console.log(parent)
         let contentPlace        = parent.getElementsByClassName('tabacoHistoryID')[0];
         // getting multiply items
         let tabacoMenuItem      = parent.getElementsByClassName('menu-main-link');
@@ -222,39 +98,27 @@ class App{
         // new recomendation 
         this._createDOM.suggestNewRecipe(root)
     }
-    hangFormHandlerOn(){
-        this.__form__ = new Form(this.root , 'signin');
-        this.__form__.signIn()
-        // this.__form__.getSomething()
-    }
-    hangHandlerOnMineMenu(){
-        // vars
-        let mainMenu = this.root.getElementsByClassName('mainMenuWrap')[0];
-        let mineMenuItems = Object.values( mainMenu.getElementsByClassName('menu-main-link') );
-        // funcs
-        mineMenuItems.forEach( menuitem => {
-            menuitem.addEventListener('click' , this.getpage )
-        })
-
-    }
     init(){
-        window.addEventListener('resize' , (event) => {
-            let currentScreenWidth = window.innerWidth;
-            if(currentScreenWidth > 750 ){
-                let menuList = this.root.getElementsByClassName("mainMenuWrap")[0].getElementsByClassName('menu-main')[0];
-                    menuList.removeAttribute('style');
-            }
-
-        } , true)
-        
-        let isAuthorized = localStorage.getItem('name') ? true : false;
+        let pagePath = this.USER.path;
+        let isUserLogged = this.USER.isLogged || localStorage.getItem('name') ;
         this._createDOM.header();
+        // 
+        this.root.getElementsByClassName('header')[0].append( this.MainMenu.getMenu( {isLogged : isUserLogged } ) );
+        // 
         this._createDOM.footer();
-        if(isAuthorized){
-            let userName = localStorage.getItem('name'); 
-            this.alterDom.changeRegistrationButton(userName , '/auth/personalCabinet');
+        switch (pagePath) {
+            case 'brands':
+                this.hangHandlerOnTabacoMenu()
+                break;
+            case 'personalCab':
+                this.hangHandlerOnPersonalCab()
+                break;
+    
+            default:
+                break;
         }
-        this.hangHandlerOnMineMenu();
+    
+        
     }
 }
 let app = new App(document.getElementById('root'));

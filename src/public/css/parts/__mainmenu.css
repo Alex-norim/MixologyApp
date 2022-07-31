@@ -14,7 +14,7 @@
 }
 
 /* media requires */
-@media screen and (max-width : 5000px) and (min-width: 751px) {
+@media screen and (max-width : 5000px) and (min-width: 750px) {
     .menu-main-link{
         border: 1px solid #000;
         background: rgb(170 168 168 / 37%);

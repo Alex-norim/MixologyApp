@@ -12,7 +12,7 @@
 .modalWindow{
     position: absolute;
     width: 420px;
-    height: 300px;
+    height: auto;
     top: 0;
     left: 0;
     right: 0;

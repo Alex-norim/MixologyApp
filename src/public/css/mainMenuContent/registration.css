@@ -6,12 +6,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    
 }
 .form{
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 400px;
 }
 .form-element:not(:last-child){
     margin-bottom: 20px;
@@ -46,7 +47,7 @@
     width: 86%;
 }
 
-.form .form-button{
+.form-button{
     border: 2px solid #918d8d;
     background: inherit;
     padding: 6px 15px;
@@ -73,7 +74,6 @@
 .form .subscribe-wrap{
     display: flex;
     align-items: center;
-    margin-top: 18px;
 }
 .form .form-label{
     cursor: pointer;
@@ -81,6 +81,7 @@
     font-family: serif;
     transition: 0.5s;
     color: #918d8d;
+    margin-left: 7px;
 }
 .form-checkbox:checked ~ label.form-label{
     color: #fff;
@@ -90,9 +91,14 @@
 }
 .form .form-checkbox{
     cursor: pointer;
-    width: 15px;
+    width: 100%;
     height: 15px;
     margin-right: 12px;
+    display: flex;
+}
+.form .form-checkbox::after{
+    content: 'Hit subscribe';
+    margin-left: 10px;
 }
 
 .form .createAccountLink{
@@ -117,8 +123,7 @@
 .error-message{
     font-size: 16px;
     height: 1px;
-    margin-bottom: 10px;
-    margin-top: -6px;
+    margin-bottom: 30px;
 }
 .closeFormButton {
     width: 34px;
@@ -143,4 +148,17 @@
     bottom: 14px;
     left: 0;
     transform: rotate(135deg);
+}
+.form-button__nextButton , .form-button__prevButton{
+    position: absolute;
+    bottom: 5px;
+    width : 100px;
+    display: flex;
+    justify-content: center;
+}
+.form-button__nextButton{
+    right: 54px;
+}
+.form-button__prevButton{
+    left: 54px;
 }
