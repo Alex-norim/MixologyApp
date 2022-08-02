@@ -19,7 +19,7 @@ export const Mixology = {
         // user 
         const isUserLogged = localStorage.getItem('name') || false;
         model.bindHandler(mixMenu , 'click' , (e) => {
-            menuItemHandler(e , getList , mixRoot , likeHandler)
+            menuItemHandler(e , getList , mixRoot , likeHandler);
         } );
         
         // hang handler on the mix menu item
@@ -28,7 +28,7 @@ export const Mixology = {
             const topTen = result.list;
             let listElements = '';
             if(isUserLogged){
-                    
+
                     listElements = getList( topTen , false , likeHandler )
                 }else{
                         listElements = getList( topTen , false )

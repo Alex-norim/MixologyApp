@@ -1,4 +1,4 @@
-import {Animation} from '../adjust';
+import {Animation} from '../setUp';
 const init = {
     method : 'GET' ,
     headers : {
@@ -65,7 +65,7 @@ const Model = {
                 return result.json();
             })
             .then( result => {
-                console.log(result)
+                
                 let response = result.response;
                 let svg = target.querySelector('.svgpath');
                 let ratingText = target.querySelector('.recipeRating');
