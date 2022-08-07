@@ -55,49 +55,6 @@ class App{
         }
 
     }
-    hangHandlerOnPersonalCab(e){
-        let root = this.root.getElementsByClassName('personalCab')[0];
-        let logOutButton = root.getElementsByClassName('logout')[0];
-
-        // createList
-        fetch ("/auth/getBestRecipes", {
-            method: "POST" , 
-            headers :{
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify({
-                login : localStorage.getItem('login')
-            })
-        }).then( result => {
-            return result.json();
-        }).then( body => {
-            this._createDOM.recipeList( this.root.getElementsByClassName("favoriteRecipeList")[0] , body.res)
-        })
-        
-        // logout button handler
-        logOutButton.addEventListener("click" , (e) => {
-            let rejectionFunction = (event) => {
-                let target = event.target;
-                let parentNode = target.parentNode.parentNode;
-                    parentNode.style.display = "none";
-            };
-            let acceptanceFunction = (e) => {
-                let target = e.target;
-                let parentNode = target.parentNode.parentNode;
-                    parentNode.style.display = "none";
-                localStorage.removeItem('name');
-                localStorage.removeItem('login');
-                this.alterDom.changeRegistrationButton("Sign in" , "#");
-                this.root.querySelector('.registration').addEventListener('click' , this.getpage );
-                let toHome = this.root.getElementsByClassName('home')[0];
-                    toHome.click();
-            }
-            let modalWindow = this._createDOM.confirmation( "Are you sure?" ,acceptanceFunction , rejectionFunction);
-            this.root.append(modalWindow);
-        })
-        // new recomendation 
-        this._createDOM.suggestNewRecipe(root)
-    }
     init(){
         let pagePath = this.USER.path;
         let isUserLogged = this.USER.isLogged || localStorage.getItem('name') ;
@@ -106,19 +63,6 @@ class App{
         this.root.getElementsByClassName('header')[0].append( this.MainMenu.getMenu( {isLogged : isUserLogged } ) );
         // 
         this._createDOM.footer();
-        switch (pagePath) {
-            case 'brands':
-                this.hangHandlerOnTabacoMenu()
-                break;
-            case 'personalCab':
-                this.hangHandlerOnPersonalCab()
-                break;
-    
-            default:
-                break;
-        }
-    
-        
     }
 }
 let app = new App(document.getElementById('root'));

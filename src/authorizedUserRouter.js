@@ -71,6 +71,7 @@ let getBestRecipes = async (userLogin) => {
             return result
         })
         .then( result => {
+            console.log(result)
             let list = result[0].favoriteRecipe;
             if(list.length >=1 ){
                 let sqlParts = list;
@@ -80,12 +81,12 @@ let getBestRecipes = async (userLogin) => {
                         return result;
                     });
             }else if( list.length < 1 || !result){
-                return false;
+                return ['Server not found'];
             }
 
         })
         .catch(err => {
-            return false;
+            return ['Server not found'] ;
         });
 }   
 let hasUserRecipe = async(id , login)=>{
@@ -132,7 +133,7 @@ authorizedUserRouter.post('/signin' , (req,res) => {
         })
 })
 authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
-    let userLogin = res.locals.currentLogin;
+    let userLogin = req.body.login;
     
     getBestRecipes(userLogin)
         .then(result => {
@@ -311,9 +312,12 @@ authorizedUserRouter.get('/getcategory' , (req,res) => {
     let sql = `SELECT DISTINCT category FROM coctails`;
     makeRequestToServer( sql )
         .then( result => {
-            return result.map( el => {
-                return el.category
-            })
+            if(result){
+                return result.map( el => el.category );
+            }else{
+                return [false];
+            }
+            
         })
         .then( result => {
             res.send( JSON.stringify({

@@ -3,6 +3,7 @@ import { Model } from './model.js';
 import { Setting } from './setting.js';
 // page
 import { Mixology } from '../mixology/mixology.js';
+import {Cabinet} from '../cabinet/cabinet.js';
 
 import Form from '../form/form.js';
 export class Menu {
@@ -13,10 +14,12 @@ export class Menu {
         this.View = View;
         this.Model = Model;
         this.Form = new Form(this.root, updateUser );
+        // page
     }
 
     getMenu(userStatus){
-        const useMixology = new Mixology( this.root).init();
+        const useMixology = Mixology.init;
+        const useCabinet  = Cabinet.init;
         // let isState = state.isLogged;
         const isLogged = userStatus.isLogged;
         const mobileMenuHandler = this.Model.mobileMenuHandler;
@@ -39,7 +42,7 @@ export class Menu {
             ...this.Setting.mixology,
             handler : {
                 click : (e) => {
-                    menuHandler( e , useMixology );
+                    menuHandler( e , useMixology , this.root );
                     updateMenuState(  {path : 'mixology'} );
                 }
             }
@@ -84,7 +87,7 @@ export class Menu {
                 handler :{
                     click : (event) => {
                         event.preventDefault();  
-                        personalCabHandler(event);
+                        personalCabHandler(event , useCabinet , this.root)
                         updateMenuState(  {path : 'personalCab'} )
                     }
                 }
@@ -100,32 +103,5 @@ export class Menu {
         
     }
 }
-// let ul = this.newDom('ul' ,'menu-main');
-//         for (const key in links) {
-//             let innerContent = key;
-//             let link = links[key];
-//             let a = null;
-//             innerContent === "Sign in" ?
-//                 a = this.newDom(
-//                         'a' , 
-//                         [`menu-main-link` , `${link.slice(1)}`] , 
-//                         {href : '#'},
-//                         innerContent
-//                         ) :
-//                 a = this.newDom(
-//                     'a' , 
-//                     [`menu-main-link` , `${link.slice(1)}`] , 
-//                     {'href' : link },
-//                     innerContent
-//                     )
-//             ul.appendChild(a);
-//         }
-//         // --------------
-//         let smallScreenContent = '<div class="line"></div><div class="line"></div><div class="line"></div>';
-//         let smallScreenBtn = this.newDom('div' ,'smallScreenButton' , false , smallScreenContent );
-//             smallScreenBtn.addEventListener('click' , clickHumburgerMenu)
-//         let menu = this.newDom('nav' ,'mainMenuWrap');
-//             menu.append( smallScreenBtn , ul );
 
-//         return menu;
     

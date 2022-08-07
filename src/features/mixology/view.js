@@ -48,7 +48,8 @@ export const View = {
             let recipe = values.recipe;
             let rating = values.rating !== 0 ? values.rating : '0' ;
             let id     = values.id;
-            let isMatch = best ? best.includes(id) : best ;
+
+            let isMatch = typeof best === 'object' ? best.map( item => item.id ).includes(id) : best ;
             // childs of li 
             let recipeText = new createElement({
                 tagname: 'span' ,
@@ -81,7 +82,6 @@ export const View = {
             if(isMatch){
                 let likeBtn = wrapper.querySelector('.svgpath');
                     likeBtn.setAttribute('fill' , color);
-    
                 ratingTextNode.setAttribute('style' , 'color:' + color )
                 
             }else{
@@ -99,6 +99,7 @@ export const View = {
             li.append(recipeText,wrapper);
             list.push(li)
         };
+        
         return list;
     },
     

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import {Animation} from '../setUp';
+=======
+import {Animation} from '../setUp.js';
+>>>>>>> Stashed changes
 const init = {
     method : 'GET' ,
     headers : {
@@ -135,8 +139,17 @@ const Model = {
         })
     },
     // next 
-    getBestRecipes : async (url) => {
-        return await fetch( url , init)
+    getBestRecipes : async () => {
+        const userLogin = localStorage.getItem('login');
+        return await fetch( '/auth/getBestRecipes' , {
+            method : 'POST' ,
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify({
+                login : userLogin
+            })
+        })
             .then( result => result.json())
             .catch( err => {throw err})
     },

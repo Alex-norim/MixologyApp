@@ -6,6 +6,7 @@
     display: inline-block;
     width: auto;
     text-align: left;
+    margin-bottom: 30px;
 }
 .personalCab .title span{
     text-transform: capitalize;

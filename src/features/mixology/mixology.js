@@ -28,6 +28,7 @@ export const Mixology = {
             const topTen = result.list;
             let listElements = '';
             if(isUserLogged){
+<<<<<<< Updated upstream
 
                     listElements = getList( topTen , false , likeHandler )
                 }else{
@@ -38,6 +39,25 @@ export const Mixology = {
             listElements.forEach( item => {
                 recipeList.append(item);
             })
+=======
+                Model.getBestRecipes().then( result => {
+                    let best = result.res;
+
+                    recipeList.innerHTML = '';
+                    listElements = getList( topTen , best , likeHandler );
+                    listElements.forEach( item => {
+                        recipeList.append(item);
+                    })
+                });
+            }else{
+                recipeList.innerHTML = '';
+                listElements = getList( topTen , false );
+                listElements.forEach( item => {
+                    recipeList.append(item);
+                })
+            };
+                    
+>>>>>>> Stashed changes
         })
     }
 }   

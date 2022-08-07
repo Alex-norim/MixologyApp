@@ -3,14 +3,14 @@
     padding: 25px 20px 10px;
 }
 
-.recipe-list .recipe-list-item{
+.recipe-list-item{
     display: flex;
     justify-content: space-between;
 }
-.recipe-list >.recipe-list-item  .recipeText {
+.recipeText {
     cursor: default;
 }
-.recipe-list >.recipe-list-item:not(:last-child){
+.recipe-list-item:not(:last-child){
     margin-bottom: 15px
 }
 .recipeWrap{

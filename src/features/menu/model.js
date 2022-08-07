@@ -2,13 +2,14 @@ export const Model = {
     updateState : function( newState ){
         this.menuState.path = newState;
     },
-    personalCabinet : function(event) {
+    personalCabinet : function(event , useCabinet) {
         //animation of waiting
         const target = event.currentTarget;
         const HrefRequest = target.attributes.href.value;
         const userlogin = localStorage.getItem('login');
         const username  = localStorage.getItem('name');
         let root = this.root;
+        
         let bodyContent = root.getElementsByClassName('body-content')[0];
             // bodyContent.innerHTML = this.pendingAnimation;
         fetch(HrefRequest , {
@@ -32,12 +33,13 @@ export const Model = {
                             `</div>`+
                         `</div> `;
             bodyContent.innerHTML = HTML;
+            useCabinet(this.root);
         })
         .catch( err => {
             throw err;
         })
     },
-    renderServerResponse : function (event , currentHandler = false) {
+    renderServerResponse : function (event , currentHandler = false , root = false ) {
         event.preventDefault();
         let bodyContent = this.root.getElementsByClassName('body-content')[0];
         let HrefRequest = event.target.getAttribute('href');
@@ -50,7 +52,7 @@ export const Model = {
         })
         .then ( text => {
             bodyContent.innerHTML = text;
-            currentHandler ? currentHandler() : `` ;
+            currentHandler && root ? currentHandler(root) : `` ;
         })
         .catch( err => {
             throw err;
