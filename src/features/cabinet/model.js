@@ -1,5 +1,5 @@
 import {Model as importModel} from '../mixology/model';
-
+import Validator from '../validator';
 export const Model = {
     likeHandler : importModel.likeHandler,
     getRecipeItems : importModel.showSpecificList,
@@ -25,4 +25,51 @@ export const Model = {
         let modalWindow = drawModalWindow( "Are you sure?" , acceptanceFunction , rejectionFunction );
         root.append(modalWindow);
     } ,
+    getCategory : async () => {
+        return await fetch( '/auth/getcategory' , {method: 'GET'})
+        .then( result => {
+            return result.json();
+        })
+        .catch(err => {
+            return {
+                res : "server not found"
+            }
+        })
+    },
+    formHandler : (event) => {
+        event.preventDefault();
+        const target = event.currentTarget;
+        let formData = new FormData (event.target);
+        let Error = new Validator( formData.get('newrecipe') , 'text').getErrors();
+        // let category  = new Validator( formData.get('flavor')    , 'name');
+        // let strength  = formData.get('strength');
+        let errorMessageNest = target.getElementsByClassName("error-message")[0]; 
+        // --->
+        
+        typeof Error[0] !== 'object' ?
+            fetch( "/auth/recomendnewrecipe" , {
+                method : "POST",
+                body : new URLSearchParams(new FormData(event.target))
+            })
+            .then( result => {
+                return result.json();
+            })
+            .then( result => {
+                let isAdded = result.isAdded;
+                let response = result.res;
+                isAdded ?
+                    errorMessageNest.textContent = response : 
+                    errorMessageNest.textContent = response ;
+                target.reset();
+                setTimeout( () => {
+                    errorMessageNest.textContent = '';
+                } , 800)
+            })
+            .catch( err => {
+                throw err
+            }) : 
+            errorMessageNest.textContent = 'Some trouble';
+        // <--
+
+    },
 }
