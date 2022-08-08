@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 
 // routers
 const Mixology_Router = require("./mixologyRouter.js");
-const TabacoRouter = require('./tabacoRouter.js');
+const ArticleRouter = require('./ArticleRouter.js');
 const RegistrationRouter = require('./registrationRouter.js');
 const authorizedUserRouter = require('./authorizedUserRouter.js');
 //setting up
@@ -31,7 +31,7 @@ app.use(express.static(__dirname + "/dist"));
 Mixology_Router.use(express.static(__dirname + "/public"));
 Mixology_Router.use(express.static(__dirname + "/dist"));
 Mixology_Router.use(express.static(__dirname + "/dist"));
-TabacoRouter.use(express.static(__dirname + "/public"));
+ArticleRouter.use(express.static(__dirname + "/public"));
 
 
 
@@ -46,8 +46,6 @@ app.get("/", function(req,res){
     
 });
 app.get("/home", function(req,res){  
-    
-    
     res.render('home.hbs' , {
         layout : false , 
         name : 'In short...'
@@ -58,7 +56,7 @@ app.get("/home", function(req,res){
 
 // routers
 app.use("/mixology" ,  Mixology_Router);
-app.use('/tabaco' , TabacoRouter);
+app.use('/articles' , ArticleRouter);
 app.use('/registration' , RegistrationRouter);
 app.use('/auth' , authorizedUserRouter);
 // other reqs
