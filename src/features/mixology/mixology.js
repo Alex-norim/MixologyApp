@@ -26,25 +26,11 @@ export const Mixology = {
         // draw top ten recipes
         drawTopRecipes.then( result => {
             const topTen = result.list;
-            let listElements = '';
             if(isUserLogged){
-<<<<<<< Updated upstream
-
-                    listElements = getList( topTen , false , likeHandler )
-                }else{
-                        listElements = getList( topTen , false )
-                    };
-                    
-            recipeList.innerHTML = '';
-            listElements.forEach( item => {
-                recipeList.append(item);
-            })
-=======
                 Model.getBestRecipes().then( result => {
                     let best = result.res;
-
                     recipeList.innerHTML = '';
-                    listElements = getList( topTen , best , likeHandler );
+                    const listElements = getList( topTen , best , likeHandler );
                     listElements.forEach( item => {
                         recipeList.append(item);
                     })
@@ -56,8 +42,6 @@ export const Mixology = {
                     recipeList.append(item);
                 })
             };
-                    
->>>>>>> Stashed changes
         })
     }
 }   

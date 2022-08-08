@@ -22,13 +22,13 @@ export const Setting = {
         },
         content : "mixology"  
     },
-    brands : {
+    article : {
         tagname : 'a' ,
         attr : {
-            class : 'menu-main-link tabaco',
-            href  : "/tabaco"
+            class : 'menu-main-link articles',
+            href  : "/articles"
         },
-        content : "brands" 
+        content : "Articles" 
     },
     "Sign in" : {
         tagname : 'a' ,

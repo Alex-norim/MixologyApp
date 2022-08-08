@@ -4,6 +4,7 @@ import { Setting } from './setting.js';
 // page
 import { Mixology } from '../mixology/mixology.js';
 import {Cabinet} from '../cabinet/cabinet.js';
+import { Articles } from '../articles/articles.js';
 
 import Form from '../form/form.js';
 export class Menu {
@@ -20,6 +21,7 @@ export class Menu {
     getMenu(userStatus){
         const useMixology = Mixology.init;
         const useCabinet  = Cabinet.init;
+        const useArticles = Articles.init;
         // let isState = state.isLogged;
         const isLogged = userStatus.isLogged;
         const mobileMenuHandler = this.Model.mobileMenuHandler;
@@ -47,12 +49,13 @@ export class Menu {
                 }
             }
         };
-        const brands = { 
-            ...this.Setting.brands,
+        const articles = { 
+            ...this.Setting.article,
             handler :{
                 click : (e) => {
                     menuHandler(e);
-                    updateMenuState(  {path : 'brands'});
+                    updateMenuState(  {path : 'articles'});
+                    useArticles(this.root);
                 }
             }
         };
@@ -65,7 +68,7 @@ export class Menu {
         const initMenu = [
             home ,
             mixology ,
-            brands,
+            articles,
             { 
                 ...this.Setting['Sign in'],
                 handler :{
@@ -81,7 +84,7 @@ export class Menu {
         const authedUserMenu = [
             home ,
             mixology ,
-            brands,
+            articles,
             { 
                 ...this.Setting.cabinet,
                 handler :{

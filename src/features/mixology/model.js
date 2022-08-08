@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
-import {Animation} from '../setUp';
-=======
 import {Animation} from '../setUp.js';
->>>>>>> Stashed changes
+
 const init = {
     method : 'GET' ,
     headers : {
