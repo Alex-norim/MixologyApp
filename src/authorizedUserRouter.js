@@ -136,11 +136,11 @@ authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
     let userLogin = req.body.login;
     
     getBestRecipes(userLogin)
-        .then(result => {
-            res.send(JSON.stringify({
-                res : result
-            }))
-        })
+    .then(result => {
+        res.send(JSON.stringify({
+            res : result
+        }))
+    })
 })
 
 authorizedUserRouter.post('/personalCabinet' , (req,res) => {

@@ -53,9 +53,8 @@ export class Menu {
             ...this.Setting.article,
             handler :{
                 click : (e) => {
-                    menuHandler(e);
+                    menuHandler(e , useArticles , this.root);
                     updateMenuState(  {path : 'articles'});
-                    useArticles(this.root);
                 }
             }
         };

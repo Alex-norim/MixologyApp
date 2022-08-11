@@ -1,0 +1,11 @@
+<div class="article">
+    <h3 class="article-title">News and other ones</h3>
+    <nav class="article-menu">
+        <ul class="article-menu-list">
+            {{#each category}}
+                <li><a href="/articles/{{this}}" class="article-menu-item">{{this}}</a></li>
+            {{/each}}
+        </ul>
+    </nav>
+    <div class="article-text"></div>
+</div>

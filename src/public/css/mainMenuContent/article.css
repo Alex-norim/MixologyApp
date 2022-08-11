@@ -1,0 +1,67 @@
+.article{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.article-title{
+    flex-basis: 100%;
+    text-align-last: left;
+    font-size: 25px;
+    font-family: cursive;
+    margin-bottom: 17px;
+}
+nav.article-menu{
+    display: inline-block;
+    vertical-align: top;
+    flex-basis: 15%;
+}
+nav.article-menu > .article-menu-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+nav.article-menu > .article-menu-list > li{
+    display: inherit;
+    margin: 5px 0;
+}
+nav.article-menu > .article-menu-list .article-menu-item{
+    padding: 5px 8px;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    text-decoration: none;
+    width: 100%;
+    font-size: 20px;
+    text-transform: capitalize;
+    font-family: cursive;
+    transition: 0.4s;
+    cursor: pointer;
+}
+nav.article-menu > .article-menu-list .article-menu-item:hover{
+    text-shadow: #fff 1px 0 10px;
+    background-color: rgba(255,255,255, 0.3);
+    backdrop-filter: blur(2px);
+}
+.article-text{
+    display: inline-block;
+    flex-basis: 80%;
+}
+.article-wrap{
+
+}
+.article-wrap > .article-name{
+    font-size: 29px;
+    font-family: monospace;
+}
+.article-wrap > .article-content{
+    font-size: 19px;
+    font-family: cursive;
+    margin: 28px 0 65px 0;
+}
+.article-wrap > .article-author{
+    width: 100%;
+    text-align: end;
+    font-size: 19px;
+    font-family: monospace;
+}
