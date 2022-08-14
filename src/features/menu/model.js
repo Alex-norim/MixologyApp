@@ -59,55 +59,54 @@ export const Model = {
         })
     }, 
     mobileMenuHandler : (event) => {
+        const root = event.currentTarget.parentNode;
         // toggle funcs use this var to define time till hide items
         let timeTillHide = 400;
-        let menuList = this._root.getElementsByClassName('menu-main')[0];
-        let menuListItems = Object.entries (menuList.getElementsByClassName('menu-main-link'));
-        let displayStatus =  menuList.style.display;
-        let lines = Object.entries (this._root.getElementsByClassName('smallScreenButton')[0].getElementsByClassName('line'));
-        let toggleLines = (obj , showup = false) => {
-            let menuLineFrames = [
+        let menuListItems = root.getElementsByClassName('menu-main-link');
+        let lines = root.getElementsByClassName('line');
+        let displayStatus =  root.style.display;
+        let toggleLines = (elems , showup) => {
+            const menuLineFrames = [
                 [{transform: 'rotate(0deg)' , marginTop: 0} , {transform: 'rotate(45deg)' , marginTop: '15px'}] ,
                 [{transform: 'rotate(0deg)' ,display: 'block' , left : 0 , width : "100%"} , {transform: "rotate(360deg)", left : "50%" , width: 0}] ,
                 [{transform: "rotate(0deg)", marginBottom: "1px"} , {transform: 'rotate(-45deg)' , marginBottom: '14px' }] 
             ];
-            obj.forEach( item => {
-                let key = Number(item[0]);
-                let element = item[1];
-                element.animate( 
-                    menuLineFrames[key]    
+            let iterator = 0;
+            for (const menuItem of elems) {
+                menuItem.animate( 
+                    menuLineFrames[iterator]    
                 , {
                     delay : 0,
                     direction : showup ? "normal": "reverse",
                     duration : timeTillHide , 
                     iterations : 1 ,
                     fill : "forwards"
-                })
-            })
+                });
+                iterator++;
+            }
+            
         }
         let toggleMenuItems = (obj , showup) => {
             let menuItemsFrames = [
-                [{top : "20px" , display : 'none'} , {top : '20px' , display : 'block' }],
-                [{top : "20px" , display : 'none'} , {top : '62px' , display : 'block'} ],
-                [{top : "20px" , display : 'none'} , {top : '104px' , display : 'block'} ],
-                [{top : "20px" , display : 'none'} , {top : '146px' , display : 'block'} ]
+                [{top : "20px" } , {top : '20px' } ],
+                [{top : "20px" } , {top : '62px' } ],
+                [{top : "20px" } , {top : '104px'} ],
+                [{top : "20px" } , {top : '146px'} ]
             ];
-            obj.forEach( item => {
-                let key = Number(item[0]);
-                let element = item[1];
-                
-                element.addEventListener('click' , (event) => {
-                    let isMobileMenu = event.target.parentNode.getAttribute('style') || false ; 
+            let iterator = 0;
+            for (const menuElement of obj) {
+                menuElement.addEventListener('click' , (event) => {
+                    let isMobileMenu = root.getAttribute('style') || false ; 
                     let windowWidth = window.innerWidth;
-                    // check if the menu is in expanded state 
-                    isMobileMenu ? toggleLines(lines , false) : '';
+                    // check if the menu is web page state
                     if(windowWidth <= 750) { 
-                        menuList.style.display = 'none';
+                        console.log('>750')
+                        toggleLines(lines , showup ? false : true)
+                        toggleMenuItems(obj , showup ? false : true)
                     }
                 })
-                
-                let anim = element.animate( 
-                    menuItemsFrames[key]    
+                menuElement.animate( 
+                    menuItemsFrames[iterator]    
                 , {
                     delay : 0,
                     direction : showup ? "normal" : "reverse",
@@ -115,21 +114,25 @@ export const Model = {
                     iterations : 1 ,
                     fill : "forwards"
                 });
-            })
+                if(showup){
+                    menuElement.style.display = 'block';
+                }else if(!showup){
+                    setTimeout( () => {
+                        menuElement.style.display = '';
+                    } , timeTillHide )
+                }
+                iterator++;
+                // 
+            }
         }
-        
         if(displayStatus === 'flex'){
             toggleLines(lines , false)
             toggleMenuItems(menuListItems , false);
-            
-            setTimeout( () => {
-                menuList.style.display = 'none';
-            } , timeTillHide + 10 );
-            
-        }else{
+            root.style.display = '';
+        }else if (displayStatus === ''){
             toggleLines(lines , true)
-            toggleMenuItems(menuListItems , true)
-            menuList.style.display = 'flex';
+            toggleMenuItems(menuListItems , true);
+            root.style.display = 'flex';
         }
         
     },
