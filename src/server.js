@@ -28,6 +28,12 @@ app.use(express.static( __dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + "/dist"));
+app.use((req,res,next) => {
+    // this midleware to check user is logged or not
+    console.log('is logged')
+    console.log(req.locals)
+    next();
+})
 Mixology_Router.use(express.static(__dirname + "/public"));
 Mixology_Router.use(express.static(__dirname + "/dist"));
 Mixology_Router.use(express.static(__dirname + "/dist"));

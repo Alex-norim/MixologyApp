@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const RegistrationRouter = express.Router();
-
+const bcrypt = require('bcrypt');
 // database
 const mysql = require('mysql2');
 const mysqlConfig = require('./connection/mysql_connection.js');
@@ -65,7 +65,6 @@ let registerNewUser = (name , login , password , email , subscribe) => {
     let sql = `INSERT INTO users (name, login, password, email, subscribe) VALUES (?,?,?,?,?)`;
 
     let connection = mysql.createConnection(mysqlConfig).promise();
-
     let isRegistered = connection.execute(sql , credentials).then( result => {
         connection.end();
         return {isRegistered : true}
@@ -76,11 +75,11 @@ let registerNewUser = (name , login , password , email , subscribe) => {
     return isRegistered;
 }
 
-RegistrationRouter.post('/signup' , (req, res) => {
-    let login = validate(req.body.login);
-    let name = validate(req.body.name);
+RegistrationRouter.post('/signup' , async(req, res) => {
+    let login = req.body.login;
+    let name  = req.body.name;
     let email = req.body.email;
-    let password = validate(req.body.password);
+    let password = await bcrypt.hash(req.body.password ,10);
     let subscribe = (req.body.subscribe === 'on') ? 1 : 0;
     
     // pass login to find out whether login exists or not ,

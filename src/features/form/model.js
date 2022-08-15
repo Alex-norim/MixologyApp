@@ -55,6 +55,7 @@ export const Model = {
             }
             return response;
         }
+        console.log(credentials)
         isvalid() ? 
             fetch( "/auth/signin" , {
                 method:'POST',
@@ -68,14 +69,13 @@ export const Model = {
                 form.reset();
                 return result.json();
             })
-            .then( body => {
-                let isLogIn  = body.exist;
-                
+            .then( result => {
+                let isLogIn  = result.exist;
                 //check the user has been logged in successfully
                 if(isLogIn){
-                    let response = body.response[0];
-                    let login = response.login;
-                    let name    = response.name;
+                    let credentials = result.response;
+                    let login = credentials.login;
+                    let name    = credentials.name;
                     // save user's data
                     localStorage.setItem("name" , name);
                     localStorage.setItem("login" , login);
