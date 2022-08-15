@@ -16,6 +16,7 @@
 /* media requires */
 @media screen and (max-width : 5000px) and (min-width: 750px) {
     .menu-main-link{
+        display: inline-block;
         border: 1px solid #000;
         background: rgb(170 168 168 / 37%);
     }
@@ -26,21 +27,23 @@
 }
 @media screen and (max-width : 750px) and (min-width: 320px) {
     .mainMenuWrap{
-        position: relative;
+        position: absolute;
+        top: 35px;
+        right: 16px;
     }
-    .mainMenuWrap .menu-main{
+    /* .mainMenuWrap .menu-main{
         display: none;
         flex-direction: column;
         position: absolute;
-    }
+    } */
     .mainMenuWrap .menu-main-link{
-        width: 75vw;
+        display: none;
+        width: 250px;
         position: absolute;
-        right: 4vh;
-        top: 19px;
+        right: 0px;
         z-index: 10000;
         text-align: center;
-        background-color: rgb(140 133 133 / 40%);
+        background-color: rgb(0 0 0 / 80%);
         backdrop-filter: blur(6px);
         transition:  .4s;
     }
@@ -51,8 +54,8 @@
     .smallScreenButton{
         display: inline-block;
         position: relative;
-        width: 32px;
-        height: 32px;
+        width: 40px;
+        height: 40px;
         cursor: pointer;
         z-index: 10;
         right: 0;
@@ -79,60 +82,32 @@
     .smallScreenButton .line:nth-child(3){
         margin: auto 0;
         right: 0;
-        bottom: 1px;
+        bottom: 0;
     }
 }
-@media screen and (max-width : 660px) and (min-width: 320px) {
+@media screen and (max-width : 599px) and (min-width: 450px) {
     .mainMenuWrap .menu-main-link{
-        width: 70vw;
-        right: 5vw;
-    }
-}
-@media screen and (max-width : 600px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        right: 4vw;
-        top: 21px;
-    }
-}
-@media screen and (max-width : 599px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        top: 30px;
-        width: 79vw;
-        right: 0px;
-    }
-}
-@media screen and (max-width : 500px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        top: 30px;
-        width: 81vw;
-        right: -27px;
+        right: 0;
     }
 }
 @media screen and (max-width : 450px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        width: 80vw;
-        right: -32px;
+    .logotype-wrapper{
+        position: absolute;
+        top: 14px;
+        left: 15px;
     }
-}
-@media screen and (max-width : 400px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        width: 79vw;
-        right: -32px;
+    .mainMenuWrap{
+        position:static;
+        width: 100%;
     }
-}
-@media screen and (max-width : 350px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        width: 90vw;
-        right: -48px;
+    .smallScreenButton{
+        position: absolute;
+        top: 21px;
+        right: 10px;
     }
-}
-@media screen and (max-width : 340px) and (min-width: 320px) {
     .mainMenuWrap .menu-main-link{
-        right: -43px;
-    }
-}
-@media screen and (max-width : 330px) and (min-width: 320px) {
-    .mainMenuWrap .menu-main-link{
-        right: -32px;
+        width: 100vw;
+        left: 0;
+        right: 0;
     }
 }

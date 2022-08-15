@@ -19,6 +19,7 @@ export class Menu {
     }
 
     getMenu(userStatus){
+        // the functions of initialization after getting new content 
         const useMixology = Mixology.init;
         const useCabinet  = Cabinet.init;
         const useArticles = Articles.init;
@@ -61,7 +62,9 @@ export class Menu {
         const mobileMenu = {
             ...this.Setting.mobileButton,
             handler : {
-                click : mobileMenuHandler
+                click : (e) => {
+                    mobileMenuHandler(e , this.root)
+                }
             }
         }
         const initMenu = [

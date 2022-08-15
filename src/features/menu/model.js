@@ -67,9 +67,9 @@ export const Model = {
         let displayStatus =  root.style.display;
         let toggleLines = (elems , showup) => {
             const menuLineFrames = [
-                [{transform: 'rotate(0deg)' , marginTop: 0} , {transform: 'rotate(45deg)' , marginTop: '15px'}] ,
+                [{transform: 'rotate(0deg)' , marginTop: 0} , {transform: 'rotate(45deg)' , marginTop: '17px'}] ,
                 [{transform: 'rotate(0deg)' ,display: 'block' , left : 0 , width : "100%"} , {transform: "rotate(360deg)", left : "50%" , width: 0}] ,
-                [{transform: "rotate(0deg)", marginBottom: "1px"} , {transform: 'rotate(-45deg)' , marginBottom: '14px' }] 
+                [{transform: "rotate(0deg)", marginBottom: "1px"} , {transform: 'rotate(-45deg)' , marginBottom: '20px' }] 
             ];
             let iterator = 0;
             for (const menuItem of elems) {
@@ -88,25 +88,32 @@ export const Model = {
         }
         let toggleMenuItems = (obj , showup) => {
             let menuItemsFrames = [
-                [{top : "20px" } , {top : '20px' } ],
-                [{top : "20px" } , {top : '62px' } ],
-                [{top : "20px" } , {top : '104px'} ],
-                [{top : "20px" } , {top : '146px'} ]
+                [{top : "42px" } , {top : "42px" } ],
+                [{top : "42px" } , {top : '84px' } ],
+                [{top : "42px" } , {top : '126px'} ],
+                [{top : "42px" } , {top : '168px'} ]
             ];
+            let menuItemsFrames2 = [
+                [{top : "72px" } , {top : "72px" } ],
+                [{top : "72px" } , {top : '114px' } ],
+                [{top : "72px" } , {top : '156px'} ],
+                [{top : "72px" } , {top : '198px'} ]
+            ];
+            const windowSize = window.innerWidth;
             let iterator = 0;
             for (const menuElement of obj) {
                 menuElement.addEventListener('click' , (event) => {
-                    let isMobileMenu = root.getAttribute('style') || false ; 
                     let windowWidth = window.innerWidth;
                     // check if the menu is web page state
                     if(windowWidth <= 750) { 
-                        console.log('>750')
                         toggleLines(lines , showup ? false : true)
                         toggleMenuItems(obj , showup ? false : true)
                     }
                 })
                 menuElement.animate( 
-                    menuItemsFrames[iterator]    
+                    windowSize >600 ? 
+                        menuItemsFrames[iterator] :
+                        menuItemsFrames2[iterator]
                 , {
                     delay : 0,
                     direction : showup ? "normal" : "reverse",
