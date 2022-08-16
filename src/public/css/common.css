@@ -5,6 +5,7 @@
     color: #fff;
 }
 .header , .footer{
+    position: relative;
     max-width: 930px;
     min-width: 320px;
     margin: 0 auto;
@@ -19,9 +20,6 @@
     min-width: 320px;
     margin: 0 auto;
     padding: 40px 0;
-}
-.body-content{
-    /* height: 100vh; */
 }
 .main-title{
     font-weight: 700;
@@ -63,7 +61,11 @@
 }
 
 @media screen and (min-width: 320px) and (max-width : 500px){
-    .header , .footer{
+    .header {
+        padding: 20px ;
+        width: 100%;
+    }
+    .footer{
         padding: 20px;
     }
     .container{

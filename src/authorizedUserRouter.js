@@ -3,6 +3,8 @@ const authorizedUserRouter = express.Router();
 const mysql = require('mysql2');
 let bodyParser = require('body-parser');
 const connectionConfig = require('./connection/mysql_connection.js') ;
+const bcrypt = require('bcrypt');
+const { password } = require('./connection/mysql_connection.js');
 
 authorizedUserRouter.use(bodyParser.urlencoded({extended: false}));
 authorizedUserRouter.use(bodyParser.json());
@@ -16,36 +18,43 @@ authorizedUserRouter.use( (req,res,next) => {
 })
 // Does user exist in db
 let logIn = async (log , pass) => {
-    let sqlRequest = `SELECT name,login,favoriteRecipe FROM users WHERE login='${log}' AND password='${pass}'`;
+    let sqlRequest = `SELECT name,login,password,favoriteRecipe FROM users WHERE login='${log}'`;
     let connection = mysql.createConnection(connectionConfig).promise();
-    let userIsChecked = await connection.execute(sqlRequest)
+    let userCredentials = {};
+    let hashpassword = null ;
+    const textpassword = pass;
+    await connection.execute(sqlRequest)
         .then( ([row,field])  => {
-            return row;
+            return row[0];
         })
         .then(result => {
             connection.end();
-            if(result.length > 0){
-                // in the future i m gonna add some code 
-                return {
-                    user : 'true',
-                    body : result
-                };
-            }else{
-                return {
-                    user : false ,
-                    error : "Login or password is invalid"
-                }
-            }
-            
+            userCredentials.name = result.name;
+            userCredentials.login = result.login;
+            userCredentials.favoriteRecipe = result.favoriteRecipe;
+            // to compare
+            hashpassword = result.password;
         })
         .catch( err => {
-            return {
-                user : false ,
-                error : "Database not approachable"
-            }
+            throw err
         });
-        
-    return userIsChecked;
+    let isMatch = null;
+    await bcrypt.compare(textpassword, hashpassword).then( result => {
+        isMatch = result;
+    }).catch( err => isMatch = false);
+
+    if(isMatch){
+        return {
+            user : true,
+            body : userCredentials
+        };
+    }else{
+        return {
+            user : false,
+            error : 'some trouble'
+        }
+    }
+    
     // next 
 };
 // make default request to the db
@@ -119,6 +128,7 @@ authorizedUserRouter.post('/signin' , (req,res) => {
     
     logIn(login , password)
         .then( result => {
+            console.log(result)
             if(result.user){
                 res.send(JSON.stringify({
                     exist : true ,
