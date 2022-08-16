@@ -1,6 +1,7 @@
 
 import CreateDom from './createDOM.js';
 import { Menu } from './menu/menu.js';
+import scrollBar from './scroller/scrollBar.js';
 // style
 import '../public/css/style.css';
 class App{
@@ -19,43 +20,22 @@ class App{
         // ------------
         this.root = initElement; 
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendingAnimation"></div></div>';
+        this.horizontalBar = scrollBar.init;
 
+        // _createDom will be removed
         this._createDOM = new CreateDom(this.root);
         this.MainMenu = new Menu(
             this.root , 
             this.updateUserStatus.bind(this) 
         );
     }
-    // methods 
-    // tabaco
-    hangHandlerOnTabacoMenu (){
-        // getting single item
-        let parent              = this.root.getElementsByClassName('tabacoID')[0];
-        console.log(parent)
-        let contentPlace        = parent.getElementsByClassName('tabacoHistoryID')[0];
-        // getting multiply items
-        let tabacoMenuItem      = parent.getElementsByClassName('menu-main-link');
-        
-        // getting of data
-        let getData = async (event) => {
-            let URL = event.target.getAttribute('data-link');
-            //animation of waiting
-            contentPlace.innerHTML = this.pendingAnimation;
-            let data = await fetch(URL , {method: 'GET'}).then( result => {
-                return result.json();
-            }).catch(err => {
-                console.log('errrrrrr')
-            });
-            contentPlace.innerHTML = '';
-            contentPlace.innerHTML = data.res;
-        }
-
-        for (const item of tabacoMenuItem) {
-            item.addEventListener('click' , getData)
-        }
-
-    }
     init(){
+        const settings = {
+            horizont : true
+        }
+        
+        this.horizontalBar(this.root , settings)
+        
         let pagePath = this.USER.path;
         let isUserLogged = this.USER.isLogged || localStorage.getItem('name') ;
         this._createDOM.header();
