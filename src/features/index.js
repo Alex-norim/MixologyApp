@@ -1,7 +1,7 @@
 
 import CreateDom from './createDOM.js';
 import { Menu } from './menu/menu.js';
-import scrollBar from './scroller/scrollBar.js';
+import scrollBar from './scrollBar/scrollBar.js';
 // style
 import '../public/css/style.css';
 class App{
@@ -20,7 +20,7 @@ class App{
         // ------------
         this.root = initElement; 
         this.pendingAnimation = '<div class="pendingWrapper"><div class="pendingAnimation"></div></div>';
-        this.horizontalBar = scrollBar.init;
+
 
         // _createDom will be removed
         this._createDOM = new CreateDom(this.root);
@@ -30,12 +30,6 @@ class App{
         );
     }
     init(){
-        const settings = {
-            horizont : true
-        }
-        
-        this.horizontalBar(this.root , settings)
-        
         let pagePath = this.USER.path;
         let isUserLogged = this.USER.isLogged || localStorage.getItem('name') ;
         this._createDOM.header();
@@ -43,6 +37,8 @@ class App{
         this.root.getElementsByClassName('header')[0].append( this.MainMenu.getMenu( {isLogged : isUserLogged } ) );
         // 
         this._createDOM.footer();
+        // scrollbar
+        scrollBar.init()
     }
 }
 let app = new App(document.getElementById('root'));

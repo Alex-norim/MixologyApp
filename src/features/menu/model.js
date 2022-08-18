@@ -1,3 +1,4 @@
+import scrollBar from "../scrollBar/scrollBar.js";
 export const Model = {
     updateState : function( newState ){
         this.menuState.path = newState;
@@ -34,6 +35,7 @@ export const Model = {
                         `</div> `;
             bodyContent.innerHTML = HTML;
             useCabinet(this.root);
+            scrollBar.init();
         })
         .catch( err => {
             throw err;
@@ -53,6 +55,8 @@ export const Model = {
         .then ( text => {
             bodyContent.innerHTML = text;
             currentHandler && root ? currentHandler(root) : `` ;
+            scrollBar.init();
+            
         })
         .catch( err => {
             throw err;
