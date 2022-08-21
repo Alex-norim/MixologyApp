@@ -21,6 +21,8 @@ export const Model = {
             let newMenu = redrawnMenu ;
             const header = root.querySelector('.header') ;
                 header.append(newMenu);
+            const directToHome = header.querySelector('nav').querySelector('a');
+            directToHome.click();
         }
         let modalWindow = drawModalWindow( "Are you sure?" , acceptanceFunction , rejectionFunction );
         root.append(modalWindow);
