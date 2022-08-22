@@ -18,12 +18,15 @@ export const Mixology = {
         const menuItemHandler = model.showSpecificList;
         // user 
         const isUserLogged = localStorage.getItem('name') || false;
+
+        // to give mixology menu item the hundler to get specific list
         model.bindHandler(mixMenu , 'click' , (e) => {
             menuItemHandler(e , getList , mixRoot , likeHandler);
         } );
         
         // hang handler on the mix menu item
         // draw top ten recipes
+        console.log(recipeList)
         drawTopRecipes.then( result => {
             const topTen = result.list;
             if(isUserLogged){
@@ -37,7 +40,7 @@ export const Mixology = {
                 });
             }else{
                 recipeList.innerHTML = '';
-                listElements = getList( topTen , false );
+                const listElements = getList( topTen , false );
                 listElements.forEach( item => {
                     recipeList.append(item);
                 })
