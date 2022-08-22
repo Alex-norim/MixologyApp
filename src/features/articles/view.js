@@ -2,7 +2,12 @@ import createElement from '../appSettings/createElement.js';
 
 export const View = {
     renderArticles : (arrayArticles , rootElement) => {
+        const Error = typeof arrayArticles === 'string' ? true : false;
         rootElement.innerHTML = '';
+        if ( Error ) {
+            rootElement.innerHTML = `<p class="article-error">${arrayArticles}</p>`;
+            return false;
+        }
         for (const article of arrayArticles) {
             const title = new createElement({
                 tagname : 'h4' ,

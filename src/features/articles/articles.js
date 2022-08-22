@@ -13,7 +13,10 @@ export const Articles = {
         // 
         const MenuItemhandler = Model.menuItemHandler;
         const RenderArticles = View.renderArticles;
+        //
+        const showHighRatingArticle = Model.bestArticle;
 
+        showHighRatingArticle( RenderArticles , ArticleNest);
         Binder(ArticleMenuItems , (e) => {
             MenuItemhandler(e , RenderArticles , ArticleNest)
         } , 'click');

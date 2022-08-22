@@ -3,6 +3,20 @@ const ArticleRouter = express.Router();
 
 
 // 
+const getHighRatingArticle = async () => {
+    const mysql = require('mysql2');
+    const mysqlConfig = require('./connection/mysql_connection');
+    const connection = mysql.createConnection(mysqlConfig).promise();
+    const sql = `SELECT text,author,articlename FROM articles ORDER BY rating LIMIT 1`
+    return await connection.execute(sql)
+        .then( ([row, fields]) => {
+            connection.end();   
+            return row;
+        })
+        .catch( err => {
+            return 'server not found'
+        })
+}
 const ArticleCategoryes = async () => {
     const mysql = require('mysql2');
     const mysqlConfig = require('./connection/mysql_connection');
@@ -15,7 +29,7 @@ const ArticleCategoryes = async () => {
             return row.map( obj => obj.category )
         })
         .catch( err => {
-            return ['server not found']
+            return ['Not found']
         })
 }
 // middleware functions
@@ -32,6 +46,16 @@ ArticleRouter.get("/" , (req,res) => {
         category : req.ArticlesArray
     });
 });
+ArticleRouter.get('/get_highest_article' , (req, res) => {
+    console.log('result')
+    getHighRatingArticle()
+        .then( result => {
+            res.send(JSON.stringify({
+                response : result
+            }))
+        })
+    
+})
 ArticleRouter.get(/[a-z]/ , (req,res) => {
     const getNews = async (topic) => {
         const mysql = require('mysql2');
