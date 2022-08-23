@@ -15,23 +15,16 @@ const scrollBar = {
             progressbar : {
                 background : 'red',
                 height : '100%',
-                width : '0' ,
             }
         };
         const userSetting = settings ? settings : defSetting; 
-
         // 
         const scrollEvent = Model.scrollEvent;
         const drawScrollBar = View.drawScrollBar;
-        const windowBiggerDoc = Model.filledProgressBar();
         //
         const bar = drawScrollBar( userSetting , scrollEvent, scrollBarID , progressBarID);
         //
         document.body.append(bar);
-        if(windowBiggerDoc){
-            const progressBar = document.getElementById(progressBarID);
-            progressBar.style.width = '100%';
-        }
     }
 }
 

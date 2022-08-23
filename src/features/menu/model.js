@@ -10,9 +10,7 @@ export const Model = {
         const userlogin = localStorage.getItem('login');
         const username  = localStorage.getItem('name');
         let root = this.root;
-        
         let bodyContent = root.getElementsByClassName('body-content')[0];
-            // bodyContent.innerHTML = this.pendingAnimation;
         fetch(HrefRequest , {
             method: "POST",
             headers : {
@@ -35,7 +33,6 @@ export const Model = {
                         `</div> `;
             bodyContent.innerHTML = HTML;
             useCabinet(this.root);
-            scrollBar.init();
         })
         .catch( err => {
             throw err;
@@ -55,8 +52,6 @@ export const Model = {
         .then ( text => {
             bodyContent.innerHTML = text;
             currentHandler && root ? currentHandler(root) : `` ;
-            scrollBar.init();
-            
         })
         .catch( err => {
             throw err;
