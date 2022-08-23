@@ -40,6 +40,7 @@ const Model = {
                 let svg = target.querySelector('.svgpath');
                 let ratingText = target.querySelector('.recipeRating');
                 console.log(ratingText)
+                console.log(response)
                 if(response){
                     svg.setAttribute('fill' , color);
                     ratingText.textContent = response;
@@ -70,7 +71,8 @@ const Model = {
                 let response = result.response;
                 let svg = target.querySelector('.svgpath');
                 let ratingText = target.querySelector('.recipeRating');
-                if(response){
+                console.log(response)
+                if(response || response === 0){
                     svg.setAttribute('fill' , defColor);
                     ratingText.textContent = response;
                     ratingText.setAttribute("style" , "color:" + defColor);
