@@ -3,6 +3,7 @@ export const View = {
     drawScrollBar : (setting , scrollEvent , scrollBarID , progressBarID) => {
         const scrollbarSet = setting.scrollbar;
         const progressbarSet = setting.progressbar;
+
         const container = new createElement({
             tagname : 'div',
             attr : {
@@ -19,7 +20,8 @@ export const View = {
             attr : {
                 style : {
                     ...progressbarSet,
-                    position : 'absolute'
+                    position : 'absolute',
+                    width : '0'
                 },
                 id: progressBarID
             }

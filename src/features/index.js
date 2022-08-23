@@ -34,7 +34,7 @@ class App{
         let isUserLogged = this.USER.isLogged || localStorage.getItem('name') ;
         this._createDOM.header();
         // 
-        this.root.getElementsByClassName('header')[0].append( this.MainMenu.getMenu( {isLogged : isUserLogged } ) );
+        this.root.querySelector('header').append( this.MainMenu.getMenu( {isLogged : isUserLogged } ) );
         // 
         this._createDOM.footer();
         // scrollbar

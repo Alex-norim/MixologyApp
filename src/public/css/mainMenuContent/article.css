@@ -47,9 +47,9 @@ nav.article-menu > .article-menu-list .article-menu-item:hover{
     display: inline-block;
     flex-basis: 80%;
 }
-.article-wrap{
+/* .article-wrap{
 
-}
+} */
 .article-wrap > .article-name{
     font-size: 29px;
     font-family: monospace;
