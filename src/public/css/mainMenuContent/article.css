@@ -14,17 +14,21 @@
     margin-bottom: 17px;
 }
 nav.article-menu{
-    display: inline-block;
-    vertical-align: top;
     flex-basis: 15%;
     position: sticky;
     top: 20px;
-    margin-bottom: 20px;
+    overflow: hidden;
+    width: 100%;
 }
 nav.article-menu > .article-menu-list {
     list-style: none;
     display: flex;
     flex-direction: column;
+    /*  */
+    position: relative;
+    top: 0;
+    left: 0;
+    /*  */
 }
 nav.article-menu > .article-menu-list > li{
     display: inherit;
@@ -83,11 +87,18 @@ nav.article-menu > .article-menu-list .article-menu-item:hover{
     .article{
         flex-direction: column;
     }
-    nav.article-menu > .article-menu-list{
-        flex-direction: row;
-        background: #000;
+    nav.article-menu{
+        flex-basis: 60px;
         padding: 1px 7px;
         border: 2px solid #fff;
+        background: #000;
+        margin-bottom: 20px;
+    }
+    nav.article-menu > .article-menu-list{
+        flex-direction: row;
+        position: absolute;
+        top: 0;
+        left: 0;
     }
     nav.article-menu > .article-menu-list li:not(:last-child){
         margin-right: 10px;

@@ -13,9 +13,12 @@ export const Articles = {
         // 
         const MenuItemhandler = Model.menuItemHandler;
         const RenderArticles = View.renderArticles;
+        const ArticleMenu = root.querySelector('.article-menu-list');
         //
         const showHighRatingArticle = Model.bestArticle;
+        const Slider = Model.articleMenuSlider;
 
+        Slider(ArticleMenu);
         showHighRatingArticle( RenderArticles , ArticleNest);
         Binder(ArticleMenuItems , (e) => {
             MenuItemhandler(e , RenderArticles , ArticleNest)
