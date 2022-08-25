@@ -14,11 +14,16 @@ export const Articles = {
         const MenuItemhandler = Model.menuItemHandler;
         const RenderArticles = View.renderArticles;
         const ArticleMenu = root.querySelector('.article-menu-list');
+        const getWidthSum = Model.childWidthSum;
+        const menuWidth = Model.articleMenuWidth;
         //
         const showHighRatingArticle = Model.bestArticle;
-        const Slider = Model.articleMenuSlider;
+        const bindSliderEffect = Model.articleMenuSlider;
 
-        Slider(ArticleMenu);
+        // to define width of the menu of article section
+        menuWidth(ArticleMenu , getWidthSum);
+        // bind slider
+        bindSliderEffect(ArticleMenu , getWidthSum);
         showHighRatingArticle( RenderArticles , ArticleNest);
         Binder(ArticleMenuItems , (e) => {
             MenuItemhandler(e , RenderArticles , ArticleNest)
