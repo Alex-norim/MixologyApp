@@ -1,5 +1,15 @@
+
 .designed_by{
     font-size: 15px;
     font-weight: 300; 
+}
 
+@media screen and (max-width : 550px) and (min-width: 320px) {
+    .footer .logotype-wrapper{
+        display: none;
+    }
+    .designed_by{
+        width: 100%;
+        text-align: right;
+    }
 }

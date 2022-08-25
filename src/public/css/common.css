@@ -62,7 +62,7 @@
 
 @media screen and (min-width: 320px) and (max-width : 500px){
     .header {
-        padding: 20px ;
+        padding: 35px 10px; ;
         width: 100%;
     }
     .footer{
