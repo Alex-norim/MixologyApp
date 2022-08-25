@@ -1,0 +1,27 @@
+.mix-menu{
+
+
+}
+
+.mix-menu > .mix-menu-list {
+    list-style: none;
+    display: flex;
+}
+
+
+.mix-menu > .mix-menu-list > .mix-menu-link{
+    padding: 5px 10px ;
+    border: 1px solid;
+    font-size: 20px;
+    font-family: serif;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: rgb(170 168 168 / 37%);
+    transition: .4s;
+}
+.mix-menu > .mix-menu-list > .mix-menu-link:hover{
+    background-color: rgba(154, 154, 154, .8);
+}
+.mix-menu > .mix-menu-list > .mix-menu-link:not(:last-child){
+    margin-right: 12px;
+}
