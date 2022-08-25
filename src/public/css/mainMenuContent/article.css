@@ -98,7 +98,7 @@ nav.article-menu > .article-menu-list .article-menu-item:hover{
         flex-direction: row;
         position: absolute;
         top: 0;
-        left: 10px;
+        left: 4px;
     }
     nav.article-menu > .article-menu-list li:not(:last-child){
         margin-right: 10px;

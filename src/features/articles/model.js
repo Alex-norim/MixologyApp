@@ -41,9 +41,9 @@ export const Model = {
         const moveAt = (left , element) => {
             let maxWidth = element.offsetWidth - element.parentNode.offsetWidth + 20;
             if(left > 20){
-                left = 20;
+                left = 5;
             }else if(left < -maxWidth){
-                left = -maxWidth
+                left = -maxWidth+15
             }
             element.style.left = left + 'px'
         };
@@ -82,7 +82,7 @@ export const Model = {
         if(ChildsWidth >= windowWidth){
             parent.style.width = '100%'
         }else{
-            parent.style.width = ChildsWidth + 10*2 + 'px';
+            parent.style.width = ChildsWidth + 10 + 'px';
         }
         
     }
