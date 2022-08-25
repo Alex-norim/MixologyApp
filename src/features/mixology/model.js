@@ -1,5 +1,5 @@
 import {Animation} from '../setUp.js';
-
+import { Model as ArtModel } from '../articles/model.js';
 const init = {
     method : 'GET' ,
     headers : {
@@ -153,15 +153,11 @@ const Model = {
             .catch( err => {throw err})
     },
     // next 
-    getTenRecipes : fetch("/mixology/topten" , init)
-    .then( result => {
-        return result.json();
-    })
-    .catch( err => {
-        throw err;
-    }),
+    getTenRecipes : fetch("/mixology/topten" , init).then( result => {return result.json();}).catch( err => { throw err;}),
     // next
-
+    getWidthsum : ArtModel.childWidthSum,
+    bindSliderMenu : ArtModel.articleMenuSlider,
+    getAdaptMenu : ArtModel.articleMenuWidth
 }
 
 export {Model};
