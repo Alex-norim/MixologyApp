@@ -33,6 +33,7 @@ class App{
         let pagePath = this.USER.path;
         let isUserLogged = this.USER.isLogged || localStorage.getItem('name') ;
         this._createDOM.header();
+        
         // 
         this.root.querySelector('header').append( this.MainMenu.getMenu( {isLogged : isUserLogged } ) );
         // 
