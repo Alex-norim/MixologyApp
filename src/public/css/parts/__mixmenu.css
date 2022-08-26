@@ -35,6 +35,7 @@
         height: 46px;
         overflow: hidden;
         width: 100%;
+        background-color: #000;
     }
     .mix-menu > .mix-menu-list{
         position: absolute;

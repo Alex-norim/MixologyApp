@@ -59,7 +59,12 @@
         width: 90%;
     }
 }
-
+@media screen and (min-width: 320px) and (max-width : 650px){
+    .main-title{
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+}
 @media screen and (min-width: 320px) and (max-width : 500px){
     .header {
         padding: 35px 10px; ;

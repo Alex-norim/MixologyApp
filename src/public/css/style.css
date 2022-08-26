@@ -2,7 +2,6 @@
 
 @import 'parts/__logo.css';
 @import 'parts/__mainmenu.css';
-@import 'parts/recipelist.css';
 @import 'parts/_footer.css';
 @import 'parts/__mixmenu.css';
 
@@ -11,7 +10,6 @@
 @import 'modalWindow/window.css';
 
 @import 'mainMenuContent/mixology-page.css';
-@import 'mainMenuContent/tabaco-page.css';
 @import 'mainMenuContent/registration.css';
 @import 'mainMenuContent/personalCab.css';
 @import 'mainmenuContent/article.css';
