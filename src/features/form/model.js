@@ -154,7 +154,9 @@ export const Model = {
         };
         let mouseIsPressed = false;
         element.addEventListener('mousedown' , (event) => {
-            mouseIsPressed = true;
+            const windowWidth = window.innerWidth;
+            mouseIsPressed = windowWidth >= 460 ? true : false;
+
             let currentElement = event.currentTarget;
             let shiftX  = event.screenX - currentElement.getBoundingClientRect().left;
             let shiftY  = event.screenY - 103 - currentElement.getBoundingClientRect().top ;
