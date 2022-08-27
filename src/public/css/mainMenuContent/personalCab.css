@@ -11,8 +11,24 @@
 .personalCab .title span{
     text-transform: capitalize;
 }
+.personalCab > .defbox {
+    display: inline-block;
+    vertical-align: top;
+    width: 48%;
+}
+.personalCab > .defbox:not(:last-child) {
+    margin-right: 4%;
+}
+.personalCab > .title {
+    display: inline-block;
+    width: 85%;
+}
+/* .personalCab > .logout {
+    
+} */
+
 .recommendation {
-    width: 400px;
+    width: 100%;
     margin: 30px auto 25px;
     text-align: center;
 }
@@ -27,21 +43,18 @@
 }
 .button {
     display: inline-block;
-    padding: 6px 15px;
-    width: 230px;
+    padding: 9px 16px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 20px;
-    background-color: rgba(255, 255, 255, 0.01);
-    position: absolute;
-    top: 0;
-    right: 0;
-    transition: .7s;
+    transition: .4s;
+    border: 1px solid #000;
+    background: rgb(170 168 168 / 37%);
+    width: 130px;
 }
 .button:hover{
     background: rgb(249 249 249 / 60%);
     color: #ffffff;
-    text-shadow: 6px 4px 5px #ffffff;
 }
 .button:active{
     background: rgba(255, 255, 255, .5s);
