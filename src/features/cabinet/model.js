@@ -4,7 +4,7 @@ export const Model = {
     likeHandler : importModel.likeHandler,
     getRecipeItems : importModel.showSpecificList,
     getBestRecipe : importModel.getBestRecipes,
-    logoutHandler : ( drawModalWindow , root , redrawnMenu) => {
+    logoutHandler : async ( drawModalWindow , root , redrawnMenu) => {
         let rejectionFunction = (event) => {
             let target = event.target;
             let parentNode = target.parentNode.parentNode;
@@ -24,8 +24,19 @@ export const Model = {
             const directToHome = header.querySelector('nav').querySelector('a');
             directToHome.click();
         }
-        let modalWindow = drawModalWindow( "Are you sure?" , acceptanceFunction , rejectionFunction );
-        root.append(modalWindow);
+        await fetch('/auth/logout' , {method:'GET'})
+            .then( result=> {
+                return result.json();
+            })
+            .then( result => {
+                if(result.res){
+                    let modalWindow = drawModalWindow( "Are you sure?" , acceptanceFunction , rejectionFunction );
+                    root.append(modalWindow);
+                }
+            })
+            .catch(err => {
+                throw err
+            })
     } ,
     getCategory : async () => {
         return await fetch( '/auth/getcategory' , {method: 'GET'})

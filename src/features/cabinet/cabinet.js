@@ -12,7 +12,7 @@ export const Cabinet = {
         const showBestRecipes = Model.getBestRecipe();
         const drawWindow = View.drawModalWindow;
         const logoutHandler = Model.logoutHandler;
-        const refreshMenu = new Menu(root , ()=> {console.log('x')}).getMenu({isLogged : false});
+        const refreshMenu = new Menu(root , ()=> {}).getMenu({isLogged : false});
 
         // suggest new recipe
         const getCategory = Model.getCategory();
@@ -21,8 +21,6 @@ export const Cabinet = {
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root , refreshMenu) });
         showBestRecipes.then( result => {
-            console.log(result)
-            console.log('ffffffffffff')
             const drawRecipeList = View.drawRecipeList;
             const likeHandler = Model.likeHandler;
             let recipes = result.res; // array

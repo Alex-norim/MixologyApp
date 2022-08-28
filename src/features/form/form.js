@@ -2,6 +2,7 @@
 import {Elements} from './setting.js';
 import {Model} from "./model.js";
 import {View} from "./view.js";
+import { Menu } from '../menu/menu.js';
 export default class Form {
     // type defines whether this form for logIn or signUp
     constructor ( root , updateUser){
@@ -13,7 +14,6 @@ export default class Form {
         this.root = root ;
         this._view = View;
         this._model = Model;
-        let someObj = { data : 'test getter'}
     }
     signUp (event , fieldOrder = 1 ) {
         let formWrap = event.currentTarget.parentNode.parentNode ;
@@ -159,6 +159,7 @@ export default class Form {
         const closeFormFoo  = this._model.closeForm.bind(this);
         const errorHandler  = this._model.formErrorHandler;
         const formHandler   = this._model.signInFormHandler.bind(this);
+        const redrawnMenu    = new Menu(root , ()=> {}).getMenu({isLogged : true});
         const moveForm = this._model.moveDom;
         const requredItems = [
             formEl.signInTitle ,
@@ -201,7 +202,7 @@ export default class Form {
                 ...formEl.form ,
                 handler : {
                     submit : (e) => {
-                        formHandler(e , this.updateUserStatus )
+                        formHandler(e , redrawnMenu , this.root )
                     }
                 }
             }
