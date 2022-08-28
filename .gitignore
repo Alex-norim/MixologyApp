@@ -1,5 +1,6 @@
 /node_modules 
 .gitignore
 src/dist/
-
-
+babel.config.json
+src/connection
+src/dist

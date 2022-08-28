@@ -3,42 +3,33 @@ export const Model = {
     updateState : function( newState ){
         this.menuState.path = newState;
     },
-    personalCabinet : function(event , useCabinet) {
-        //animation of waiting
-        const target = event.currentTarget;
-        const HrefRequest = target.attributes.href.value;
-        const userlogin = localStorage.getItem('login');
-        const username  = localStorage.getItem('name');
-        let root = this.root;
-        let bodyContent = root.getElementsByClassName('body-content')[0];
-        fetch(HrefRequest , {
-            method: "POST",
-            headers : {
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify({ login : userlogin , name : username})
-        })
-        .then( result => {
-            return result.json();
-        } )
-        .then( result => {
-            let name = result.userName;
-            let HTML = ` <div class="personalCab"> ` +
-                            `<h2 class="title">Hello <span>${name}</span></h2>`+
-                            `<button class="button logout">Log out</button>`+
-                            `<div class="defbox">`+
-                                `<h3 class="deftitle">Your favorite mix list</h3>`+
-                                `<ul class="favoriteRecipeList"></ul>`+
-                            `</div>`+
-                        `</div> `;
-            bodyContent.innerHTML = HTML;
-            useCabinet(this.root);
-        })
-        .catch( err => {
-            throw err;
-        })
+    personalCabinet : function(event , useCabinet , _root) {
+        let root = _root;
+        let bodyContent = root.querySelector('.body-content');
+        
+        fetch('/auth/personalCabinet')
+            .then( result => {
+                return result.json();
+            } )
+            .then( result => {
+                let name = result.userName;
+                let HTML = ` <div class="personalCab"> ` +
+                                `<h2 class="title">Hello <span>${name}</span></h2>`+
+                                `<button class="button logout">Log out</button>`+
+                                `<div class="defbox">`+
+                                    `<h3 class="deftitle">Your favorite mix list</h3>`+
+                                    `<ul class="favoriteRecipeList"></ul>`+
+                                `</div>`+
+                            `</div> `;
+                bodyContent.innerHTML = HTML;
+                useCabinet(root);
+            })
+            .catch( err => {
+
+                throw err;
+            })
     },
-    renderServerResponse : function (event , currentHandler = false , root = false ) {
+    renderServerResponse : function (event , currentHandler , root = false ) {
         event.preventDefault();
         let bodyContent = this.root.getElementsByClassName('body-content')[0];
         let HrefRequest = event.target.getAttribute('href');

@@ -30,8 +30,6 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + "/dist"));
 app.use((req,res,next) => {
     // this midleware to check user is logged or not
-    console.log('is logged')
-    console.log(req.locals)
     next();
 })
 Mixology_Router.use(express.static(__dirname + "/public"));
@@ -67,4 +65,4 @@ app.use('/registration' , RegistrationRouter);
 app.use('/auth' , authorizedUserRouter);
 // other reqs
 
-app.listen(3000 , '172.20.10.5');
+app.listen(3000 );

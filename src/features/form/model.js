@@ -44,7 +44,7 @@ export const Model = {
         const updateUserStatus = updateUser;
         let form    = e.currentTarget;
         let closeFormButton = form.querySelector('.closeFormButton');
-        let errorMessage = form.getElementsByClassName('error-message')[0];
+        let errorMessage = form.querySelector('.error-message');
         let credentials = this.currentFieldData;
         let isvalid = () => {
             let response;
@@ -55,7 +55,7 @@ export const Model = {
             }
             return response;
         }
-        console.log(credentials)
+        
         isvalid() ? 
             fetch( "/auth/signin" , {
                 method:'POST',
@@ -83,12 +83,11 @@ export const Model = {
                     updateUserStatus({isLogged : true})
                     closeFormButton.click();
                 }else{
-                    errorMessage.innerHTML = body.error;
+                    errorMessage.innerHTML = "db not found";
                 }
             })
             .catch( err => {
-                console.log("some error after submiting")
-                throw err
+                errorMessage.textContent = "some error after submiting";
             })
             // else
             : '' 
@@ -144,8 +143,6 @@ export const Model = {
         function moveAt (el, x , y , rightEdge) {
             let left = x < 0 ? 0 : x > rightEdge ? rightEdge : x ;
             let top  = y < 0 ? 0 : y ;
-            console.log(rightEdge)
-
             el.style.top  = top + 'px';
             el.style.left = left  + 'px';
         }

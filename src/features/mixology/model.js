@@ -139,17 +139,13 @@ const Model = {
     },
     // next 
     getBestRecipes : async () => {
-        const userLogin = localStorage.getItem('login');
         return await fetch( '/auth/getBestRecipes' , {
-                method : 'POST' ,
-                headers : {
-                    "Content-Type" : "application/json"
-                },
-                body : JSON.stringify({
-                    login : userLogin
-                })
+                method : 'GET'
             })
-            .then( result => result.json())
+            .then( result => {
+                console.log(result)
+                return result.json();
+            })
             .catch( err => {throw err})
     },
     // next 

@@ -21,6 +21,8 @@ export const Cabinet = {
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root , refreshMenu) });
         showBestRecipes.then( result => {
+            console.log(result)
+            console.log('ffffffffffff')
             const drawRecipeList = View.drawRecipeList;
             const likeHandler = Model.likeHandler;
             let recipes = result.res; // array

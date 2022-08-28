@@ -1,62 +1,156 @@
 const express = require('express');
 const authorizedUserRouter = express.Router();
 const mysql = require('mysql2');
+
+const cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 const connectionConfig = require('./connection/mysql_connection.js') ;
 const bcrypt = require('bcrypt');
-const { password } = require('./connection/mysql_connection.js');
+//
+
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const session = require('express-session');
+const mySQLstore = require('express-mysql-session');
+
+//
+passport.serializeUser(function(user, cb) {
+    process.nextTick(function() {
+        console.log("user is " + user)
+        cb(null, { 
+            id: user.id, 
+            login : user.login,
+            name : user.name,
+            favoriteRecipe : user.favoriteRecipe
+        });
+    });
+});
+passport.deserializeUser(function(user, cb) {
+    const connection = mysql.createConnection(connectionConfig).promise();
+    connection.execute(`SELECT name,login,favoriteRecipe FROM users WHERE id=?` , [user.id])
+        .then( ([row,field]) => {
+            let user = row[0];
+            connection.end();
+            process.nextTick(function() {
+                return cb(null, user);
+            });
+        })
+
+});
 
 authorizedUserRouter.use(bodyParser.urlencoded({extended: false}));
 authorizedUserRouter.use(bodyParser.json());
+authorizedUserRouter.use(cookieParser())
+authorizedUserRouter.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized : false,
+    store: new mySQLstore(connectionConfig)
+}));
+authorizedUserRouter.use(passport.initialize());
+authorizedUserRouter.use(passport.session());
+// authorizedUserRouter.use(passport.authenticate('session'));
 
-authorizedUserRouter.use( (req,res,next) => {
-    let userLogin = req.body.login || false;
-    let userName  = req.body.name  || false;
-    (userLogin) ? res.locals.currentLogin = userLogin : '';
-    (userName)  ? res.locals.currentName  = userName  : '';
-    next();
+//
+passport.use(new LocalStrategy( 
+    {usernameField:"login", passwordField:"password"},
+    ( login , password , done) => {
+    const connection = mysql.createConnection(connectionConfig).promise();
+    const sql = `SELECT id,name,login,password,favoriteRecipe FROM users WHERE login=?`;
+    connection.execute(sql , [login])
+        .then( ([row,field]) => {
+            connection.end();
+            return row;
+        })
+        .then( result => {
+            if(!result[0]){
+                return done(null,false,{message : 'user not found'})
+            }
+            bcrypt.compare(password , result[0].password , (err , res) => {
+                if(res){
+                    console.log('passed')
+                    done(null , result[0])
+                }else{
+                    console.log('not passed')
+                    return done(null , false , {message : 'incorrect password'})
+                }
+            } )
+
+        })
+}));
+// 
+authorizedUserRouter.post('/signin' , 
+    passport.authenticate('local' , { successMessage :'you are logged'}) ,
+    (req,res) => {
+        let userData = {
+            login : req.user.login,
+            name : req.user.name,
+            list : req.user.favoriteRecipe
+        }
+        if(req.user){
+            res.send(JSON.stringify({
+                exist : true ,
+                response : userData
+            }))
+        }
+});
+authorizedUserRouter.get('/personalCabinet' , (req,res) => {
+    res.send( JSON.stringify({
+        userName : req.user.name,
+    }));
 })
 // Does user exist in db
-let logIn = async (log , pass) => {
-    let sqlRequest = `SELECT name,login,password,favoriteRecipe FROM users WHERE login='${log}'`;
-    let connection = mysql.createConnection(connectionConfig).promise();
-    let userCredentials = {};
-    let hashpassword = null ;
-    const textpassword = pass;
-    await connection.execute(sqlRequest)
-        .then( ([row,field])  => {
-            return row[0];
-        })
-        .then(result => {
-            connection.end();
-            userCredentials.name = result.name;
-            userCredentials.login = result.login;
-            userCredentials.favoriteRecipe = result.favoriteRecipe;
-            // to compare
-            hashpassword = result.password;
-        })
-        .catch( err => {
-            throw err
-        });
-    let isMatch = null;
-    await bcrypt.compare(textpassword, hashpassword).then( result => {
-        isMatch = result;
-    }).catch( err => isMatch = false);
-
-    if(isMatch){
-        return {
-            user : true,
-            body : userCredentials
-        };
-    }else{
-        return {
-            user : false,
-            error : 'some trouble'
-        }
-    }
+// let logIn = async (log , pass) => {
+//     let sqlRequest = `SELECT name,login,password,favoriteRecipe FROM users WHERE login='${log}'`;
+//     let connection = mysql.createConnection(connectionConfig).promise();
+//     let userCredentials = {};
+//     let hashpassword = null ;
+//     const textpassword = pass;
+//     await connection.execute(sqlRequest)
+//         .then( ([row,field])  => {
+//             return row[0];
+//         })
+//         .then(result => {
+//             connection.end();
+//             userCredentials.name = result.name;
+//             userCredentials.login = result.login;
+//             userCredentials.favoriteRecipe = result.favoriteRecipe;
+//             // to compare
+//             hashpassword = result.password;
+//         })
+//         .catch( err => {
+//             userCredentials = null;
+//         });
     
-    // next 
-};
+//     if(!userCredentials){
+//         let isMatch = null;
+
+//         await bcrypt.compare(textpassword, hashpassword).then( result => {
+//             isMatch = result;
+//         }).catch( err => { isMatch = null });
+
+//         if(isMatch){
+//             return {
+//                 user : true,
+//                 body : userCredentials
+//             };
+//         }else{
+//             return {
+//                 user : false,
+//                 body : {
+//                     error : 'wrong password'
+//                 }
+//             }
+//         }
+//     }else{
+//         return {
+//             user : false,
+//             error : 'some trouble'
+//         }
+//     }
+    
+//     // next 
+// };
 // make default request to the db
 async function makeRequestToServer (sql) {
     let connection = mysql.createConnection(connectionConfig).promise() ;
@@ -72,32 +166,7 @@ async function makeRequestToServer (sql) {
             return false;
         })
 }
-let getBestRecipes = async (userLogin) => {
-    //this foo has to return array of obj's like [{id : value , recipe : value , rating : value} , {obj}]
-    let sqlGetList = `SELECT favoriteRecipe FROM users WHERE login='${userLogin}'`;
-    return await makeRequestToServer(sqlGetList)
-        .then(result => {
-            return result
-        })
-        .then( result => {
-            console.log(result)
-            let list = result[0].favoriteRecipe;
-            if(list.length >=1 ){
-                let sqlParts = list;
-                let getNotes = `SELECT id,recipe,rating FROM coctails WHERE id IN (${sqlParts})`;
-                return makeRequestToServer(getNotes)
-                    .then(result => {
-                        return result;
-                    });
-            }else if( list.length < 1 || !result){
-                return ['Server not found'];
-            }
 
-        })
-        .catch(err => {
-            return ['Server not found'] ;
-        });
-}   
 let hasUserRecipe = async(id , login)=>{
     let connection = mysql.createConnection(connectionConfig).promise();
     let sql = `SELECT id FROM users WHERE login='${login}' AND (favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ? OR favoriteRecipe LIKE ?)`;
@@ -120,47 +189,23 @@ let hasUserRecipe = async(id , login)=>{
         })
 }
 
-// personal cabinet
-authorizedUserRouter.post('/signin' , (req,res) => {
-
-    let login    = req.body.login;
-    let password = req.body.password;
-    
-    logIn(login , password)
-        .then( result => {
-            console.log(result)
-            if(result.user){
-                res.send(JSON.stringify({
-                    exist : true ,
-                    response : result.body
-                }))
-            }else{
-                res.send(JSON.stringify({
-                    exist : false ,
-                    error : result.error
-                }))
-            }
-        })
-})
-authorizedUserRouter.post('/getBestRecipes' , (req, res) => {
-    let userLogin = req.body.login;
-    
-    getBestRecipes(userLogin)
-    .then(result => {
+authorizedUserRouter.get('/getBestRecipes' , async (req, res) => {
+    const best = req.user.favoriteRecipe;
+    const sql = `SELECT id,recipe,rating FROM coctails WHERE id IN (${best})`
+    await makeRequestToServer(sql)
+    .then( result => { 
         res.send(JSON.stringify({
             res : result
         }))
     })
+    .catch(err => {
+        res.send(JSON.stringify({
+            res : 'you are not authorized'
+        }))
+    })
 })
 
-authorizedUserRouter.post('/personalCabinet' , (req,res) => {
-    let userLogin = res.locals.currentLogin;
-    let userName  = res.locals.currentName;
 
-    res.send( JSON.stringify({
-        userName : userName,
-    }));
-})
 // put like 
 authorizedUserRouter.route("/putlike")
     .post( (req, res) => {

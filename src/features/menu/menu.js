@@ -26,11 +26,11 @@ export class Menu {
         // let isState = state.isLogged;
         const isLogged = userStatus.isLogged;
         const mobileMenuHandler = this.Model.mobileMenuHandler;
-        const menuHandler = this.Model.renderServerResponse.bind(this);
         const updateMenuState = this.updateUserStatus;
         // menu items handler
         // const mixologyHandler = this.Model.mixologyHandler.bind(this);
-        const personalCabHandler = this.Model.personalCabinet.bind(this);
+        const menuHandler = this.Model.renderServerResponse.bind(this);
+        const personalCabHandler = this.Model.personalCabinet;
 
         const home = { 
             ...this.Setting.home,
@@ -90,8 +90,8 @@ export class Menu {
             { 
                 ...this.Setting.cabinet,
                 handler :{
-                    click : (event) => {
-                        event.preventDefault();  
+                    click : (event) => { 
+                        event.preventDefault();
                         personalCabHandler(event , useCabinet , this.root)
                         updateMenuState(  {path : 'personalCab'} )
                     }
