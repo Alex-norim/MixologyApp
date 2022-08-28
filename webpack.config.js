@@ -5,7 +5,7 @@ module.exports = {
     mode : 'development',
     entry: './src/features/index.js',
     output: {
-        filename: 'index.js',
+        filename: 'bundler.js',
         path: path.resolve(__dirname, 'src/dist'),
     },
     module: {
