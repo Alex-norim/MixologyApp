@@ -5,8 +5,6 @@
 @import 'parts/_footer.css';
 @import 'parts/__mixmenu.css';
 
-@import 'animation/animation.css';
-
 @import 'modalWindow/window.css';
 
 @import 'mainMenuContent/mixology-page.css';

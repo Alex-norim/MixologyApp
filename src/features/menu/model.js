@@ -12,6 +12,7 @@ export const Model = {
                 return result.json();
             } )
             .then( result => {
+                console.log(result)
                 let name = result.userName;
                 let HTML = ` <div class="personalCab"> ` +
                                 `<h2 class="title">Hello <span>${name}</span></h2>`+
@@ -33,7 +34,7 @@ export const Model = {
         event.preventDefault();
         let bodyContent = this.root.getElementsByClassName('body-content')[0];
         let HrefRequest = event.target.getAttribute('href');
-        
+        console.log(HrefRequest)
         fetch(HrefRequest , {
             method : "GET"
         })

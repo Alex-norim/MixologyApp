@@ -9,7 +9,6 @@ const bodyParser = require('body-parser')
 // routers
 const Mixology_Router = require("./mixologyRouter.js");
 const ArticleRouter = require('./ArticleRouter.js');
-const RegistrationRouter = require('./registrationRouter.js');
 const authorizedUserRouter = require('./authorizedUserRouter.js');
 //setting up
 app.engine("hbs" , expressHbs.engine({
@@ -61,7 +60,6 @@ app.get("/home", function(req,res){
 // routers
 app.use("/mixology" ,  Mixology_Router);
 app.use('/articles' , ArticleRouter);
-app.use('/registration' , RegistrationRouter);
 app.use('/auth' , authorizedUserRouter);
 // other reqs
 

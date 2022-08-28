@@ -39,12 +39,13 @@ export const Model = {
     clearUserCredentials : function (event) {
         this.currentFieldData = {};
     },
-    signInFormHandler : function (e , updateUser) {
+    signInFormHandler : function (e , redrawMenu , root) {
         e.preventDefault();
-        const updateUserStatus = updateUser;
         let form    = e.currentTarget;
         let closeFormButton = form.querySelector('.closeFormButton');
         let errorMessage = form.querySelector('.error-message');
+        const oldMenu = root.querySelector('.mainMenuWrap');
+        const header = root.querySelector('header');
         let credentials = this.currentFieldData;
         let isvalid = () => {
             let response;
@@ -80,7 +81,8 @@ export const Model = {
                     localStorage.setItem("name" , name);
                     localStorage.setItem("login" , login);
                     errorMessage.innerHTML = 'user has been logged successfully';
-                    updateUserStatus({isLogged : true})
+                    oldMenu.remove();
+                    header.append(redrawMenu);
                     closeFormButton.click();
                 }else{
                     errorMessage.innerHTML = "db not found";
@@ -113,6 +115,7 @@ export const Model = {
                                 credentials.confirmPassword.length !== 0);
         if( isValid() && comparePaswords ) {
             console.log('credent are valid')
+            console.log(credentials)
             fetch("/registration/signup" , {
                 method : 'POST' ,
                 headers : {
