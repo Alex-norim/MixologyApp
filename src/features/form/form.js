@@ -3,33 +3,47 @@ import {Elements} from './setting.js';
 import {Model} from "./model.js";
 import {View} from "./view.js";
 import { Menu } from '../menu/menu.js';
+import createElement from '../appSettings/createElement.js';
 export default class Form {
     // type defines whether this form for logIn or signUp
     constructor ( root , updateUser){
         this.updateUserStatus = updateUser;
         this.savedDom = {};
         this.currentFieldData = {
-            login : {}
+            login : {},
+            subscribe : 0
         };
         this.root = root ;
         this._view = View;
         this._model = Model;
     }
     signUp (event , fieldOrder = 1 ) {
-        let formWrap = event.currentTarget.parentNode.parentNode ;
-        const form = event.currentTarget.parentNode;
+        const formWrap = event.currentTarget.parentNode.parentNode ;
+            formWrap.innerHTML = '';
+        const setting = Elements;
         // handlers
+        const InputFiller = this._model.fillInputs;
+        const checkSubscribe = this._model.checkSubscribe.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
         const errorHandler  = this._model.formErrorHandler;
         const closeForm     = this._model.closeForm.bind(this);
         const signUpHandler = this._model.signUpFormHandler.bind(this);
         const saveUserInput = this._model.saveUserInput.bind(this);
-        // 
-        let newForm = form.cloneNode(false);
-            newForm.action = "/registration/signup";
-            newForm.addEventListener('submit' , signUpHandler)
-            formWrap.innerHTML = '';
-        const setting = Elements;
+    
+        const signUpForm = {
+            tagname : 'form',
+            attr : {
+                class : 'form',
+                action : '/auth/signup',
+                method : 'POST'
+            },
+            handler : {
+                submit : (e) => {
+                    signUpHandler(e)
+                }
+            }
+        }
+        // last element of the fields const should be false to prevent wrap rendering
         const fields = {
             1 : [
                 setting.signUpTitle ,
@@ -76,7 +90,7 @@ export default class Form {
                         },
                     }
                 },
-                false
+                signUpForm
             ] ,
             2 : [
                 setting.signUpTitle ,
@@ -124,11 +138,18 @@ export default class Form {
                         },
                     }
                 },
-                false
+                signUpForm,
             ] ,
             3 : [
                 setting.signUpTitle ,
-                setting.subscribe,
+                {
+                    ...setting.subscribe,
+                    handler : {
+                        click : (event) => {
+                            checkSubscribe(event);
+                        }
+                    }
+                },
                 setting.errorMessage,
                 {
                     ...setting.submitButton,
@@ -142,17 +163,15 @@ export default class Form {
                         },
                     }
                 },
-                false
+                signUpForm,
             ]
         }; 
-        const formItems = this._view.getForm( fields[fieldOrder] ) ;
-        formItems.forEach( el => {
-            newForm.append(el);
-        } )
-        formWrap.append(newForm)
+        // getForm method returns array of the dom elements
+        const SignUpForm = this._view.getForm( fields[fieldOrder] ) ;
+        formWrap.append(SignUpForm);
+
     }
     signIn () {
-        // ==============
         let formEl = Elements;
         let saveUserInput = this._model.saveUserInput.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
@@ -160,8 +179,18 @@ export default class Form {
         const errorHandler  = this._model.formErrorHandler;
         const formHandler   = this._model.signInFormHandler.bind(this);
         const redrawnMenu    = new Menu(root , ()=> {}).getMenu({isLogged : true});
-        const moveForm = this._model.moveDom;
-        const requredItems = [
+        const BindMover = this._model.bindMover;
+        const signInWrap = new createElement({
+            tagname : 'div' ,
+            attr : {
+                class : "defbox signInWrap",
+            },
+            handler : (e) => {
+
+            }
+        });
+
+        const formItems = [
             formEl.signInTitle ,
             {
                 ...formEl.login , 
@@ -199,19 +228,23 @@ export default class Form {
                 }
             },
             {
-                ...formEl.form ,
+                tagname : 'form' ,
+                attr : {
+                    method : 'POST',
+                    action : '/auth/signin',
+                    class : 'form'
+                },
                 handler : {
                     submit : (e) => {
                         formHandler(e , redrawnMenu , this.root )
                     }
                 }
             }
-        ]
-        const Form = this._view.getForm( requredItems ) ;
-        const forcedForm = this._model.bindMover( Form );
-        this.root.append(forcedForm)
-    }
-    getSomething(){
-        return someObj;
+        ];
+        // getForm method returns dom element ; 
+        const Form = this._view.getForm( formItems ) ;
+        signInWrap.append(Form)
+        const MoveableWrap = BindMover(signInWrap);
+        this.root.append(MoveableWrap);
     }
 }

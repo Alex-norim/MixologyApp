@@ -1,5 +1,13 @@
 import Validator from "../validator.js";
 export const Model = {
+    checkSubscribe : function(event){
+        const wrap = event.currentTarget;
+        const checkbox = wrap.querySelector('input[type=checkbox]');
+        const isChecked = checkbox.checked;
+        isChecked == true ? 
+            this.currentFieldData['subscribe'] = 1 :
+            this.currentFieldData['subscribe'] = 0 ;
+    },
     saveUserInput : function(event){
         let target = event.target;
         let value  = target.value;
@@ -99,7 +107,7 @@ export const Model = {
         event.preventDefault();
         let form = event.currentTarget;
         let credentials = this.currentFieldData;
-        let errorMessageNest = form.querySelector('.error-message');
+        let errorMessage = form.querySelector('.error-message');
         let isValid = () => {
             let response = true ;
             for (const key in credentials) {
@@ -110,13 +118,13 @@ export const Model = {
             return response;
         };
         // should develope a function to compore passwords
-        let comparePaswords = ( credentials.password === credentials.confirmPassword && 
-                                credentials.password.length !== 0 && 
-                                credentials.confirmPassword.length !== 0);
+        let comparePaswords =   credentials.password === credentials.confirmPassword 
+                                    && credentials.password.length !== 0 
+                                        && credentials.confirmPassword.length !== 0;
         if( isValid() && comparePaswords ) {
             console.log('credent are valid')
             console.log(credentials)
-            fetch("/registration/signup" , {
+            fetch("/auth/signup" , {
                 method : 'POST' ,
                 headers : {
                     'content-type' : 'application/json'
@@ -127,18 +135,20 @@ export const Model = {
                 return result.json();
             })
             .then( result => {
+                console.log(result)
                 let success = result.isRegistered;
                 let message = result.message;
-                errorMessageNest.style.color = 'green';
+                errorMessage.style.color = 'green';
                 success === true ? 
                     form.parentNode.remove() :
-                    errorMessageNest.style.color = 'red' ;
-                errorMessageNest.textContent = message
+                    errorMessage.style.color = 'red' ;
+                    errorMessage.textContent = message
             })
             .catch( err => {
-                errorMessageNest.textContent = 'server not found'
+                console.log('errrorr')
+                errorMessage.textContent = 'server not found'
             })
-        } 
+        }
     // end
     } ,
     bindMover : (elem) => {
@@ -181,6 +191,11 @@ export const Model = {
         }, false);
         
         return element;
+    },
+    fillInputs : (inputElements , data) => {
+        for (const input of inputElements) {
+            console.log(input , data)
+        }
     }
 
 }
