@@ -121,8 +121,5 @@ export const Elements = {
         },
         content : `<input class="orm-checkbox" type="checkbox" name="subscribe" id="subscribe">` +
                     `<label class="form-label" for="subscribe" >Subscribe to the news</label>`
-    },
-    form : {
-        tagname : 'form' ,
     }
 }
