@@ -11,9 +11,7 @@ export const View = {
             let newItem = new createElement(elementProps);
             form.append(newItem);
         });
-
         return form;
-        
     },
 }
 
