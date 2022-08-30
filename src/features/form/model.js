@@ -192,9 +192,19 @@ export const Model = {
         
         return element;
     },
-    fillInputs : (inputElements , data) => {
-        for (const input of inputElements) {
-            console.log(input , data)
+    fillInputsByValid : function (){
+        const currForm = this.root.querySelector('.form');
+        const inputs = currForm.querySelectorAll('input');
+        const errorMessage = currForm.querySelector('.error-message');
+        const userData = this.currentFieldData;
+        for (const input of inputs) {
+            let InputType = input.getAttribute('name');
+            let Value = userData[InputType];
+            if( typeof Value === 'string'){
+                input.value = Value;
+            }else if (typeof Value === 'object'){
+                errorMessage.textContent = '';
+            }
         }
     }
 

@@ -86,14 +86,14 @@ export const Elements = {
         }
     },
     nextButton : {
-        tagname : 'div' ,
+        tagname : 'button' ,
         attr : {
-            class : 'form-button form-button__nextButton'
+            class : 'form-button form-button__nextButton',
         },
         content : 'Next'
     },
     prevButton : {
-        tagname : 'div' ,
+        tagname : 'button' ,
         attr : {
             class : 'form-button form-button__prevButton'
         },

@@ -22,7 +22,7 @@ export default class Form {
             formWrap.innerHTML = '';
         const setting = Elements;
         // handlers
-        const InputFiller = this._model.fillInputs;
+        const InputFiller = this._model.fillInputsByValid.bind(this);
         const checkSubscribe = this._model.checkSubscribe.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
         const errorHandler  = this._model.formErrorHandler;
@@ -77,7 +77,8 @@ export default class Form {
                     ...setting.nextButton,
                     handler : {
                         click : (event) => {
-                            this.signUp(event , fieldOrder + 1 )
+                            this.signUp(event , fieldOrder + 1 );
+                            InputFiller()
                         }
                     }
                 },
@@ -117,7 +118,8 @@ export default class Form {
                     ...setting.prevButton,
                     handler : {
                         click : (event) => {
-                            this.signUp(event , fieldOrder - 1 )
+                            this.signUp(event , fieldOrder - 1 );
+                            InputFiller()
                         },
                     },
                 },
@@ -126,6 +128,7 @@ export default class Form {
                     handler : {
                         click : (event) => {
                             this.signUp(event , fieldOrder + 1 )
+                            InputFiller()
                         }
                     }
                 },
@@ -151,6 +154,15 @@ export default class Form {
                     }
                 },
                 setting.errorMessage,
+                {
+                    ...setting.prevButton,
+                    handler : {
+                        click : (event) => {
+                            this.signUp(event , fieldOrder - 1 );
+                            InputFiller()
+                        },
+                    },
+                },
                 {
                     ...setting.submitButton,
                 },
