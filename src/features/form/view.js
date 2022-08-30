@@ -2,19 +2,10 @@ import createElement from "../appSettings/createElement";
 export const View = {
     // requred items is array of objects , for instance 
     // [{tagname : div , attr : {type : text} , content is optional , listeners is optional }]
-    getForm : ( requredItems , formType = true ) => {
-        let currentWrapClass = (formType) ? ' signInWrap' : ' signUpWrap';
-        let currentFormClass = (formType) ? ' sign-in'    : ' sign-up';
-        let currentAction    = (formType) ? 'signin'      : 'signup';
-        let currentmethod    = (formType) ? 'POST'        : 'GET';
-        const wrapProps = {
-            tagname : 'div' ,
-            attr : {
-                class : "defbox" + currentWrapClass,
-            }
-        };
+    getForm : ( requredItems) => {
+        // if lastArrayItem is false then getForm returns array of dom elements (it returns signup form)
+        // else lastArrayItem is obj  then it return dom element (it returns signin form)
         const lastArrayItem = requredItems.pop();
-        
         if( lastArrayItem === false ) {
             let arr = [];
             requredItems.forEach( elementProps => {
@@ -23,22 +14,27 @@ export const View = {
             });
             return arr;
         }else{
-            const formProps = {
+            const formWrap = new createElement({
+                tagname : 'div' ,
+                attr : {
+                    class : "defbox signInWrap",
+                }
+            });
+            const form = new createElement({
                 ...lastArrayItem,
                 attr : {
-                    class : "form" + currentFormClass ,
-                    action : "/auth/" + currentAction ,
-                    method : currentmethod 
+                    class : "form sign-in",
+                    action : "/auth/signin",
+                    method : 'POST' 
                 }
-            }
-            const form = new createElement(formProps);
+            });
 
             // go through the array
             requredItems.forEach( elementProps => {
                 let newItem = new createElement(elementProps);
                 form.append(newItem);
             });
-            const formWrap = new createElement(wrapProps);
+
             formWrap.append(form);
             return formWrap;
         }
