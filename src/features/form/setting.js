@@ -119,7 +119,7 @@ export const Elements = {
         attr : {
             class : 'subscribe-wrap'
         },
-        content : `<input class="orm-checkbox" type="checkbox" name="subscribe" id="subscribe">` +
+        content : `<input class="form-checkbox" type="checkbox" name="subscribe" id="subscribe">` +
                     `<label class="form-label" for="subscribe" >Subscribe to the news</label>`
     }
 }
