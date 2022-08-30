@@ -117,13 +117,11 @@ export const Model = {
             };
             return response;
         };
-        // should develope a function to compore passwords
+        
         let comparePaswords =   credentials.password === credentials.confirmPassword 
-                                    && credentials.password.length !== 0 
-                                        && credentials.confirmPassword.length !== 0;
+                                    && !credentials.password === false;
+        
         if( isValid() && comparePaswords ) {
-            console.log('credent are valid')
-            console.log(credentials)
             fetch("/auth/signup" , {
                 method : 'POST' ,
                 headers : {
@@ -135,7 +133,6 @@ export const Model = {
                 return result.json();
             })
             .then( result => {
-                console.log(result)
                 let success = result.isRegistered;
                 let message = result.message;
                 errorMessage.style.color = 'green';
@@ -145,9 +142,11 @@ export const Model = {
                     errorMessage.textContent = message
             })
             .catch( err => {
-                console.log('errrorr')
-                errorMessage.textContent = 'server not found'
+                errorMessage.textContent = 'db not found'
             })
+        }else if( !isValid() ) {
+            errorMessage.style.color = 'red';
+            errorMessage.textContent = 'please check previous inputs'
         }
     // end
     } ,
@@ -203,7 +202,7 @@ export const Model = {
             if( typeof Value === 'string'){
                 input.value = Value;
             }else if (typeof Value === 'object'){
-                errorMessage.textContent = '';
+                delete userData[InputType];
             }
         }
     }

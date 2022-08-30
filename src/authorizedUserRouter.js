@@ -112,8 +112,7 @@ authorizedUserRouter.post('/signup' , async(req,res,next) => {
     const login = req.body.login;
     const password = await bcrypt.hash(req.body.password , 10);
     const email = req.body.email;
-    const subscribe = req.body.subscribe || 0;
-
+    const subscribe = req.body.subscribe;
     const connection = mysql.createConnection(connectionConfig).promise();
     const SQL = `INSERT INTO users (name, login, password, email, subscribe) VALUES (?,?,?,?,?)`;
     // console.log(name,login,email,subscribe)
