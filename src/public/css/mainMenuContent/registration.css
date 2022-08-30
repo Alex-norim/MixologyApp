@@ -89,14 +89,9 @@
 }
 .form .form-checkbox{
     cursor: pointer;
-    width: 100%;
     height: 15px;
     margin-right: 12px;
     display: flex;
-}
-.form .form-checkbox::after{
-    content: 'Hit subscribe';
-    margin-left: 10px;
 }
 
 .form .createAccountLink{
