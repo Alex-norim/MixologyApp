@@ -115,6 +115,7 @@ export const Model = {
                                 credentials.confirmPassword.length !== 0);
         if( isValid() && comparePaswords ) {
             console.log('credent are valid')
+            console.log(credentials)
             fetch("/registration/signup" , {
                 method : 'POST' ,
                 headers : {

@@ -34,7 +34,7 @@ export const Model = {
         event.preventDefault();
         let bodyContent = this.root.getElementsByClassName('body-content')[0];
         let HrefRequest = event.target.getAttribute('href');
-        
+        console.log(HrefRequest)
         fetch(HrefRequest , {
             method : "GET"
         })

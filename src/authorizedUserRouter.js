@@ -106,6 +106,33 @@ authorizedUserRouter.get('/logout' , (req,res,next) => {
         }))
     })
 })
+
+authorizedUserRouter.post('/signup' , async(req,res,next) => {
+    const name = req.body.name;
+    const login = req.body.login;
+    const password = await bcrypt.hash(req.body.password , 10);
+    const email = req.body.email;
+    const subscribe = req.body.subscribe || 0;
+
+    const connection = mysql.createConnection(connectionConfig).promise();
+    const SQL = `INSERT INTO users (name, login, password, email, subscribe) VALUES (?,?,?,?,?)`;
+    // console.log(name,login,email,subscribe)
+    connection.execute(SQL , [name, login ,password , email , subscribe])
+        .then( result => {
+            connection.end();
+            console.log(result);
+            res.send(JSON.stringify({
+                isRegistered : true , 
+                message : 'User has been registered successfully'
+            }))
+        })
+        .catch( err => {
+            res.send(JSON.stringify({
+                isRegistered : false ,
+                message : "This login already exists"
+            }))
+        })
+})
 authorizedUserRouter.get('/personalCabinet' , (req,res) => {
     
     if(req.user){
