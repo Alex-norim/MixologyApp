@@ -15,7 +15,7 @@ export const Model = {
         }
     },
     formErrorHandler: (event) => {
-        let errorMessage = event.currentTarget.parentNode.getElementsByClassName('error-message')[0];
+        let errorMessage = event.currentTarget.parentNode.querySelector('.error-message');
         let target = event.target;
         let value  = target.value; 
         let targetType = event.target.attributes.type.nodeValue.toString();
@@ -155,14 +155,14 @@ export const Model = {
         let mouseIsPressed = false;
         element.addEventListener('mousedown' , (event) => {
             const windowWidth = window.innerWidth;
+            const isMoveable = event.target === element || event.target.tagName !== 'INPUT' || event.target.tagName !== 'A';
             mouseIsPressed = windowWidth >= 460 ? true : false;
-
             let currentElement = event.currentTarget;
             let shiftX  = event.screenX - currentElement.getBoundingClientRect().left;
             let shiftY  = event.screenY - 103 - currentElement.getBoundingClientRect().top ;
             let elementWidth = currentElement.offsetWidth;
-            document.addEventListener("mousemove" , (event) => {
-                if(mouseIsPressed === true){
+            document.onmousemove = (event) => {
+                if(mouseIsPressed && isMoveable){
                     let pageX = event.clientX;
                     let pageY = event.clientY;
                     element.classList.remove('signInWrap')
@@ -173,7 +173,7 @@ export const Model = {
                     moveAt(element , x , y , rightEdge - elementWidth )
                     
                 }
-            })
+            } ;
             element.addEventListener('mouseup' , () => {
                 mouseIsPressed = false;
                 document.onmousemove = null;
