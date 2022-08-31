@@ -1,6 +1,5 @@
 import { Model } from "./model";
 import { View } from "./view";
-import { Menu } from "../menu/menu.js";
 
 export const Cabinet = {
     init : ( _root) => {
@@ -12,14 +11,12 @@ export const Cabinet = {
         const showBestRecipes = Model.getBestRecipe();
         const drawWindow = View.drawModalWindow;
         const logoutHandler = Model.logoutHandler;
-        const refreshMenu = new Menu(root , ()=> {}).getMenu({isLogged : false});
-
         // suggest new recipe
         const getCategory = Model.getCategory();
         const FormHandler = Model.formHandler;
         const drawSuggestForm = View.suggestNewRecipe;
         // rendering personal cab items 
-        logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root , refreshMenu) });
+        logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root ) });
         showBestRecipes.then( result => {
             const drawRecipeList = View.drawRecipeList;
             const likeHandler = Model.likeHandler;

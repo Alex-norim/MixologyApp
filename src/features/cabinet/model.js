@@ -1,10 +1,11 @@
 import {Model as importModel} from '../mixology/model';
+import { Menu } from "../menu/menu.js";
 import Validator from '../validator';
 export const Model = {
     likeHandler : importModel.likeHandler,
     getRecipeItems : importModel.showSpecificList,
     getBestRecipe : importModel.getBestRecipes,
-    logoutHandler : async ( drawModalWindow , root , redrawnMenu) => {
+    logoutHandler : async ( drawModalWindow , root ) => {
         let rejectionFunction = (event) => {
             let target = event.target;
             let parentNode = target.parentNode.parentNode;
@@ -18,9 +19,9 @@ export const Model = {
                 oldMenu.remove()
             localStorage.removeItem('name');
             localStorage.removeItem('login');
-            let newMenu = redrawnMenu ;
+            const refreshMenu = new Menu(root);
             const header = root.querySelector('.header') ;
-                header.append(newMenu);
+                header.append(refreshMenu);
             const directToHome = header.querySelector('nav').querySelector('a');
             directToHome.click();
         }
