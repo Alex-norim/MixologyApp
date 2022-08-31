@@ -7,6 +7,9 @@ module.exports = {
     output: {
         filename: 'bundler.js',
         path: path.resolve(__dirname, 'src/dist'),
+        environment : {
+            arrowFunction: false,
+        }
     },
     module: {
         rules: [

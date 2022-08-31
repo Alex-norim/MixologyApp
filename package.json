@@ -2,7 +2,9 @@
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.2",
+    "@babel/plugin-transform-arrow-functions": "^7.18.6",
     "@babel/preset-env": "^7.18.2",
+    "@babel/preset-es2015": "^7.0.0-beta.53",
     "babel-cli": "^6.26.0",
     "babel-loader": "^8.2.5",
     "bcrypt": "^5.0.1",
@@ -38,7 +40,7 @@
   "scripts": {
     "watch": "webpack --watch --progress",
     "server": "nodemon ./src/server.js",
-    "babel": "npx babel src/features --out-dir src/dist"
+    "build": "webpack"
   },
   "dependencies": {}
 }
