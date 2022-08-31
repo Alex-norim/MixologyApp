@@ -1,4 +1,4 @@
-import scrollBar from "../scrollBar/scrollBar.js";
+
 export const Model = {
     updateState : function( newState ){
         this.menuState.path = newState;
@@ -134,4 +134,18 @@ export const Model = {
         }
         
     },
+    getUserServerStatus : () => {
+        const req = new XMLHttpRequest();
+        
+        req.onerror = () => {
+            return false;
+        }
+        req.open('GET' ,'/auth/auth_Status' , false );
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.send();
+        let response = JSON.parse(req.response);
+        return response.res;
+        
+        
+    }
 }
