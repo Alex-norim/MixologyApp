@@ -150,13 +150,14 @@ export default class CreateDom extends Protos {
 
         return menu;
     }
-    header(){
+    header(menu){
         
         let header = this._root.querySelector('.header');
         header.innerHTML = '';
 
         header.append(
             this.logotype() ,
+            menu
         )
     }
     footer(){

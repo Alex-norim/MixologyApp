@@ -132,8 +132,20 @@ authorizedUserRouter.post('/signup' , async(req,res,next) => {
             }))
         })
 })
-authorizedUserRouter.get('/personalCabinet' , (req,res) => {
+authorizedUserRouter.get('/auth_Status', (req,res) => {
+    if(req.user){
+        res.send( JSON.stringify({
+            res : true,
+        }));
+    }else{
+        res.send( JSON.stringify({
+            res : false,
+        }))
+    }
     
+})
+authorizedUserRouter.get('/personalCabinet', (req,res) => {
+    console.log('dddd')
     if(req.user){
         res.send( JSON.stringify({
             userName : req.user.name,
