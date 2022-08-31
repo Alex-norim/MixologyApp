@@ -1,4 +1,5 @@
 import Validator from "../validator.js";
+import { Menu } from '../menu/menu.js';
 export const Model = {
     checkSubscribe : function(event){
         const wrap = event.currentTarget;
@@ -47,7 +48,7 @@ export const Model = {
     clearUserCredentials : function (event) {
         this.currentFieldData = {};
     },
-    signInFormHandler : function (e , redrawMenu , root) {
+    signInFormHandler : function (e , root) {
         e.preventDefault();
         let form    = e.currentTarget;
         let closeFormButton = form.querySelector('.closeFormButton');
@@ -90,7 +91,8 @@ export const Model = {
                     localStorage.setItem("login" , login);
                     errorMessage.innerHTML = 'user has been logged successfully';
                     oldMenu.remove();
-                    header.append(redrawMenu);
+                    let NewMenu = new Menu(root)
+                    header.append(NewMenu);
                     closeFormButton.click();
                 }else{
                     errorMessage.innerHTML = "db not found";

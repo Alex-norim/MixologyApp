@@ -2,7 +2,6 @@
 import {Elements} from './setting.js';
 import {Model} from "./model.js";
 import {View} from "./view.js";
-import { Menu } from '../menu/menu.js';
 import createElement from '../appSettings/createElement.js';
 export default class Form {
     // type defines whether this form for logIn or signUp
@@ -190,7 +189,6 @@ export default class Form {
         const closeFormFoo  = this._model.closeForm.bind(this);
         const errorHandler  = this._model.formErrorHandler;
         const formHandler   = this._model.signInFormHandler.bind(this);
-        const redrawnMenu    = new Menu(root , ()=> {}).getMenu({isLogged : true});
         const BindMover = this._model.bindMover;
         const signInWrap = new createElement({
             tagname : 'div' ,
@@ -248,7 +246,7 @@ export default class Form {
                 },
                 handler : {
                     submit : (e) => {
-                        formHandler(e , redrawnMenu , this.root )
+                        formHandler(e , this.root )
                     }
                 }
             }
