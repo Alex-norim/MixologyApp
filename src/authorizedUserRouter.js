@@ -1,6 +1,8 @@
 const express = require('express');
 const authorizedUserRouter = express.Router();
 const mysql = require('mysql2');
+const EventEmitter  = require('events');
+const evEmitter = new EventEmitter();
 
 const cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
@@ -49,6 +51,14 @@ authorizedUserRouter.use(session({
 authorizedUserRouter.use(passport.initialize());
 authorizedUserRouter.use(passport.session());
 
+// emitter
+evEmitter.on('start' , () => {
+    const connection = mysql.createConnection(connectionConfig).promise();
+    connection.execute('select * from coctails where id=1')
+        .then( ([row,field]) => {
+            return row
+        })
+})
 passport.use(new LocalStrategy( 
     {usernameField:"login", passwordField:"password"},
     ( login , password , done) => {
@@ -145,8 +155,9 @@ authorizedUserRouter.get('/auth_Status', (req,res) => {
     
 })
 authorizedUserRouter.get('/personalCabinet', (req,res) => {
-    console.log('dddd')
+
     if(req.user){
+        evEmitter.emit('start')
         res.send( JSON.stringify({
             userName : req.user.name,
         }));
@@ -158,6 +169,7 @@ authorizedUserRouter.get('/personalCabinet', (req,res) => {
     
 })
 // make default request to the db
+
 async function makeRequestToServer (sql) {
     let connection = mysql.createConnection(connectionConfig).promise() ;
     return await connection.execute(sql)

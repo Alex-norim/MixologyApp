@@ -9,15 +9,18 @@
     "babel-loader": "^8.2.5",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
+    "clean-webpack-plugin": "^4.0.0",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
     "css-loader": "^6.7.1",
     "express": "^4.17.3",
+    "express-device": "^0.4.2",
     "express-handlebars": "^6.0.3",
     "express-mysql-session": "^2.1.8",
     "express-session": "^1.17.3",
     "file-loader": "^6.2.0",
     "hbs": "^4.2.0",
+    "mini-css-extract-plugin": "^2.6.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "node-sass": "^7.0.1",
@@ -40,7 +43,9 @@
   "scripts": {
     "watch": "webpack --watch --progress",
     "server": "nodemon ./src/server.js",
-    "build": "webpack"
+    "build": "webpack --mode production"
   },
-  "dependencies": {}
+  "dependencies": {
+    "remotedebug-ios-webkit-adapter": "^0.4.2"
+  }
 }

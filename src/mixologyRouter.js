@@ -1,7 +1,6 @@
 const express = require('express');
 const Mixology_Router = express.Router();
 const hbs = require('handlebars');
-const fs = require('fs');
 
 hbs.registerHelper('toAddOne' , function(num){
     return num +1;

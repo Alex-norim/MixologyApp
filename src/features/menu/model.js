@@ -30,12 +30,12 @@ export const Model = {
                 throw err;
             })
     },
-    renderServerResponse : function (event , currentHandler , root = false ) {
+    renderServerResponse : async function (event , currentHandler , root = false ) {
         event.preventDefault();
         let bodyContent = this.root.getElementsByClassName('body-content')[0];
         let HrefRequest = event.target.getAttribute('href');
-        console.log(HrefRequest)
-        fetch(HrefRequest , {
+        
+        await fetch(HrefRequest , {
             method : "GET"
         })
         .then( result => {
@@ -97,6 +97,7 @@ export const Model = {
                     let windowWidth = window.innerWidth;
                     // check if the menu is web page state
                     if(windowWidth <= 750) { 
+                        root.style.display = '';
                         toggleLines(lines , showup ? false : true)
                         toggleMenuItems(obj , showup ? false : true)
                     }

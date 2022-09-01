@@ -1,4 +1,3 @@
-
 import CreateDom from './createDOM.js';
 import { Menu } from './menu/menu.js';
 import scrollBar from './scrollBar/scrollBar.js';
@@ -6,7 +5,7 @@ import scrollBar from './scrollBar/scrollBar.js';
 import '../public/css/style.css';
 class App{
     constructor(initElement){
-        // ------------
+        // -----------
         this.root = initElement; 
         // _createDom will be removed
         this._createDOM = new CreateDom(this.root);

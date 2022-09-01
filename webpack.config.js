@@ -1,16 +1,24 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-console.log(__dirname)
 module.exports = {
     mode : 'development',
     entry: './src/features/index.js',
     output: {
         filename: 'bundler.js',
-        path: path.resolve(__dirname, 'src/dist'),
+        path: path.resolve(__dirname, 'src/dist/'),
         environment : {
-            arrowFunction: false,
+            arrowFunction: true,
         }
     },
+    plugins: [
+        new MiniCssExtractPlugin( {
+            filename : 'style.css',
+        }) ,
+        new CleanWebpackPlugin()
+    ]
+    ,
     module: {
         rules: [
             {
@@ -37,10 +45,10 @@ module.exports = {
             {
                 test:/\.(s*)css$/,
                 use: [
-                    'style-loader',
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     'sass-loader',
-                ]
+                ],
             }
         ]
     },
