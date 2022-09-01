@@ -1,6 +1,8 @@
 node_modules 
 *.log
+*.lock
 src/dist
+t
 src/
 connection/
 .gitignore
