@@ -1,4 +1,4 @@
-import { View } from './view.js';
+import { View } from './view.ts';
 import { Model } from './model.js';
 import { Setting } from './setting.js';
 // page
