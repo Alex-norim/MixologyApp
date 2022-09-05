@@ -25,6 +25,7 @@ class App{
         scrollBar.init()
     }
 }
+
 let app = new App(document.getElementById('root'));
 
 app.init();

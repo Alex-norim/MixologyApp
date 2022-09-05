@@ -28,7 +28,7 @@ passport.serializeUser(function(user, cb) {
 });
 passport.deserializeUser(function(user, cb) {
     const connection = mysql.createConnection(connectionConfig).promise();
-    connection.execute(`SELECT name,login,favoriteRecipe FROM users WHERE id=?` , [user.id])
+    connection.execute(`SELECT name,login,email,favoriteRecipe FROM users WHERE id=?` , [user.id])
         .then( ([row,field]) => {
             let user = row[0];
             connection.end();
@@ -155,17 +155,16 @@ authorizedUserRouter.get('/auth_Status', (req,res) => {
     
 })
 authorizedUserRouter.get('/personalCabinet', (req,res) => {
-
-    if(req.user){
-        evEmitter.emit('start')
-        res.send( JSON.stringify({
-            userName : req.user.name,
-        }));
-    }else{
-        res.send( JSON.stringify({
-            userName : false
-        }))
-    }
+    const name = req.user.name;
+    const login = req.user.login;
+    const email = req.user.email;
+    console.log(req.user)
+    res.render('cabinet.hbs' , {
+        layout:false,
+        UserName: name,
+        UserLogin : login,
+        UserEmail: email
+    })
     
 })
 // make default request to the db
@@ -209,7 +208,7 @@ let hasUserRecipe = async(id , login)=>{
 
 authorizedUserRouter.get('/getBestRecipes' , async (req, res) => {
     const best = req.user.favoriteRecipe;
-    const sql = `SELECT id,recipe,rating FROM coctails WHERE id IN (${best})`
+    let  sql = `SELECT id,recipe,rating FROM coctails WHERE id IN (${best})`
     await makeRequestToServer(sql)
     .then( result => { 
         res.send(JSON.stringify({
