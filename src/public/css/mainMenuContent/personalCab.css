@@ -1,5 +1,7 @@
 .personalCab{
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 .personalCab .title {
     font-size: 32px;
@@ -11,22 +13,66 @@
 .personalCab .title span{
     text-transform: capitalize;
 }
+
 .personalCab > .defbox {
-    display: inline-block;
-    vertical-align: top;
-    width: 48%;
+    width: 76%;
 }
-.personalCab > .defbox:not(:last-child) {
-    margin-right: 4%;
+.personalCab > .defbox >.deftitle{
+    text-align: left;
 }
 .personalCab > .title {
     display: inline-block;
     width: 85%;
 }
-/* .personalCab > .logout {
-    
-} */
+.personal-inf > .userprofile{
+    margin-top: 31px;
+    margin-bottom: 38px;
+}
+.personal-inf > .userprofile .name ,.login, .email{
+    text-transform: uppercase;
+    width: 100%;
+    display: inline-block;
+    font-size: 18px;
+    font-family: sans-serif;
+    color: #f3f3f3;
+}
+.personal-inf > .userprofile span{
+    margin-bottom: 12px;
+}
 
+.personal-inf > .userprofile .name::before{
+    content: 'User name: ';
+    color: rgb(118, 117, 117);
+    margin-right: 10px;
+    font-size: 13px ;
+    text-transform: lowercase;
+}
+.personal-inf >.userprofile .login::before{
+    content: 'User login: ';
+    color: rgb(118, 117, 117);
+    margin-right: 10px;
+    font-size: 13px ;
+    text-transform: lowercase;
+}
+.personal-inf > .userprofile .email::before{
+    content: 'User email: ';
+    color: rgb(118, 117, 117);
+    margin-right: 10px;
+    font-size: 13px ;
+    text-transform: lowercase;
+}
+#suggest{
+    white-space: nowrap;
+    width: 190px;
+    position: absolute;
+    bottom: 25px;
+    left: 27px;
+}
+.logout{
+    position: absolute;
+    bottom: 25px;
+    right: 27px;
+}
 .recommendation {
     width: 100%;
     margin: 30px auto 25px;
@@ -50,7 +96,6 @@
     transition: .4s;
     border: 1px solid #000;
     background: rgb(170 168 168 / 37%);
-    width: 130px;
 }
 .button:hover{
     background: rgb(249 249 249 / 60%);
@@ -59,4 +104,29 @@
 .button:active{
     background: rgba(255, 255, 255, .5s);
     border: 2px solid rgba(255, 255, 255, 1);
+}
+.personalCab > .defbox:not(:last-child){
+    margin-bottom: 40px;
+}
+.personalCab :nth-child(2n+1){
+    align-self: flex-end;
+}
+
+.personalCab :nth-child(2n){
+    align-self: flex-start;
+}
+@media screen and (max-width : 850px) {
+    .personalCab > .defbox{
+        width: 80%;
+    }
+}
+@media screen and (max-width : 800px) {
+    .personalCab > .defbox{
+        width: 85%;
+    }
+}
+@media screen and (max-width : 700px) {
+    .personalCab > .defbox{
+        width: 100%;
+    }
 }
