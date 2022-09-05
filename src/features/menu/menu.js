@@ -86,9 +86,8 @@ export class Menu {
             { 
                 ...this.Setting.cabinet,
                 handler :{
-                    click : (event) => { 
-                        event.preventDefault();
-                        personalCabHandler(event , useCabinet , this.root)
+                    click : (e) => {
+                        menuHandler(e , useCabinet , this.root);
                     }
                 }
             } ,
