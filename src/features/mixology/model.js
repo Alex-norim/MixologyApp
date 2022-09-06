@@ -1,5 +1,6 @@
 import {Animation} from '../setUp.js';
 import { Model as ArtModel } from '../articles/model.js';
+import { Model as menuModel } from '../menu/model.js';
 const init = {
     method : 'GET' ,
     headers : {
@@ -153,7 +154,8 @@ const Model = {
     // next
     getWidthsum : ArtModel.childWidthSum,
     bindSliderMenu : ArtModel.articleMenuSlider,
-    getAdaptMenu : ArtModel.articleMenuWidth
+    getAdaptMenu : ArtModel.articleMenuWidth,
+    getuserStatus : menuModel.getUserServerStatus
 }
 
 export {Model};

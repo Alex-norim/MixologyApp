@@ -23,7 +23,7 @@ export const Mixology = {
         const bindSlider = Model.bindSliderMenu;
         const AdaptedMenu = Model.getAdaptMenu;
         // user 
-        const isUserLogged = localStorage.getItem('name') || false;
+        const userStatus = Model.getuserStatus();
 
         // bind slider to menud
         bindSlider(mixMenu , getChildSum);
@@ -35,7 +35,7 @@ export const Mixology = {
         // draw top ten recipes
         drawTopRecipes.then( result => {
             const topTen = result.list;
-            if(isUserLogged){
+            if(userStatus){
                 Model.getBestRecipes().then( result => {
                     let best = result.res;
                     recipeList.innerHTML = '';
