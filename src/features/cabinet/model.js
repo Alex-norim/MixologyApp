@@ -87,5 +87,6 @@ export const Model = {
         // <--
 
     },
-    makeMoveable: importedModel2.bindMover
+    makeMoveable: importedModel2.bindMover,
+    closeForm : importedModel2.closeForm
 }

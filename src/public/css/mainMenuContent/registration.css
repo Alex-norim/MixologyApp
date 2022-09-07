@@ -2,10 +2,6 @@
     
 } */
 .signInWrap , .signUpWrap{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     
 }
 .form{
@@ -157,7 +153,12 @@
 .form-button__prevButton{
     left: 54px;
 }
-
+.moveable{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 @media screen and (max-width : 650px) and (min-width: 320px) {
     .form{
         width: 350px;

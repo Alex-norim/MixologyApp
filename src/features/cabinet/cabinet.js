@@ -17,11 +17,13 @@ export const Cabinet = {
         const getCategory = Model.getCategory();
         const FormHandler = Model.formHandler;
         const drawSuggestForm = View.showForm;
-        const makeMoveable = Model.makeMoveable
+        const makeMoveable = Model.makeMoveable;
+        const closeForm = Model.closeForm;
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root ) });
         shareRecipeButton.addEventListener('click' , () => { 
-            drawSuggestForm( getCategory , FormHandler , root , makeMoveable ) })
+            drawSuggestForm( getCategory , FormHandler , root , makeMoveable ,closeForm ); 
+        })
         // shareRecipeButton
         showBestRecipes.then( result => {
             const drawRecipeList = View.drawRecipeList;

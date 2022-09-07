@@ -49,7 +49,7 @@ export const View = {
         return modalWindowWrap;
     },
     drawRecipeList : importedView.drawRecipeList,
-    showForm : async(getCategory , FormHandler , Root , makeMoveable) => {
+    showForm : async(getCategory , FormHandler , Root , makeMoveable , closeForm) => {
         const ErrorHandler = importedModel.formErrorHandler;
         const title = new createElement({
             tagname : 'h2' , 
@@ -99,6 +99,16 @@ export const View = {
             attr : {
                 class : 'defbox'
             }
+        });
+        const CloseButton = new createElement({
+            tagname : 'div',
+            attr: {
+                class : 'closeFormButton'
+            },
+            content : '<div class="line"></div><div class="line"></div>',
+            handler : {
+                click : (e) => { closeForm (e)}
+            }
         })
         return await getCategory.then( result => {
             let arr = result.res;
@@ -142,7 +152,7 @@ export const View = {
                     })()
                 })
     
-                Form.append(formText , SelectFlavor, SelectStrength , errorMessage , submitButton );
+                Form.append(formText , SelectFlavor, SelectStrength , errorMessage , submitButton , CloseButton );
                 FormWrap.append(title , Form );
                 let moveableWrap = makeMoveable(FormWrap)
                 Root.append(moveableWrap);
