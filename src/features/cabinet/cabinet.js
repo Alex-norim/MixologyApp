@@ -1,6 +1,6 @@
 import { Model } from "./model";
 import { View } from "./view";
-
+import Form from "../form/form";
 export const Cabinet = {
     init : ( _root) => {
         const root = _root;
@@ -8,21 +8,17 @@ export const Cabinet = {
         const pcRoot = root.querySelector('.personalCab');
         const logOutButton = root.querySelector('.logout');
         const shareRecipeButton = root.querySelector('#suggest');
-        
+        const newForm = new Form(root);
         // handlers 
         const showBestRecipes = Model.getBestRecipe();
         const drawWindow = View.drawModalWindow;
         const logoutHandler = Model.logoutHandler;
         // suggest new recipe
-        const getCategory = Model.getCategory();
-        const FormHandler = Model.formHandler;
-        const drawSuggestForm = View.showForm;
-        const makeMoveable = Model.makeMoveable;
-        const closeForm = Model.closeForm;
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root ) });
         shareRecipeButton.addEventListener('click' , () => { 
-            drawSuggestForm( getCategory , FormHandler , root , makeMoveable ,closeForm ); 
+            newForm.offerForm();
+            // drawSuggestForm( getCategory , FormHandler , root , makeMoveable ,closeForm ); 
         })
         // shareRecipeButton
         showBestRecipes.then( result => {
