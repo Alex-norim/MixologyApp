@@ -160,6 +160,7 @@ export const Model = {
             el.style.top  = top + 'px';
             el.style.left = left  + 'px';
         }
+        element.classList.add('moveable')
         element.ondragstart = function() {
             return false;
         };
@@ -176,7 +177,7 @@ export const Model = {
                 if(mouseIsPressed && isMoveable){
                     let pageX = event.clientX;
                     let pageY = event.clientY;
-                    element.classList.remove('signInWrap')
+                    element.classList.remove('moveable')
                     element.style.position = 'absolute';
                     let x = pageX - shiftX;
                     let y = pageY - shiftY;
