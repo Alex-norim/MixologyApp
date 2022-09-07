@@ -7,6 +7,8 @@ export const Cabinet = {
         const listRoot = root.querySelector('.favoriteRecipeList');
         const pcRoot = root.querySelector('.personalCab');
         const logOutButton = root.querySelector('.logout');
+        const shareRecipeButton = root.querySelector('#suggest');
+        
         // handlers 
         const showBestRecipes = Model.getBestRecipe();
         const drawWindow = View.drawModalWindow;
@@ -14,9 +16,13 @@ export const Cabinet = {
         // suggest new recipe
         const getCategory = Model.getCategory();
         const FormHandler = Model.formHandler;
-        const drawSuggestForm = View.suggestNewRecipe;
+        const drawSuggestForm = View.showForm;
+        const makeMoveable = Model.makeMoveable
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root ) });
+        shareRecipeButton.addEventListener('click' , () => { 
+            drawSuggestForm( getCategory , FormHandler , root , makeMoveable ) })
+        // shareRecipeButton
         showBestRecipes.then( result => {
             const drawRecipeList = View.drawRecipeList;
             const likeHandler = Model.likeHandler;
@@ -26,7 +32,6 @@ export const Cabinet = {
                 listRoot.append(item);
             })
         });
-        // rendering suggest new recipe 
-        drawSuggestForm( getCategory , FormHandler , pcRoot);
+        
     }
 }

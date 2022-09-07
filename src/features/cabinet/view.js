@@ -49,7 +49,7 @@ export const View = {
         return modalWindowWrap;
     },
     drawRecipeList : importedView.drawRecipeList,
-    suggestNewRecipe : async(getCategory , FormHandler , Root) => {
+    showForm : async(getCategory , FormHandler , Root , makeMoveable) => {
         const ErrorHandler = importedModel.formErrorHandler;
         const title = new createElement({
             tagname : 'h2' , 
@@ -144,7 +144,8 @@ export const View = {
     
                 Form.append(formText , SelectFlavor, SelectStrength , errorMessage , submitButton );
                 FormWrap.append(title , Form );
-                Root.append(FormWrap);
+                let moveableWrap = makeMoveable(FormWrap)
+                Root.append(moveableWrap);
             }
 
         });

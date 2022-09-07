@@ -1,5 +1,6 @@
 import {Model as importModel} from '../mixology/model';
 import { Menu } from "../menu/menu.js";
+import { Model as importedModel2 } from '../form/model';
 import Validator from '../validator';
 export const Model = {
     likeHandler : importModel.likeHandler,
@@ -86,4 +87,5 @@ export const Model = {
         // <--
 
     },
+    makeMoveable: importedModel2.bindMover
 }
