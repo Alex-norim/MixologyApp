@@ -152,6 +152,40 @@ export const Model = {
         }
     // end
     } ,
+    offerFormHandler : (event) => {
+        event.preventDefault();
+        const target = event.currentTarget;
+        let formData = new FormData (event.target);
+        let Error = new Validator( formData.get('newrecipe') , 'text').getErrors();
+        let errorMessageNest = target.getElementsByClassName("error-message")[0]; 
+        // --->
+        
+        typeof Error[0] !== 'object' ?
+            fetch( "/auth/recomendnewrecipe" , {
+                method : "POST",
+                body : new URLSearchParams(new FormData(event.target))
+            })
+            .then( result => {
+                return result.json();
+            })
+            .then( result => {
+                let isAdded = result.isAdded;
+                let response = result.res;
+                isAdded ?
+                    errorMessageNest.textContent = response : 
+                    errorMessageNest.textContent = response ;
+                target.reset();
+                setTimeout( () => {
+                    errorMessageNest.textContent = '';
+                } , 800)
+            })
+            .catch( err => {
+                throw err
+            }) : 
+            errorMessageNest.textContent = 'Some trouble';
+        // <--
+
+    },
     bindMover : (elem) => {
         const element = elem ;
         function moveAt (el, x , y , rightEdge) {
@@ -208,7 +242,18 @@ export const Model = {
                 delete userData[InputType];
             }
         }
-    }
+    },
+    getCategory : async () => {
+        return await fetch( '/auth/getcategory' , {method: 'GET'})
+        .then( result => {
+            return result.json();
+        })
+        .catch(err => {
+            return {
+                res : "server not found"
+            }
+        })
+    },
 
 }
 

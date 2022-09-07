@@ -5,9 +5,8 @@ import {View} from "./view.js";
 import createElement from '../appSettings/createElement.js';
 export default class Form {
     // type defines whether this form for logIn or signUp
-    constructor ( root , updateUser){
-        this.updateUserStatus = updateUser;
-        this.savedDom = {};
+    constructor ( root ){
+        this.isFormCreated = false;
         this.currentFieldData = {
             login : {},
             subscribe : 0
@@ -15,8 +14,11 @@ export default class Form {
         this.root = root ;
         this._view = View;
         this._model = Model;
+        this.BindMover = this._model.bindMover;
+        this.closeFormFoo  = this._model.closeForm.bind(this);
     }
     signUp (event , fieldOrder = 1 ) {
+        // clear sign in form
         const formWrap = event.currentTarget.parentNode.parentNode ;
             formWrap.innerHTML = '';
         const setting = Elements;
@@ -25,7 +27,6 @@ export default class Form {
         const checkSubscribe = this._model.checkSubscribe.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
         const errorHandler  = this._model.formErrorHandler;
-        const closeForm     = this._model.closeForm.bind(this);
         const signUpHandler = this._model.signUpFormHandler.bind(this);
         const saveUserInput = this._model.saveUserInput.bind(this);
     
@@ -42,7 +43,7 @@ export default class Form {
                 }
             }
         }
-        // last element of the fields const should be false to prevent wrap rendering
+        // last element of the fields const should be a wrap element
         const fields = {
             1 : [
                 setting.signUpTitle ,
@@ -85,7 +86,7 @@ export default class Form {
                     ...setting.closeFormButton,
                     handler : {
                         click : (e) => {
-                            closeForm(e) ;
+                            this.closeFormFoo(e) ;
                             clearCurrentFieldData(e);
                         },
                     }
@@ -180,23 +181,17 @@ export default class Form {
         // getForm method returns array of the dom elements
         const SignUpForm = this._view.getForm( fields[fieldOrder] ) ;
         formWrap.append(SignUpForm);
-
     }
     signIn () {
         let formEl = Elements;
         let saveUserInput = this._model.saveUserInput.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
-        const closeFormFoo  = this._model.closeForm.bind(this);
         const errorHandler  = this._model.formErrorHandler;
         const formHandler   = this._model.signInFormHandler.bind(this);
-        const BindMover = this._model.bindMover;
         const signInWrap = new createElement({
             tagname : 'div' ,
             attr : {
                 class : "defbox signInWrap",
-            },
-            handler : (e) => {
-
             }
         });
 
@@ -224,7 +219,7 @@ export default class Form {
                 ...formEl.closeFormButton ,
                 handler : {
                     click : (e) => {
-                        closeFormFoo(e) ;
+                        this.closeFormFoo(e) ;
                         clearCurrentFieldData(e);
                     },
                 }
@@ -254,7 +249,85 @@ export default class Form {
         // getForm method returns dom element ; 
         const Form = this._view.getForm( formItems ) ;
         signInWrap.append(Form)
-        const MoveableWrap = BindMover(signInWrap);
+        const MoveableWrap = this.BindMover(signInWrap);
         this.root.append(MoveableWrap);
+    }
+    offerForm(){
+        //handlers
+        const getCategory = Model.getCategory();
+        const FormHandler = Model.offerFormHandler;
+        const formWrapSet = new createElement({
+            tagname : 'div' ,
+            attr : {
+                class : "defbox",
+            }
+        });
+        const formSet = {
+            tagname : 'form',
+            attr : {
+                method : 'POST',
+                action : '/auth/recomendnewrecipe',
+                class : "form recommendation"
+            },
+            handler : {
+                submit : (e)=>{
+                    FormHandler(e);
+                }
+            }
+        }
+        getCategory.then( result => {
+            let arr = result.res;
+            
+            if (arr[0] === false){
+                FormWrap.innerHTML = 'Server not found'
+                Root.append(FormWrap)
+            }else{
+                let FlavorOptions = arr.reduce( (prev,curr) => {
+                    let previous = prev;
+                    let current;
+                    if (previous === ''){
+                        current = `<option selected value="${curr}">${curr}</option>`
+                    }else {
+                        current = `<option value="${curr}">${curr}</option>`
+                    }
+                    return previous + current;
+                } , '');
+                const reqElements = [
+                    Elements.formOfferTitle,
+                    {
+                        ...Elements.newRecipe,
+                    },
+                    {
+                        tagname : 'select',
+                        attr : {
+                            class : 'form-select form-element',
+                            id : 'flavor',
+                            name : 'flavor'
+                        },
+                        content : FlavorOptions,
+                    },
+                    {
+                        ...Elements.selectStrength
+                    },
+                    Elements.errorMessage,
+                    Elements.submitButton,
+                    {
+                        ...Elements.closeFormButton,
+                        handler : {
+                            click : (e) => { 
+                                this.closeFormFoo (e)
+                            }
+                        }
+                    },
+                    formSet
+                ];
+                const Form = View.getForm(reqElements);
+                formWrapSet.append(Form);
+                const moveableWrap = this.BindMover(formWrapSet);
+                this.root.append(moveableWrap);
+            }
+
+        });
+        
     }
 }

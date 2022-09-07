@@ -49,6 +49,31 @@ export const Elements = {
             placeholder: "enter email"
         }
     },
+    newRecipe : {
+        tagname : 'input',
+        attr : {
+            type:"text", 
+            name:"newrecipe", 
+            placeholder:"enter your recipe...", 
+            autocomplete:"off",
+            class : "form-text form-element"
+        } 
+    },
+    selectStrength :{
+        tagname : 'select' ,
+        attr : {
+            class : 'form-select form-element',
+            id : 'strength' ,
+            name : 'strength'
+        },
+        content : ( () => {
+            let options = '';
+            for (let i = 0; i <= 10; i++) {
+                options += `<option>${i}</option>`
+            };
+            return options;
+        })()
+    },
     errorMessage : {
         tagname : 'p' ,
         attr : {
@@ -76,6 +101,13 @@ export const Elements = {
             class : 'deftitle' ,
         },
         content : "Sign up"
+    },
+    formOfferTitle: {
+        tagname : 'h3' ,
+        attr : {
+            class : 'deftitle' ,
+        },
+        content : "Share a recipe"
     },
     submitButton : {
         tagname : 'input' ,
@@ -119,7 +151,6 @@ export const Elements = {
         attr : {
             class : 'subscribe-wrap'
         },
-        content : `<input class="form-checkbox" type="checkbox" name="subscribe" id="subscribe">` +
-                    `<label class="form-label" for="subscribe" >Subscribe to the news</label>`
-    }
+        content : `<input class="form-checkbox" type="checkbox" name="subscribe" id="subscribe"><label class="form-label" for="subscribe" >Subscribe to the news</label>`
+    },
 }
