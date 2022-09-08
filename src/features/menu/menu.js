@@ -32,7 +32,6 @@ export class Menu {
         // menuHandler is processing a response that gets html file 
         const menuHandler = this.Model.renderServerResponse.bind(this);
         //check whether the user has logged
-    
         const authStatus = Model.getUserServerStatus();
 
         const home = { 

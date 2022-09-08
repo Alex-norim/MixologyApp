@@ -21,7 +21,6 @@ export const Mixology = {
         // menu
         const getChildSum = Model.getWidthsum;
         const bindSlider = Model.bindSliderMenu;
-        const AdaptedMenu = Model.getAdaptMenu;
         // user 
         const userStatus = Model.getuserStatus();
 
@@ -35,22 +34,25 @@ export const Mixology = {
         // draw top ten recipes
         drawTopRecipes.then( result => {
             const topTen = result.list;
-            if(userStatus){
-                Model.getBestRecipes().then( result => {
-                    let best = result.res;
+            userStatus.then( result=> {
+                const isUserLogged = result.res;
+                if(isUserLogged){
+                    Model.getBestRecipes().then( result => {
+                        let best = result.res;
+                        recipeList.innerHTML = '';
+                        const listElements = getList( topTen , best , likeHandler );
+                        listElements.forEach( item => {
+                            recipeList.append(item);
+                        })
+                    });
+                }else{
                     recipeList.innerHTML = '';
-                    const listElements = getList( topTen , best , likeHandler );
+                    const listElements = getList( topTen , false );
                     listElements.forEach( item => {
                         recipeList.append(item);
                     })
-                });
-            }else{
-                recipeList.innerHTML = '';
-                const listElements = getList( topTen , false );
-                listElements.forEach( item => {
-                    recipeList.append(item);
-                })
-            };
+                };
+            })
         })
     }
 }   
