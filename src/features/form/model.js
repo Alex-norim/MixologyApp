@@ -53,8 +53,6 @@ export const Model = {
         let form    = e.currentTarget;
         let closeFormButton = form.querySelector('.closeFormButton');
         let errorMessage = form.querySelector('.error-message');
-        const oldMenu = root.querySelector('.mainMenuWrap');
-        const header = root.querySelector('header');
         let credentials = this.currentFieldData;
         let isvalid = () => {
             let response;
@@ -86,13 +84,12 @@ export const Model = {
                     let credentials = result.response;
                     let login = credentials.login;
                     let name    = credentials.name;
+                    let NewMenu = new Menu(root)
                     // save user's data
                     localStorage.setItem("name" , name);
                     localStorage.setItem("login" , login);
                     errorMessage.innerHTML = 'user has been logged successfully';
-                    oldMenu.remove();
-                    let NewMenu = new Menu(root)
-                    header.append(NewMenu);
+                    NewMenu.initMenu();
                     closeFormButton.click();
                 }else{
                     errorMessage.innerHTML = "db not found";
