@@ -1,4 +1,4 @@
-import { View } from './view.ts';
+import { View } from './view';
 import { Model } from './model.js';
 import { Setting } from './setting.js';
 // page
@@ -14,11 +14,16 @@ export class Menu {
         this.View = View;
         this.Model = Model;
         this.Form = new Form(this.root);
-        return this.getMenu();
+        // return this.getMenu();
     }
 
-    getMenu(){
+    initMenu(){
         // the functions of initialization after getting new content 
+        const Header = this.root.querySelector('header');
+        const menu = Header.querySelector('.mainMenuWrap');
+        if(menu){
+            menu.remove();
+        }
         const useMixology = Mixology.init;
         const useCabinet  = Cabinet.init;
         const useArticles = Articles.init;
@@ -26,8 +31,6 @@ export class Menu {
         // menu items handler
         // menuHandler is processing a response that gets html file 
         const menuHandler = this.Model.renderServerResponse.bind(this);
-        // personalCabHandler gets JSON file as a response
-        const personalCabHandler = this.Model.personalCabinet;
         //check whether the user has logged
     
         const authStatus = Model.getUserServerStatus();
@@ -94,12 +97,18 @@ export class Menu {
             mobileMenu
         ];
 
-        if(authStatus){
-            return this.View.drawMenu( authedUserMenu )
-        }else{
-            return this.View.drawMenu( initMenu )
-        }
-        
+        authStatus 
+            .then( result => {
+                const isUserLogged = result.res;
+                if(!isUserLogged){
+                    Header.append( this.View.drawMenu( initMenu ) );
+                }else if(result){
+                    Header.append( this.View.drawMenu( authedUserMenu ) );
+                }
+            })
+            .catch(err => {
+                Header.append( this.View.drawMenu( initMenu ) );
+            })
     }
 }
 

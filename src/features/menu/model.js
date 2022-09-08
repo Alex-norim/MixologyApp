@@ -109,17 +109,21 @@ export const Model = {
         
     },
     getUserServerStatus : () => {
-        const req = new XMLHttpRequest();
+        return new Promise( (resolve , reject) => {
+            const req = new XMLHttpRequest();
         
-        req.onerror = () => {
-            return false;
-        }
-        req.open('GET' ,'/auth/auth_Status' , false );
-        req.setRequestHeader('Content-Type', 'application/json');
-        req.send();
-        let response = JSON.parse(req.response);
-        return response.res;
-        
+            req.onerror = () => {
+                reject(false);
+            }
+            req.onload = () => {
+                let response = req.response;
+                resolve(response)
+            }
+            req.open('GET' ,'/auth/auth_Status');
+            req.responseType = 'json'
+            // req.setRequestHeader('Content-Type', 'application/json');
+            req.send();
+        }) 
         
     }
 }
