@@ -157,8 +157,8 @@ export default class CreateDom extends Protos {
 
         header.append(
             this.logotype() ,
-            menu
         )
+        menu.initMenu()
     }
     footer(){
         let footer = this._root.querySelector('.footer')
