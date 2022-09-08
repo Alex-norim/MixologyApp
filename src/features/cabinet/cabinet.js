@@ -5,7 +5,6 @@ export const Cabinet = {
     init : ( _root) => {
         const root = _root;
         const listRoot = root.querySelector('.favoriteRecipeList');
-        const pcRoot = root.querySelector('.personalCab');
         const logOutButton = root.querySelector('.logout');
         const shareRecipeButton = root.querySelector('#suggest');
         const newForm = new Form(root);
@@ -17,8 +16,7 @@ export const Cabinet = {
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root ) });
         shareRecipeButton.addEventListener('click' , () => { 
-            newForm.offerForm();
-            // drawSuggestForm( getCategory , FormHandler , root , makeMoveable ,closeForm ); 
+            newForm.offerForm(); 
         })
         // shareRecipeButton
         showBestRecipes.then( result => {

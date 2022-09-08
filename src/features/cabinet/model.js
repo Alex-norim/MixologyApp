@@ -5,7 +5,7 @@ export const Model = {
     likeHandler : importModel.likeHandler,
     getRecipeItems : importModel.showSpecificList,
     getBestRecipe : importModel.getBestRecipes,
-    logoutHandler : async ( drawModalWindow , root ) => {
+    logoutHandler : ( drawModalWindow , root ) => {
         let rejectionFunction = (event) => {
             let target = event.target;
             let parentNode = target.parentNode.parentNode;
@@ -15,17 +15,12 @@ export const Model = {
             let target = e.target;
             let parentNode = target.parentNode.parentNode;
                 parentNode.style.display = "none";
-            let oldMenu = root.querySelector('.mainMenuWrap');
-                oldMenu.remove()
-            localStorage.removeItem('name');
-            localStorage.removeItem('login');
-            const refreshMenu = new Menu(root);
-            const header = root.querySelector('.header') ;
-                header.append(refreshMenu);
-            const directToHome = header.querySelector('nav').querySelector('a');
+            const newMenu = new Menu(root);
+            const directToHome = root.querySelector('a.home')
             directToHome.click();
+            newMenu.initMenu();
         }
-        await fetch('/auth/logout' , {method:'GET'})
+        fetch('/auth/logout' , {method:'GET'})
             .then( result=> {
                 return result.json();
             })
