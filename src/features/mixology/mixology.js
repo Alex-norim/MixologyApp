@@ -9,7 +9,7 @@ export const Mixology = {
         const root = _root;
         // local dom elements
         const mixRoot = root.getElementsByClassName('mixologyID')[0];
-        const mixMenu = mixRoot.querySelector('.mix-menu-list');
+        const mixMenu = mixRoot.querySelector('.mix-menu');
         const mixMenuChilds = mixRoot.getElementsByClassName('mix-menu-link');
         const recipeList = mixRoot.querySelector('.recipe-list');
         // handlers
