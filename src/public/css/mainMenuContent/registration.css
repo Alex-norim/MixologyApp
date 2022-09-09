@@ -147,6 +147,9 @@
     display: flex;
     justify-content: center;
 }
+.form-button__nextButton , .form-button__prevButton {
+    margin-bottom: 14px;
+}
 .form-button__nextButton{
     right: 54px;
 }
