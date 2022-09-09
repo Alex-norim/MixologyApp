@@ -37,52 +37,60 @@ export const Model = {
         }
         return sum - marRight;
     },
-    articleMenuSlider: ( element , widthSum) => {
-        const moveAt = (left , element) => {
-            let maxWidth = element.offsetWidth - element.parentNode.offsetWidth + 20;
-            if(left > 20){
+    articleMenuSlider: ( menu , widthSum) => {
+        const menuList = menu.firstElementChild;
+        console.log(menuList)
+        const moveAt = (left , menuList) => {
+            let maxWidth = menuList.offsetWidth - menuList.parentNode.offsetWidth + 20;
+            if(left > 5){
                 left = 5;
-            }else if(left < -maxWidth){
+            }else if(left < -maxWidth+15){
                 left = -maxWidth+15
             }
-            element.style.left = left + 'px'
+            menuList.style.left = left + 'px'
         };
-        element.addEventListener('mousedown' , (event) => {
+        menuList.addEventListener('mousedown' , (event) => {
             let isPressed = true;
+            const Target = event.target;
+            let isLIelement = event.target.tagName === 'LI'
             let initXpos = event.pageX;
+            if(isLIelement){
+                Target.setAttribute('style' , "pointer-events:none;")
+            }
             // 
-            const style = new String( element.getAttribute('style') );
+            const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
             // child
-            let childs = element.querySelectorAll('li');
+            let childs = menuList.querySelectorAll('li');
             let childsWidth = widthSum(childs);
-            let parentWidth  = element.parentNode.offsetWidth;
+            let parentWidth  = menuList.parentNode.offsetWidth;
             document.onmousemove = (event) => {
                 let currXpos = event.pageX;
                 
                 if(isPressed && childsWidth > parentWidth){
                     let direction = initXpos - currXpos;
-                    moveAt( prevleft - direction , element);
+                    moveAt( prevleft - direction , menuList);
                 }
             };
 
             document.onmouseup = () => {
+                Target.removeAttribute('style');
                 isPressed = false;
                 document.onmousemove = null;
+                document.onmouseup = null;
                 console.log('mouse was clicked')
                 console.log(isPressed)
             }
         })
     },
-    articleMenuWidth: (menu , getChildWidth) => {
-        const parent = menu.parentNode;
+    getAdaptArticleMenuWidth: (menu , getChildWidth) => {
         const childs = menu.querySelectorAll('li')
         const ChildsWidth = getChildWidth(childs);
         const windowWidth = window.innerWidth;
         if(ChildsWidth >= windowWidth){
-            parent.style.width = '100%'
+            menu.style.width = '100%'
         }else{
-            parent.style.width = ChildsWidth + 10 + 'px';
+            menu.style.width = ChildsWidth + 10 + 'px';
         }
         
     }
