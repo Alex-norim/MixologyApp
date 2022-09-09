@@ -1,9 +1,7 @@
 /* .form-wrap{
     
 } */
-.signInWrap , .signUpWrap{
-    
-}
+
 .form{
     display: flex;
     flex-direction: column;

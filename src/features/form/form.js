@@ -42,105 +42,73 @@ export default class Form {
                     signUpHandler(e)
                 }
             }
+        };
+        const inputHandler = {
+            keyup : (e) => { 
+                saveUserInput(e);
+                errorHandler(e)
+            },
         }
+        const buttonPrev = {
+            ...setting.prevButton,
+            handler : {
+                click : (event) => {
+                    this.signUp(event , fieldOrder - 1 );
+                    InputFiller()
+                },
+            },
+        };
+        const buttonNext = {
+            ...setting.nextButton,
+            handler : {
+                click : (event) => {
+                    this.signUp(event , fieldOrder + 1 );
+                    InputFiller()
+                }
+            }
+        };
+        const buttonToCloseForm = {
+            ...setting.closeFormButton,
+            handler : {
+                click : (e) => {
+                    this.closeFormFoo(e) ;
+                    clearCurrentFieldData(e);
+                },
+            }
+        };
         // last element of the fields const should be a wrap element
         const fields = {
             1 : [
                 setting.signUpTitle ,
                 {...setting.login ,
-                    handler : {
-                        keyup : (e) => { 
-                            saveUserInput(e);
-                            errorHandler(e)
-                        },
-                    }
+                    handler : inputHandler
                 },
                 {...setting.name ,
-                    handler : {
-                        keyup : (e) => { 
-                            saveUserInput(e);
-                            errorHandler(e)
-                        },
-                    }
+                    handler : inputHandler
                 } ,
                 {
                     ...setting.email ,
-                    handler : {
-                        keyup : (e) => { 
-                            saveUserInput(e);
-                            errorHandler(e)
-                        },
-                    }
+                    handler : inputHandler
                 },
                 setting.errorMessage,
-                {
-                    ...setting.nextButton,
-                    handler : {
-                        click : (event) => {
-                            this.signUp(event , fieldOrder + 1 );
-                            InputFiller()
-                        }
-                    }
-                },
-                {
-                    ...setting.closeFormButton,
-                    handler : {
-                        click : (e) => {
-                            this.closeFormFoo(e) ;
-                            clearCurrentFieldData(e);
-                        },
-                    }
-                },
+                buttonNext,
+                buttonToCloseForm,
                 signUpForm
             ] ,
             2 : [
                 setting.signUpTitle ,
                 {
                     ...setting.password,
-                    handler : {
-                        keyup : (e) => { 
-                            saveUserInput(e);
-                            errorHandler(e)
-                        },
-                    }
+                    handler : inputHandler
                 },
                 {
                     ...setting.confirmPassword,
-                    handler : {
-                        keyup : (e) => { 
-                            saveUserInput(e);
-                            errorHandler(e)
-                        },
-                    }
+                    handler : inputHandler
                 },
                 setting.errorMessage,
-                {
-                    ...setting.prevButton,
-                    handler : {
-                        click : (event) => {
-                            this.signUp(event , fieldOrder - 1 );
-                            InputFiller()
-                        },
-                    },
-                },
-                {
-                    ...setting.nextButton,
-                    handler : {
-                        click : (event) => {
-                            this.signUp(event , fieldOrder + 1 )
-                            InputFiller()
-                        }
-                    }
-                },
-                {
-                    ...setting.closeFormButton,
-                    handler : {
-                        click : (e) => {
-                            this.closeFormFoo(e);
-                            clearCurrentFieldData(e);
-                        },
-                    }
-                },
+                buttonPrev,
+                buttonNext,
+                buttonToCloseForm,
                 signUpForm,
             ] ,
             3 : [
@@ -154,27 +122,11 @@ export default class Form {
                     }
                 },
                 setting.errorMessage,
-                {
-                    ...setting.prevButton,
-                    handler : {
-                        click : (event) => {
-                            this.signUp(event , fieldOrder - 1 );
-                            InputFiller()
-                        },
-                    },
-                },
+                buttonPrev,
                 {
                     ...setting.submitButton,
                 },
-                {
-                    ...setting.closeFormButton,
-                    handler : {
-                        click : (e) => {
-                            this.closeFormFoo(e) ;
-                            clearCurrentFieldData(e);
-                        },
-                    }
-                },
+                buttonToCloseForm,
                 signUpForm,
             ]
         }; 
