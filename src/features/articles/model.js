@@ -39,7 +39,6 @@ export const Model = {
     },
     articleMenuSlider: ( menu , widthSum) => {
         const menuList = menu.firstElementChild;
-        console.log(menuList)
         const moveAt = (left , menuList) => {
             let maxWidth = menuList.offsetWidth - menuList.parentNode.offsetWidth + 20;
             if(left > 5){
@@ -49,7 +48,22 @@ export const Model = {
             }
             menuList.style.left = left + 'px'
         };
-        menuList.addEventListener('mousedown' , (event) => {
+        const wheelhandler = (e) => {
+            e.preventDefault(e);
+            const thisMenu = e.currentTarget;
+            const deltaY = e.deltaY;
+            const style = new String( menuList.getAttribute('style') );
+            let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
+            // let childs = thisMenu.querySelectorAll('li');
+            // let childsWidth = widthSum(childs);
+            // let parentWidth  = thisMenu.parentNode.offsetWidth;
+            if(deltaY > 0){
+                moveAt(prevleft - 10 , menuList)
+            }else if(deltaY<0){
+                moveAt(prevleft + 10 , menuList)
+            }
+        }
+        const mouseDownhandler = (event) => {
             let isPressed = true;
             const Target = event.target;
             let isLIelement = event.target.tagName === 'LI'
@@ -78,9 +92,15 @@ export const Model = {
                 isPressed = false;
                 document.onmousemove = null;
                 document.onmouseup = null;
-                console.log('mouse was clicked')
-                console.log(isPressed)
             }
+        }
+        
+        menuList.addEventListener('mousedown' , mouseDownhandler);
+        menuList.addEventListener('mouseover' , (e)  => {
+            menuList.addEventListener('mousewheel' , wheelhandler);
+        })
+        menuList.addEventListener('mouseleave' , (e) => {
+            menuList.removeEventListener('mousewheel' , wheelhandler)
         })
     },
     getAdaptArticleMenuWidth: (menu , getChildWidth) => {
