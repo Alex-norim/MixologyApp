@@ -136,7 +136,7 @@ export default class Form {
                     ...setting.closeFormButton,
                     handler : {
                         click : (e) => {
-                            closeForm(e) ;
+                            this.closeFormFoo(e);
                             clearCurrentFieldData(e);
                         },
                     }
@@ -170,7 +170,7 @@ export default class Form {
                     ...setting.closeFormButton,
                     handler : {
                         click : (e) => {
-                            closeForm(e) ;
+                            this.closeFormFoo(e) ;
                             clearCurrentFieldData(e);
                         },
                     }
