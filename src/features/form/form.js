@@ -8,7 +8,6 @@ export default class Form {
     constructor ( root ){
         this.isFormCreated = false;
         this.currentFieldData = {
-            login : {},
             subscribe : 0
         };
         this.root = root ;
@@ -26,7 +25,7 @@ export default class Form {
         const InputFiller = this._model.fillInputsByValid.bind(this);
         const checkSubscribe = this._model.checkSubscribe.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
-        const errorHandler  = this._model.formErrorHandler;
+        const inputHandler  = this._model.formFieldHandler;
         const signUpHandler = this._model.signUpFormHandler.bind(this);
         const saveUserInput = this._model.saveUserInput.bind(this);
     
@@ -43,12 +42,37 @@ export default class Form {
                 }
             }
         };
-        const inputHandler = {
+        // keyup
+        const commonHandler = {
             keyup : (e) => { 
-                saveUserInput(e);
-                errorHandler(e)
+                inputHandler(e , saveUserInput , {
+                    length: true,
+                    emptySpace: true,
+                    trimHtmlTags : true,
+                    trimInvalidChar : true,
+                })
             },
         }
+        const passporthandler = {
+            keyup : (e) => { 
+                inputHandler(e , saveUserInput , {
+                    length: true,
+                    emptySpace: true,
+                    trimHtmlTags : true,
+                })
+            },
+        }
+        const emailhandler = {
+            keyup : (e) => { 
+                inputHandler(e , saveUserInput , {
+                    length: true,
+                    emptySpace: true,
+                    trimHtmlTags : true,
+                    checksAmpersand : true
+                })
+            },
+        }
+        // buttons
         const buttonPrev = {
             ...setting.prevButton,
             handler : {
@@ -81,14 +105,14 @@ export default class Form {
             1 : [
                 setting.signUpTitle ,
                 {...setting.login ,
-                    handler : inputHandler
+                    handler : commonHandler
                 },
                 {...setting.name ,
-                    handler : inputHandler
+                    handler : commonHandler
                 } ,
                 {
                     ...setting.email ,
-                    handler : inputHandler
+                    handler : emailhandler
                 },
                 setting.errorMessage,
                 buttonNext,
@@ -98,12 +122,12 @@ export default class Form {
             2 : [
                 setting.signUpTitle ,
                 {
-                    ...setting.password,
-                    handler : inputHandler
+                    ...setting.newPassword,
+                    handler : passporthandler
                 },
                 {
                     ...setting.confirmPassword,
-                    handler : inputHandler
+                    handler : passporthandler
                 },
                 setting.errorMessage,
                 buttonPrev,
@@ -135,10 +159,11 @@ export default class Form {
         formWrap.append(SignUpForm);
     }
     signIn () {
+        console.log(this.currentFieldData)
         let formEl = Elements;
         let saveUserInput = this._model.saveUserInput.bind(this);
         const clearCurrentFieldData = this._model.clearUserCredentials.bind(this);
-        const errorHandler  = this._model.formErrorHandler;
+        const inputHandler  = this._model.formFieldHandler;
         const formHandler   = this._model.signInFormHandler.bind(this);
         const signInWrap = new createElement({
             tagname : 'div' ,
@@ -153,16 +178,26 @@ export default class Form {
                 ...formEl.login , 
                 handler : { 
                     keyup : (e) => { 
-                        saveUserInput(e);
-                        errorHandler(e)
+                        inputHandler(e , saveUserInput , {
+                            length: true,
+                            emptySpace: true,
+                            trimHtmlTags : true,
+                            trimInvalidChar : true,
+                        })
                     },
                 }
             },
             {
                 ...formEl.password ,
                 handler : { 
-                    keyup : saveUserInput,
-                    keydown : errorHandler
+                    keyup : (e) => { 
+                        saveUserInput(e);
+                        inputHandler(e , saveUserInput , {
+                            length: true,
+                            emptySpace: true,
+                            trimHtmlTags : true,
+                        })
+                    },
                 }    
             },
             formEl.errorMessage,
@@ -208,6 +243,8 @@ export default class Form {
         //handlers
         const getCategory = Model.getCategory();
         const FormHandler = Model.offerFormHandler;
+        let saveUserInput = this._model.saveUserInput.bind(this);
+        const inputHandler  = this._model.formFieldHandler;
         const formWrapSet = new createElement({
             tagname : 'div' ,
             attr : {
@@ -248,6 +285,16 @@ export default class Form {
                     Elements.formOfferTitle,
                     {
                         ...Elements.newRecipe,
+                        handler : {
+                            keyup : (e) => { 
+                                inputHandler(e , saveUserInput , {
+                                    length: true,
+                                    emptySpace: true,
+                                    trimHtmlTags : true,
+                                    trimInvalidChar : true,
+                                })
+                            },
+                        }
                     },
                     {
                         tagname : 'select',

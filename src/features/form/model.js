@@ -9,44 +9,34 @@ export const Model = {
             this.currentFieldData['subscribe'] = 1 :
             this.currentFieldData['subscribe'] = 0 ;
     },
-    saveUserInput : function(event){
-        let target = event.target;
-        let value  = target.value;
-        let targetType = event.target.attributes.type.nodeValue;
-        let name   = target.name;
-        const initValidator = new Validator(value , targetType);
-        const isValidData = initValidator.getErrors()[0];
+    saveUserInput : function(name,value){
         
-        if( typeof isValidData === 'object'){
-            this.currentFieldData[name] = isValidData ;
-        }else{
-            this.currentFieldData[name] = value ;
-        }
+        typeof name === 'string' ?
+            this.currentFieldData[name] = value : `` ;
     },
-    formErrorHandler: (event) => {
+    formFieldHandler: (event, saveData , checkBy) => {
         let errorMessage = event.currentTarget.parentNode.querySelector('.error-message');
         let target = event.target;
+        const inputName = target.attributes.name.value;
         let value  = target.value; 
-        let targetType = event.target.attributes.type.nodeValue.toString();
-        const initValidator = new Validator(value , targetType);
-        const isValidData = initValidator.getErrors()[0];
-        
-        if(typeof isValidData === 'object') {
-            errorMessage.textContent = isValidData.error;
-            target.style.color = 'red'
-            errorMessage.style.color = 'red';
-        }else {
-            target.style.color = ''
-            target.style.color = '';
+        const initValidator = new Validator(value , checkBy);
+        const result = initValidator.errorLog;
+        console.log(result)
+        if(typeof result === 'object') {
+            errorMessage.textContent = result.error;
+        }else if(result === true) {
+            saveData(inputName , value)
             errorMessage.textContent = '';
-        }      
+        }  
     },
     closeForm : function(event){
         let target = event.currentTarget.parentNode.parentNode;
             target.remove();
     },
-    clearUserCredentials : function (event) {
-        this.currentFieldData = {};
+    clearUserCredentials : function () {
+        this.currentFieldData = {
+            subscribe : 0
+        };
     },
     signInFormHandler : function (e , root) {
         e.preventDefault();
@@ -119,7 +109,8 @@ export const Model = {
         
         let comparePaswords =   credentials.password === credentials.confirmPassword 
                                     && !credentials.password === false;
-        
+        console.log(credentials)
+        console.log(isValid())
         if( isValid() && comparePaswords ) {
             fetch("/auth/signup" , {
                 method : 'POST' ,
@@ -228,7 +219,6 @@ export const Model = {
     fillInputsByValid : function (){
         const currForm = this.root.querySelector('.form');
         const inputs = currForm.querySelectorAll('input');
-        const errorMessage = currForm.querySelector('.error-message');
         const userData = this.currentFieldData;
         for (const input of inputs) {
             let InputType = input.getAttribute('name');
@@ -242,14 +232,14 @@ export const Model = {
     },
     getCategory : async () => {
         return await fetch( '/auth/getcategory' , {method: 'GET'})
-        .then( result => {
-            return result.json();
-        })
-        .catch(err => {
-            return {
-                res : "server not found"
-            }
-        })
+            .then( result => {
+                return result.json();
+            })
+            .catch(err => {
+                return {
+                    res : "server not found"
+                }
+            })
     },
 
 }

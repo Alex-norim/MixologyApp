@@ -6,7 +6,8 @@ export const Elements = {
             type:"text",
             name:"login",
             placeholder : "enter login",
-            id : "login"
+            id : "login",
+            autocomplete :'username'
         }
     } ,
     name :{
@@ -16,7 +17,7 @@ export const Elements = {
             type:"text",
             name:"name",
             placeholder : "enter name",
-            id : "name"
+            id : "name",
         }
     },
     password : {
@@ -26,7 +27,18 @@ export const Elements = {
             type : "password", 
             name: "password", 
             id: "password", 
+            autocomplete: "current-password",
             placeholder: "enter password"
+        }
+    } ,
+    newPassword : {
+        tagname :'input' , 
+        attr :  {
+            class : 'form-text form-element',
+            type : "password", 
+            name: "password", 
+            id: "password", 
+            placeholder: "enter password",
         }
     } ,
     confirmPassword : {
@@ -36,7 +48,7 @@ export const Elements = {
             type : "password", 
             name: "confirmPassword", 
             id: "confirmPassword", 
-            placeholder: "confirm password"
+            placeholder: "confirm password",
         }
     } ,
     email : {
