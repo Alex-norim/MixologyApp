@@ -14,7 +14,7 @@ const getHighRatingArticle = async () => {
             return row;
         })
         .catch( err => {
-            return 'server not found'
+            return false;
         })
 }
 const ArticleCategoryes = async () => {
@@ -29,7 +29,7 @@ const ArticleCategoryes = async () => {
             return row.map( obj => obj.category )
         })
         .catch( err => {
-            return ['Not found']
+            return false
         })
 }
 // middleware functions
@@ -41,13 +41,13 @@ ArticleRouter.use( async (req,res,next) => {
 })
 // common requests
 ArticleRouter.get("/" , (req,res) => {
+    console.log(req.ArticlesArray)
     res.render('article' , {
         layout : false,
         category : req.ArticlesArray
     });
 });
 ArticleRouter.get('/get_highest_article' , (req, res) => {
-    console.log('result')
     getHighRatingArticle()
         .then( result => {
             res.send(JSON.stringify({

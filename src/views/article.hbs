@@ -1,11 +1,13 @@
 <div class="article">
     <h3 class="article-title">News and other ones</h3>
-    <nav class="article-menu">
-        <ul class="article-menu-list">
-            {{#each category}}
-                <li><p href="/articles/{{this}}" class="article-menu-item">{{this}}</p></li>
-            {{/each}}
-        </ul>
-    </nav>
+        <nav class="article-menu">
+            {{#if category}}
+                <ul class="article-menu-list">
+                    {{#each category}}
+                        <li class="article-menu-item"><a href="/articles/{{this}}" >{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+        </nav>
     <div class="article-text"></div>
 </div>
