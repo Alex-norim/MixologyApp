@@ -1,22 +1,27 @@
 
 export const Model = {
-    bindHandlersTo : ( domElements , handler , eType ) => {
-        for (const domElem of domElements ) {
-            domElem.addEventListener( eType , handler)
-        }
-    },
-    bestArticle: (renderArticles , root) => {
+    bestArticle: (obj) => {
+        const errorMessage = "sorry cant get to server"
+        const drawList = obj.renderList;
+        const listRoot = obj.listRoot;
+        const drawError = obj.renderError;
+        const errorRoot = obj.errorRoot
         fetch('/articles/get_highest_article')
             .then( result => result.json())
             .then( json => {
-                const data = json.response;
-                renderArticles(data , root)
+                const response = json.response;
+                response ?
+                    drawList(response , listRoot) : 
+                    drawError( errorMessage , errorRoot);
             } )
-            .catch(err => 'server not found')
+            .catch(err => {
+                drawError( errorMessage , errorRoot);
+            })
     },
-    menuItemHandler : async function(event , putArticle , rootElement){
+    menuItemHandler : async function(event , drawArticles , rootElement){
         event.preventDefault();
-        const Href = event.currentTarget.attributes.href.value;
+    
+        const Href = event.currentTarget.querySelector('a').getAttribute('href')
         
         await fetch(Href , {
             method : "GET"
@@ -24,13 +29,13 @@ export const Model = {
         .then( result => result.json())
         .then( result =>  {
             const articles = result.res; // array of obj 
-            putArticle(articles , rootElement);
+            drawArticles(articles , rootElement);
         })
     },
-    childWidthSum : (elems) => {
+    childWidthSum : (childs) => {
         let sum = 0;
         let marRight = 0;
-        for (const iterator of elems) {
+        for (const iterator of childs) {
             const marginRight = parseInt(getComputedStyle(iterator).marginRight);
             marRight = marginRight;
             sum+=iterator.offsetWidth + marginRight;
@@ -49,14 +54,12 @@ export const Model = {
             menuList.style.left = left + 'px'
         };
         const wheelhandler = (e) => {
-            e.preventDefault(e);
+            e.preventDefault();
             const thisMenu = e.currentTarget;
             const deltaY = e.deltaY;
             const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
-            // let childs = thisMenu.querySelectorAll('li');
-            // let childsWidth = widthSum(childs);
-            // let parentWidth  = thisMenu.parentNode.offsetWidth;
+
             if(deltaY > 0){
                 moveAt(prevleft - 10 , menuList)
             }else if(deltaY<0){
@@ -65,22 +68,23 @@ export const Model = {
         }
         const mouseDownhandler = (event) => {
             let isPressed = true;
-            const Target = event.target;
-            let isLIelement = event.target.tagName === 'LI'
+            const Target = event.target.parentNode;
+            let isLIelement = event.target.tagName === 'A'
             let initXpos = event.pageX;
             if(isLIelement){
+                
                 Target.setAttribute('style' , "pointer-events:none;")
             }
             // 
             const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
             // child
-            let childs = menuList.querySelectorAll('li');
+            let childs = menuList.querySelectorAll('a');
             let childsWidth = widthSum(childs);
             let parentWidth  = menuList.parentNode.offsetWidth;
             document.onmousemove = (event) => {
                 let currXpos = event.pageX;
-                
+                console.log('pressed')
                 if(isPressed && childsWidth > parentWidth){
                     let direction = initXpos - currXpos;
                     moveAt( prevleft - direction , menuList);
@@ -97,21 +101,41 @@ export const Model = {
         
         menuList.addEventListener('mousedown' , mouseDownhandler);
         menuList.addEventListener('mouseover' , (e)  => {
-            menuList.addEventListener('mousewheel' , wheelhandler);
-        })
+            menuList.addEventListener('mousewheel' , wheelhandler , {passive:false});
+        } )
         menuList.addEventListener('mouseleave' , (e) => {
             menuList.removeEventListener('mousewheel' , wheelhandler)
         })
     },
-    getAdaptArticleMenuWidth: (menu , getChildWidth) => {
-        const childs = menu.querySelectorAll('li')
-        const ChildsWidth = getChildWidth(childs);
-        const windowWidth = window.innerWidth;
-        if(ChildsWidth >= windowWidth){
-            menu.style.width = '100%'
-        }else{
-            menu.style.width = ChildsWidth + 10 + 'px';
+    initArticleMenu: (obj) => {
+        const Menu = obj.element;
+        const menuItemHandler = obj.childHandler;
+        const calculateWidth = obj.calculateWidth;
+        const drawArticles = obj.drawArticles;
+        const bindSliderTo = obj.makeSlider;
+        const Nest = obj.articleNest;
+        const childs = Menu.querySelectorAll('li');
+
+        if(childs.length < 1){
+            return false;
         }
+        const ChildsWidth = calculateWidth(childs);
+        const windowWidth = window.innerWidth;
+
+        console.log(ChildsWidth , windowWidth)
+        if(ChildsWidth >= windowWidth){
+            console.log('x')
+            Menu.style.width = '100%'
+        }else{
+            console.log('y')
+            Menu.style.width = ChildsWidth + 10 + 'px';
+        }
+        bindSliderTo(Menu , calculateWidth );
+        childs.forEach( element => {
+            element.addEventListener('click' , (e) => {
+                menuItemHandler( e ,  drawArticles , Nest)
+            })
+        });
         
     }
 }

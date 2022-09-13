@@ -2,12 +2,11 @@ import createElement from '../appSettings/createElement.js';
 
 export const View = {
     renderArticles : (arrayArticles , rootElement) => {
-        const Error = typeof arrayArticles === 'string' ? true : false;
-        rootElement.innerHTML = '';
-        if ( Error ) {
-            rootElement.innerHTML = `<p class="article-error">${arrayArticles}</p>`;
+        const Error = typeof arrayArticles !== 'object';
+        if(Error){
             return false;
         }
+        rootElement.innerHTML = '';
         for (const article of arrayArticles) {
             const title = new createElement({
                 tagname : 'h4' ,
@@ -40,5 +39,15 @@ export const View = {
             rootElement.append(wrap);
         }
 
+    },
+    renderErrorMessage : ( message , rootElement) => {
+        const errorWrap = new createElement({
+            tagname : 'p',
+            attr : {
+                class : 'warning'
+            },
+            content : message
+        });
+        rootElement.append(errorWrap);
     }
 }

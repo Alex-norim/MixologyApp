@@ -6,27 +6,34 @@ export const Articles = {
         // dom elements
         const root = _root;
         const contentRoot = root.querySelector('.article');
-        const ArticleMenuItems = contentRoot.getElementsByClassName('article-menu-item');
+        const renderErrorMessage = View.renderErrorMessage;
         const ArticleNest = contentRoot.querySelector('.article-text')
-        // binder of handlers
-        const Binder = Model.bindHandlersTo;
+        const errorNest = contentRoot;
         // 
-        const MenuItemhandler = Model.menuItemHandler;
         const RenderArticles = View.renderArticles;
         const ArticleMenu = root.querySelector('.article-menu');
+        // menu
+        const initLocalMenu = Model.initArticleMenu;
+        const MenuItemhandler = Model.menuItemHandler;
+        const bindSlider = Model.articleMenuSlider;
         const getWidthSum = Model.childWidthSum;
-        const AdaptmenuWidth = Model.getAdaptArticleMenuWidth;
         //
         const showHighRatingArticle = Model.bestArticle;
-        const bindSlider = Model.articleMenuSlider;
-
-        // to define width of the menu of article section
-        AdaptmenuWidth(ArticleMenu , getWidthSum);
-        // bind slider
-        bindSlider(ArticleMenu , getWidthSum);
-        showHighRatingArticle( RenderArticles , ArticleNest);
-        Binder(ArticleMenuItems , (e) => {
-            MenuItemhandler(e , RenderArticles , ArticleNest)
-        } , 'click');
+        // initialize menu
+        initLocalMenu({
+            element : ArticleMenu , 
+            childHandler : MenuItemhandler ,
+            calculateWidth : getWidthSum,
+            drawArticles : RenderArticles,
+            makeSlider : bindSlider,
+            articleNest : ArticleNest
+        });
+        // show Article
+        showHighRatingArticle( {
+            renderList : RenderArticles,
+            renderError : renderErrorMessage ,
+            listRoot : ArticleNest ,
+            errorRoot : errorNest
+        });
     }
 }
