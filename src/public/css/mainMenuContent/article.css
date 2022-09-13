@@ -9,9 +9,9 @@
 .article-title{
     flex-basis: 100%;
     text-align-last: left;
-    font-size: 25px;
+    font-size: 32px;
     font-family: cursive;
-    margin-bottom: 17px;
+    margin-bottom: 31px;
 }
 nav.article-menu{
     flex-basis: 15%;
@@ -25,17 +25,12 @@ nav.article-menu > .article-menu-list {
     display: flex;
     flex-direction: column;
     /*  */
-    position: relative;
+    position: static;
     top: 0;
     left: 0;
     /*  */
 }
-nav.article-menu > .article-menu-list > li{
-    display: inherit;
-    margin: 5px 0;
-}
 nav.article-menu > .article-menu-list .article-menu-item{
-    padding: 5px 8px;
     border: 2px solid #fff;
     border-radius: 3px;
     text-decoration: none;
@@ -45,6 +40,13 @@ nav.article-menu > .article-menu-list .article-menu-item{
     font-family: cursive;
     transition: 0.4s;
     cursor: pointer;
+    display: inherit;
+    margin: 5px 0;
+}
+nav.article-menu > .article-menu-list .article-menu-item > a{
+    padding: 5px 8px;
+    text-decoration: none;
+    width: 100%;
 }
 nav.article-menu > .article-menu-list .article-menu-item:hover{
     text-shadow: #fff 1px 0 10px;
