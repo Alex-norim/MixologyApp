@@ -68,7 +68,7 @@ export const Elements = {
             name:"newrecipe", 
             placeholder:"enter your recipe...", 
             autocomplete:"off",
-            class : "form-text form-element"
+            class : "form-text form-element",
         } 
     },
     selectStrength :{
@@ -76,7 +76,10 @@ export const Elements = {
         attr : {
             class : 'form-select form-element',
             id : 'strength' ,
-            name : 'strength'
+            name : 'strength',
+            style : {
+                "background-color": "#717171"
+            }
         },
         content : ( () => {
             let options = '';
@@ -126,7 +129,7 @@ export const Elements = {
         attr : {
             class:"form-button form-element", 
             type:"submit", 
-            value:"Log in"
+            value:"send"
         }
     },
     nextButton : {

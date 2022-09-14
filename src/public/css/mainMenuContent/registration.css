@@ -34,14 +34,14 @@
     box-shadow: 1px 0px 5px 5px;;
 }
 .form .form-select {
-    background: #000;
+    
+    
     border: 2px solid #fff;
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 19px;
     width: 100%;
 }
-
 .form-button{
     border: 2px solid #918d8d;
     background: inherit;

@@ -74,11 +74,23 @@
     right: 27px;
 }
 .recommendation {
-    width: 100%;
-    margin: 30px auto 25px;
-    text-align: center;
+    display: block;
+    width: 350px;
 }
-
+.recommendation > #flavor{
+    width: 140px;
+}
+.recommendation > #strength{
+    width: 70px;
+    margin-left: 140px;
+}
+.recommendation > .form-select{
+    margin-bottom: 5px;
+}
+.recommendation > .form-button{
+    margin-left: 60px;
+    margin-top: 0;
+}
 .defbox .favoriteRecipeList {
     list-style: none;
     margin-left: 20px;
@@ -126,7 +138,80 @@
     }
 }
 @media screen and (max-width : 700px) {
+    .defbox .favoriteRecipeList {
+        margin-left: 0;
+    }
     .personalCab > .defbox{
         width: 100%;
+    }
+}
+@media screen and (max-width : 650px) {
+    .recommendation .form-text{
+        width: 100%;
+    }
+    .recommendation > #strength{
+        margin-left: 140px;
+    }
+}
+
+@media screen and (max-width : 500px) {
+    .personalCab :nth-child(2n+1) {
+        align-self: flex-start;
+    }
+    .personal-inf {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .personalCab :nth-child(2n){
+        align-self:flex-start;
+    }
+    .personal-inf > .userprofile .name , 
+    .personal-inf > .userprofile .email, 
+    .personal-inf > .userprofile .login
+    {
+        margin-left: 5px;
+        font-size: 16px;
+    }
+    .personal-inf > .userprofile .name::before , 
+    .personal-inf > .userprofile .email::before, 
+    .personal-inf > .userprofile .login::before
+    {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .personal-inf .button , #suggest{
+        position:static;
+    }
+    #suggest{
+        margin-bottom: 10px;
+    }
+    .personal-inf > .userprofile {
+        margin-top: 3px;
+        margin-bottom: 13px;
+    }
+}
+@media screen and (max-width : 460px) {
+    .recommendation{
+        width: 100%;
+        height: 241px;
+        position: relative;
+    }
+    .recommendation > #flavor{
+        position: absolute;
+        left: 0;
+        top: 142px;
+    }
+    .recommendation > #strength{
+        position: absolute;
+        right: 0;
+        top: 142px;
+    }
+    .recommendation>.form-button{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
     }
 }

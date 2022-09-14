@@ -5,11 +5,12 @@
 }
 
 @media screen and (max-width : 550px) and (min-width: 320px) {
-    .footer .logotype-wrapper{
+    .footer .logo-name{
         display: none;
     }
     .designed_by{
         width: 100%;
         text-align: right;
+        color: #adacac;
     }
 }

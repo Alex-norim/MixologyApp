@@ -1,7 +1,7 @@
-/* .mix-menu{
-
-
-} */
+.mix-menu{
+    display: flex;
+    justify-content: center;
+}
 
 .mix-menu > .mix-menu-list {
     list-style: none;
@@ -10,33 +10,34 @@
 
 
 .mix-menu > .mix-menu-list > .mix-menu-link{
-    padding: 5px 10px ;
-    border: 1px solid;
-    font-size: 20px;
+    padding: 6px 10px;
+    border: 1px solid #525252;
+    font-size: 23px;
     font-family: serif;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    background-color: rgb(170 168 168 / 37%);
+    background-color: rgb(145 137 137 / 22%);
     transition: .4s;
     user-select: none;
 }
 .mix-menu > .mix-menu-list > .mix-menu-link:hover{
-    background-color: rgba(154, 154, 154, .8);
+    background-color: rgb(145 137 137 / 76%)
 }
 .mix-menu > .mix-menu-list > .mix-menu-link:not(:last-child){
     margin-right: 12px;
 }
 
-@media screen and (max-width : 650px) and (min-width: 320px) {
+@media screen and (max-width : 730px) and (min-width: 320px) {
     .mix-menu{
         position: sticky;
         top: 25px;
         left: 10px;
         border: 2px solid rgb(251, 249, 249);
-        height: 46px;
+        height: 53px;
         overflow: hidden;
         width: 100%;
         background-color: #000;
+        z-index: 100;
     }
     .mix-menu > .mix-menu-list{
         position: absolute;

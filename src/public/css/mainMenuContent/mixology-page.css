@@ -42,7 +42,7 @@
     fill: rgb(223, 222, 222);
 }
 .recipe-block{
-    padding-top: 70px;
+    margin-top: 50px;
 }
 .recipe-block > .recipe-title{
     font-size: 36px;
@@ -62,7 +62,6 @@
     .recipe-list-item{
         display: flex;
         align-items: flex-start;
-        border: 1px solid rgb(244 244 244 / 30%);
         border-radius: 6px;
         padding: 6px 9px;
     }

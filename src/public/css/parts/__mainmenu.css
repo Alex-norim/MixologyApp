@@ -21,11 +21,10 @@
         background: rgb(170 168 168 / 37%);
     }
     .menu-main-link:hover{
-        border: 1px solid rgba(253, 251, 251, 0.5);
         background:  rgba(205, 203, 203, 0.05);
     }
 }
-@media screen and (max-width : 750px) and (min-width: 320px) {
+@media screen and (max-width : 800px) and (min-width: 320px) {
     .mainMenuWrap{
         position: absolute;
         top: 35px;
@@ -43,8 +42,8 @@
         transition:  .4s;
     }
     .mainMenuWrap .menu-main-link:hover{
-        background-color: rgb(181 179 179 / 70%);
-        backdrop-filter: blur(6px);
+        background-color: rgb(43 42 42);
+        color: #f6f4f4;
     }
     .smallScreenButton{
         display: inline-block;
@@ -85,24 +84,18 @@
         right: 0;
     }
 }
-@media screen and (max-width : 450px) and (min-width: 320px) {
-    .logotype-wrapper{
-        position: absolute;
-        top: 14px;
-        left: 15px;
-    }
+@media screen and (max-width : 500px) and (min-width: 320px) {
     .mainMenuWrap{
-        position:static;
-        width: 100%;
+        top: 15px;
+        right: 15px;
     }
-    .smallScreenButton{
-        position: absolute;
-        top: 21px;
-        right: 10px;
-    }
+}
+@media screen and (max-width : 450px) and (min-width: 320px) {
     .mainMenuWrap .menu-main-link{
+        position: fixed;
         width: 100vw;
         left: 0;
         right: 0;
+        margin-top: 21px;
     }
 }

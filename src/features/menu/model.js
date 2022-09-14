@@ -57,28 +57,19 @@ export const Model = {
                 [{top : "42px" } , {top : '126px'} ],
                 [{top : "42px" } , {top : '168px'} ]
             ];
-            let menuItemsFrames2 = [
-                [{top : "72px" } , {top : "72px" } ],
-                [{top : "72px" } , {top : '114px' } ],
-                [{top : "72px" } , {top : '156px'} ],
-                [{top : "72px" } , {top : '198px'} ]
-            ];
-            const windowSize = window.innerWidth;
             let iterator = 0;
             for (const menuElement of obj) {
                 menuElement.addEventListener('click' , (event) => {
                     let windowWidth = window.innerWidth;
                     // check if the menu is web page state
-                    if(windowWidth <= 750) { 
+                    if(windowWidth <= 800) { 
                         root.style.display = '';
                         toggleLines(lines , showup ? false : true)
                         toggleMenuItems(obj , showup ? false : true)
                     }
                 })
                 menuElement.animate( 
-                    windowSize >600 ? 
-                        menuItemsFrames[iterator] :
-                        menuItemsFrames2[iterator]
+                    menuItemsFrames[iterator]
                 , {
                     delay : 0,
                     direction : showup ? "normal" : "reverse",

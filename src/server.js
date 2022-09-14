@@ -4,8 +4,8 @@ const hbs = require("hbs");
 var app = express();
 const device = require('express-device');
 const bodyParser = require('body-parser')
-const PORT = 3000;
-const adress = '172.20.10.5'
+const PORT = 3010;
+const adress = 'localhost'
 
 
 // routers

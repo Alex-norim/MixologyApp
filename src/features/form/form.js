@@ -301,7 +301,10 @@ export default class Form {
                         attr : {
                             class : 'form-select form-element',
                             id : 'flavor',
-                            name : 'flavor'
+                            name : 'flavor',
+                            style : {
+                                "background-color": "#717171"
+                            }
                         },
                         content : FlavorOptions,
                     },

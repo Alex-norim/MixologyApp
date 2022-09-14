@@ -34,19 +34,20 @@ export const Model = {
         })
     },
     childWidthSum : (childs) => {
+        const marginRight = 12;
         let sum = 0;
-        let marRight = 0;
         for (const iterator of childs) {
-            const marginRight = parseInt(getComputedStyle(iterator).marginRight);
-            marRight = marginRight;
-            sum+=iterator.offsetWidth + marginRight;
+            const elementWidth = iterator.parentNode.offsetWidth;
+            sum += elementWidth + marginRight;
         }
-        return sum-marRight;
+        return sum-marginRight;
     },
     articleMenuSlider: ( menu , widthSum) => {
         const menuList = menu.firstElementChild;
+        // child
+        let childs = menuList.querySelectorAll('a');
+
         const moveAt = (left , menuList) => {
-            console.log(left)
             let maxWidth = menuList.offsetWidth - menuList.parentNode.offsetWidth+7;
             if(left > 5){
                 left = 5;
@@ -60,12 +61,17 @@ export const Model = {
             const deltaY = e.deltaY;
             const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
+            let childsWidth = widthSum(childs);
+            let parentWidth  = menuList.parentNode.offsetWidth;
 
-            if(deltaY > 0){
-                moveAt(prevleft - 10 , menuList)
-            }else if(deltaY<0){
-                moveAt(prevleft + 10 , menuList)
+            if(childsWidth > parentWidth){
+                if(deltaY > 0 ){
+                    moveAt(prevleft - 10 , menuList)
+                }else if(deltaY<0){
+                    moveAt(prevleft + 10 , menuList)
+                }
             }
+            
         }
         const mouseDownhandler = (event) => {
             let isPressed = true;
@@ -78,14 +84,11 @@ export const Model = {
             // 
             const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
-            // child
-            let childs = menuList.querySelectorAll('a');
-            console.log
             let childsWidth = widthSum(childs);
             let parentWidth  = menuList.parentNode.offsetWidth;
             document.onmousemove = (event) => {
                 let currXpos = event.pageX;
-                // console.log(childsWidth , parentWidth)
+                console.log(childsWidth , parentWidth)
                 if(isPressed && childsWidth > parentWidth){
                     let direction = initXpos - currXpos;
                     // console.log(direction)
@@ -119,8 +122,7 @@ export const Model = {
         const drawArticles = obj.drawArticles;
         const bindSliderTo = obj.makeSlider;
         const Nest = obj.articleNest;
-        console.log(obj)
-        const childs = Menu.querySelectorAll('li');
+        const childs = Menu.querySelectorAll('a');
         if(childs.length < 1){
             return false;
         }
@@ -128,21 +130,20 @@ export const Model = {
         const windowWidth = window.innerWidth;
 
         if(ChildsWidth >= windowWidth){
-            console.log('x')
+            // console.log('x')
             Menu.style.width = '100%'
         }else{
-            console.log('y')
+            // console.log('y')
+            // console.log('width '+ChildsWidth)
             Menu.style.width = ChildsWidth + 10 + 'px';
         }
-        bindSliderTo(Menu , calculateWidth );
-        
         childs.forEach( element => {
-            console.log(element)
             element.addEventListener('click' , (e) => {
                 console.log('click')
                 menuItemHandler( e ,  drawArticles , Nest)
             } , {passive:false})
         });
+        bindSliderTo(Menu , calculateWidth );
         
     }
 }

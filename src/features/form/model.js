@@ -143,36 +143,29 @@ export const Model = {
     offerFormHandler : (event) => {
         event.preventDefault();
         const target = event.currentTarget;
-        let formData = new FormData (event.target);
-        let Error = new Validator( formData.get('newrecipe') , 'text').getErrors();
         let errorMessageNest = target.getElementsByClassName("error-message")[0]; 
-        // --->
-        
-        typeof Error[0] !== 'object' ?
-            fetch( "/auth/recomendnewrecipe" , {
-                method : "POST",
-                body : new URLSearchParams(new FormData(event.target))
-            })
-            .then( result => {
-                return result.json();
-            })
-            .then( result => {
-                let isAdded = result.isAdded;
-                let response = result.res;
-                isAdded ?
-                    errorMessageNest.textContent = response : 
-                    errorMessageNest.textContent = response ;
-                target.reset();
-                setTimeout( () => {
-                    errorMessageNest.textContent = '';
-                } , 800)
-            })
-            .catch( err => {
-                throw err
-            }) : 
-            errorMessageNest.textContent = 'Some trouble';
-        // <--
-
+    
+        fetch( "/auth/recomendnewrecipe" , {
+            method : "POST",
+            body : new URLSearchParams(new FormData(event.target))
+        })
+        .then( result => {
+            return result.json();
+        })
+        .then( result => {
+            let isAdded = result.isAdded;
+            let response = result.res;
+            isAdded ?
+                errorMessageNest.textContent = response : 
+                errorMessageNest.textContent = response ;
+            target.reset();
+            setTimeout( () => {
+                errorMessageNest.textContent = '';
+            } , 800)
+        })
+        .catch( err => {
+            throw err
+        })
     },
     bindMover : (elem) => {
         const element = elem ;
@@ -182,7 +175,9 @@ export const Model = {
             el.style.top  = top + 'px';
             el.style.left = left  + 'px';
         }
-        element.classList.add('moveable')
+        element.classList.add('moveable');
+        element.style.zIndex = '1000000000';
+        element.style.background = 'rgba(0,0,0,0.6)'
         element.ondragstart = function() {
             return false;
         };

@@ -24,14 +24,12 @@ export const Mixology = {
         // user 
         const userStatus = Model.getuserStatus();
 
-        // bind slider to menud
-        bindSlider(mixMenu , getChildSum);
         // to give mixology menu item the hundler to get specific list
         model.bindHandler(mixMenuChilds , 'click' , (e) => {
             menuItemHandler(e , getList , mixRoot , likeHandler);
         } );
-        // hang handler on the mix menu item
-        // draw top ten recipes
+        // bind slider to menud
+        bindSlider(mixMenu , getChildSum);
         drawTopRecipes.then( result => {
             const topTen = result.list;
             userStatus.then( result=> {
