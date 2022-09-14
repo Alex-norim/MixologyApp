@@ -20,15 +20,16 @@ export const Model = {
     },
     menuItemHandler : async function(event , drawArticles , rootElement){
         event.preventDefault();
-    
-        const Href = event.currentTarget.querySelector('a').getAttribute('href')
         
+        const Href = event.currentTarget.querySelector('a').getAttribute('href');
+        console.log(Href)
         await fetch(Href , {
             method : "GET"
         })
         .then( result => result.json())
         .then( result =>  {
             const articles = result.res; // array of obj 
+            console.log("res" + result)
             drawArticles(articles , rootElement);
         })
     },
@@ -40,22 +41,22 @@ export const Model = {
             marRight = marginRight;
             sum+=iterator.offsetWidth + marginRight;
         }
-        return sum - marRight;
+        return sum-marRight;
     },
     articleMenuSlider: ( menu , widthSum) => {
         const menuList = menu.firstElementChild;
         const moveAt = (left , menuList) => {
-            let maxWidth = menuList.offsetWidth - menuList.parentNode.offsetWidth + 20;
+            console.log(left)
+            let maxWidth = menuList.offsetWidth - menuList.parentNode.offsetWidth+7;
             if(left > 5){
                 left = 5;
-            }else if(left < -maxWidth+15){
-                left = -maxWidth+15
+            }else if(left < -maxWidth){
+                left = -maxWidth
             }
             menuList.style.left = left + 'px'
         };
         const wheelhandler = (e) => {
             e.preventDefault();
-            const thisMenu = e.currentTarget;
             const deltaY = e.deltaY;
             const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
@@ -68,31 +69,35 @@ export const Model = {
         }
         const mouseDownhandler = (event) => {
             let isPressed = true;
-            const Target = event.target.parentNode;
-            let isLIelement = event.target.tagName === 'A'
+            const isTargetTagA = event.target.tagName === 'A';
             let initXpos = event.pageX;
-            if(isLIelement){
-                
-                Target.setAttribute('style' , "pointer-events:none;")
+            
+            if(isTargetTagA){
+                event.target.setAttribute('style' , "pointer-events:none;")
             }
             // 
             const style = new String( menuList.getAttribute('style') );
             let prevleft = Number(style.match( /(?<=left: ).+?(?=px)/)) || 0;
             // child
             let childs = menuList.querySelectorAll('a');
+            console.log
             let childsWidth = widthSum(childs);
             let parentWidth  = menuList.parentNode.offsetWidth;
             document.onmousemove = (event) => {
                 let currXpos = event.pageX;
-                console.log('pressed')
+                // console.log(childsWidth , parentWidth)
                 if(isPressed && childsWidth > parentWidth){
                     let direction = initXpos - currXpos;
+                    // console.log(direction)
                     moveAt( prevleft - direction , menuList);
                 }
             };
 
             document.onmouseup = () => {
-                Target.removeAttribute('style');
+                if(isTargetTagA){
+                    event.target.removeAttribute('style')
+                }
+;
                 isPressed = false;
                 document.onmousemove = null;
                 document.onmouseup = null;
@@ -114,15 +119,14 @@ export const Model = {
         const drawArticles = obj.drawArticles;
         const bindSliderTo = obj.makeSlider;
         const Nest = obj.articleNest;
+        console.log(obj)
         const childs = Menu.querySelectorAll('li');
-
         if(childs.length < 1){
             return false;
         }
         const ChildsWidth = calculateWidth(childs);
         const windowWidth = window.innerWidth;
 
-        console.log(ChildsWidth , windowWidth)
         if(ChildsWidth >= windowWidth){
             console.log('x')
             Menu.style.width = '100%'
@@ -131,10 +135,13 @@ export const Model = {
             Menu.style.width = ChildsWidth + 10 + 'px';
         }
         bindSliderTo(Menu , calculateWidth );
+        
         childs.forEach( element => {
+            console.log(element)
             element.addEventListener('click' , (e) => {
+                console.log('click')
                 menuItemHandler( e ,  drawArticles , Nest)
-            })
+            } , {passive:false})
         });
         
     }
