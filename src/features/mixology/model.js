@@ -119,7 +119,7 @@ const Model = {
     },
     showSpecificList : (e , drawList , root, likeHandler) => {
         const target = e.currentTarget;
-        const href   = target.attributes.href.value;
+        const href   = target.querySelector('a').attributes.href.value;
         const circle = Animation.waiting;
         const title  = root.querySelector('h2.recipe-title');
         const listroot = root.querySelector('.recipe-list');
