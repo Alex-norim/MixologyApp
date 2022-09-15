@@ -1,4 +1,5 @@
-import createElement from "../appSettings/createElement";
+import { createElement } from "../appSettings/commonFunctions.js";
+
 export const View = {
     drawMenu : function(props){
         // props of an array of objs

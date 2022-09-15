@@ -10,13 +10,12 @@ export const Mixology = {
         // local dom elements
         const mixRoot = root.getElementsByClassName('mixologyID')[0];
         const mixMenu = mixRoot.querySelector('.mix-menu');
-        const mixMenuChilds = mixRoot.getElementsByClassName('mix-menu-link');
         const recipeList = mixRoot.querySelector('.recipe-list');
         // handlers
-        const likeHandler = model.likeHandler;
-        const getList = view.drawRecipeList;
+        const drawList = view.drawRecipeList;
         const drawTopRecipes = model.getTenRecipes;
         const menuItemHandler = model.showSpecificList;
+        const initMixologyMenu = model.initMenu;
 
         // menu
         const getChildSum = Model.getWidthsum;
@@ -24,33 +23,36 @@ export const Mixology = {
         // user 
         const userStatus = Model.getuserStatus();
 
-        // to give mixology menu item the hundler to get specific list
-        model.bindHandler(mixMenuChilds , 'click' , (e) => {
-            menuItemHandler(e , getList , mixRoot , likeHandler);
-        } );
-        // bind slider to menud
-        bindSlider(mixMenu , getChildSum);
-        drawTopRecipes.then( result => {
-            const topTen = result.list;
-            userStatus.then( result=> {
-                const isUserLogged = result.res;
-                if(isUserLogged){
-                    Model.getBestRecipes().then( result => {
-                        let best = result.res;
-                        recipeList.innerHTML = '';
-                        const listElements = getList( topTen , best , likeHandler );
-                        listElements.forEach( item => {
-                            recipeList.append(item);
-                        })
-                    });
-                }else{
-                    recipeList.innerHTML = '';
-                    const listElements = getList( topTen , false );
-                    listElements.forEach( item => {
-                        recipeList.append(item);
-                    })
-                };
-            })
+        initMixologyMenu({
+            element : mixMenu , 
+            childHandler : menuItemHandler,
+            calculateWidth : getChildSum,
+            drawArticles : drawList,
+            makeSlider : bindSlider,
+            articleNest : recipeList
         })
+        // drawTopRecipes.then( result => {
+        //     const topTen = result.list;
+        //     console.log(result)
+        //     userStatus.then( result=> {
+        //         const isUserLogged = result.res;
+        //         if(isUserLogged){
+        //             Model.getBestRecipes().then( result => {
+        //                 let best = result.res;
+        //                 recipeList.innerHTML = '';
+        //                 const listElements = getList( topTen , best , likeHandler );
+        //                 listElements.forEach( item => {
+        //                     recipeList.append(item);
+        //                 })
+        //             });
+        //         }else{
+        //             recipeList.innerHTML = '';
+        //             const listElements = drawList();
+        //             listElements.forEach( item => {
+        //                 recipeList.append(item);
+        //             })
+        //         };
+        //     })
+        // })
     }
 }   

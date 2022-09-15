@@ -138,8 +138,8 @@ export const Model = {
             Menu.style.width = ChildsWidth + 10 + 'px';
         }
         childs.forEach( element => {
-            element.addEventListener('click' , (e) => {
-                console.log('click')
+            const li = element.parentNode;
+            li.addEventListener('click' , (e) => {
                 menuItemHandler( e ,  drawArticles , Nest)
             } , {passive:false})
         });

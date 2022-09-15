@@ -1,4 +1,4 @@
-export default class createElement {
+class createElement {
     // props is an obj
     // { tahName : 'div' , attr : {type : "button"} , content : 'hello' , listeners : { keyup : func }}
     constructor ( props ) {
@@ -35,3 +35,14 @@ export default class createElement {
         return element;
     } 
 }
+const getBestRecipes = async () => {
+    return await fetch( '/auth/getBestRecipes' , {
+        method : 'GET'
+    })
+    .then( result => {
+        return result.json();
+    })
+    .catch( err => {throw err})
+};
+
+export {createElement ,getBestRecipes}

@@ -206,20 +206,21 @@ let hasUserRecipe = async(id , login)=>{
         })
 }
 
-authorizedUserRouter.get('/getBestRecipes' , async (req, res) => {
+authorizedUserRouter.get('/getBestRecipes' , (req, res) => {
     const best = req.user.favoriteRecipe;
     let  sql = `SELECT id,recipe,rating FROM coctails WHERE id IN (${best})`
-    await makeRequestToServer(sql)
-    .then( result => { 
-        res.send(JSON.stringify({
-            res : result
-        }))
-    })
-    .catch(err => {
-        res.send(JSON.stringify({
-            res : 'you are not authorized'
-        }))
-    })
+    console.log(best)
+    makeRequestToServer(sql)
+        .then( result => { 
+            res.send(JSON.stringify({
+                res : result
+            }))
+        })
+        .catch(err => {
+            res.send(JSON.stringify({
+                res : 'you are not authorized'
+            }))
+        })
 })
 // put like 
 authorizedUserRouter.route("/putlike")

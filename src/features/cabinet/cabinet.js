@@ -1,6 +1,7 @@
 import { Model } from "./model";
 import { View } from "./view";
 import Form from "../form/form";
+import { getBestRecipes as GetFavorite  } from "../appSettings/commonFunctions";
 export const Cabinet = {
     init : ( _root) => {
         const root = _root;
@@ -9,7 +10,7 @@ export const Cabinet = {
         const shareRecipeButton = root.querySelector('#suggest');
         const newForm = new Form(root);
         // handlers 
-        const showBestRecipes = Model.getBestRecipe();
+        const showBestRecipes = GetFavorite();
         const drawWindow = View.drawModalWindow;
         const logoutHandler = Model.logoutHandler;
         // suggest new recipe

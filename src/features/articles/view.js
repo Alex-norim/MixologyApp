@@ -1,4 +1,4 @@
-import createElement from '../appSettings/createElement.js';
+import {createElement} from '../appSettings/commonFunctions.js';
 
 export const View = {
     renderArticles : (arrayArticles , rootElement) => {

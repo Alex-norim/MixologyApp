@@ -1,6 +1,7 @@
 import {Animation} from '../setUp.js';
 import { Model as ArtModel } from '../articles/model.js';
 import { Model as menuModel } from '../menu/model.js';
+import { getBestRecipes as GetFavorite } from '../appSettings/commonFunctions.js';
 const init = {
     method : 'GET' ,
     headers : {
@@ -8,146 +9,37 @@ const init = {
     }
 }
 const Model = {
-    likeHandler : (e) => {
-        const defColor = "rgb(182 179 179);";
-        const color = '#ffffff';
-        // send those two
-        let userName = localStorage.getItem('name');
-        let userLogin = localStorage.getItem('login')
-        if(!userName){
-            return false;
-        }
-        let _thisID = e.currentTarget.dataset.id;
-        let target = e.currentTarget;
-
-        let addToFavoriteList = (id) => {
-            console.log("add")
-            fetch("/auth/putlike" ,{
-                method : "PUT",
-                headers : {
-                    "Content-type" : "application/json"
-                },
-                body : JSON.stringify({
-                    id : id ,
-                    login : localStorage.getItem('login')
-                })
-            })
-            .then( result => {
-                return result.json();
-
-            })
-            .then( result => {
-                let response = result.response;
-                let svg = target.querySelector('.svgpath');
-                let ratingText = target.querySelector('.recipeRating');
-                console.log(ratingText)
-                console.log(response)
-                if(response){
-                    svg.setAttribute('fill' , color);
-                    ratingText.textContent = response;
-                    ratingText.setAttribute('style' , "color:" + color)
-                }
-            })
-            .catch( err => {
-                throw err
-            })
-        }
-        let removeFromFavoriteList = (id) => {
-            console.log("remove")
-            fetch("/auth/putlike" , {
-                method : "DELETE",
-                headers : {
-                    "Content-type" : "application/json"
-                },
-                body : JSON.stringify({
-                    id : id ,
-                    login : localStorage.getItem('login')
-                })
-            })
-            .then( result => {
-                return result.json();
-            })
-            .then( result => {
-                
-                let response = result.response;
-                let svg = target.querySelector('.svgpath');
-                let ratingText = target.querySelector('.recipeRating');
-                console.log(response)
-                if(response || response === 0){
-                    svg.setAttribute('fill' , defColor);
-                    ratingText.textContent = response;
-                    ratingText.setAttribute("style" , "color:" + defColor);
-                }
-            })
-            .catch( err => {
-                throw err
-            })
-        }
-        
-        fetch("/auth/putlike" , {
-            method : "POST" ,
-            headers : {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id : _thisID,
-                login : userLogin
-            })
-        })
-        .then( result => {
-            return result.json();
-        })
-        .then( result => {
-            let hasIt = result.res;
-            if ( hasIt === true){
-                // it deletes current id
-                removeFromFavoriteList( _thisID );
-            }else if( hasIt === false){
-                // it adds 
-                addToFavoriteList( _thisID );
-            }
-        })
-        .catch( err => {
-            throw err;
-        })
-    }, 
     bindHandler : (objectDomElements , eventType , handler) => {
         let items = Object.values(objectDomElements);
         for (const menuItem of items ) {
             menuItem.addEventListener(eventType , handler)   
         }
     },
-    showSpecificList : (e , drawList , root, likeHandler) => {
+    showSpecificList : (e , drawList , root) => {
         const target = e.currentTarget;
         const href   = target.querySelector('a').attributes.href.value;
-        const circle = Animation.waiting;
-        const title  = root.querySelector('h2.recipe-title');
-        const listroot = root.querySelector('.recipe-list');
-            listroot.innerHTML = circle;
+        const checkUserStatus = menuModel.getUserServerStatus();
         fetch(href , init)
-        .then( result => result.json())
-        .then( result => {
-            let array = result.list;
-            let category = result.category.slice(0,1).toUpperCase() + result.category.slice(1);
-            
-            let listElements = drawList(array , false , likeHandler);
-            title.textContent = category + ' recipes';
-            listroot.innerHTML = '';
-            listElements.forEach(item => {
-                listroot.append(item)
-            })
-        })
-    },
-    // next 
-    getBestRecipes : async () => {
-        return await fetch( '/auth/getBestRecipes' , {
-                method : 'GET'
-            })
+            .then( result => result.json())
             .then( result => {
-                console.log(result)
-                return result.json();
+                let array = result.list;
+                let category = result.category.slice(0,1).toUpperCase() + result.category.slice(1);
+                
+                checkUserStatus
+                    .then(result => {
+                        const title  = root.parentNode.querySelector('h2.recipe-title');
+                        const ListRoot = root;
+
+                        const isLogged = result.res;
+                        let listElements;
+                        title.textContent = category + ' recipes';
+                        isLogged ?
+                            listElements = drawList(array , ListRoot , true , GetFavorite() ) :
+                            listElements = drawList(array , ListRoot , false);
+                    })
+                
+
             })
-            .catch( err => {throw err})
     },
     // next 
     getTenRecipes : fetch("/mixology/topten" , init).then( result => {return result.json();}).catch( err => { throw err;}),
@@ -155,7 +47,9 @@ const Model = {
     getWidthsum : ArtModel.childWidthSum,
     bindSliderMenu : ArtModel.articleMenuSlider,
     getAdaptMenu : ArtModel.articleMenuWidth,
-    getuserStatus : menuModel.getUserServerStatus
+    getuserStatus : menuModel.getUserServerStatus,
+    initMenu : ArtModel.initArticleMenu,
+    checkUserStatus : menuModel.getUserServerStatus,
 }
 
 export {Model};

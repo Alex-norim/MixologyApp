@@ -2,7 +2,7 @@
 import {Elements} from './setting.js';
 import {Model} from "./model.js";
 import {View} from "./view.js";
-import createElement from '../appSettings/createElement.js';
+import {createElement} from '../appSettings/commonFunctions.js';
 export default class Form {
     // type defines whether this form for logIn or signUp
     constructor ( root ){

@@ -183,6 +183,8 @@ export const Model = {
         };
         let mouseIsPressed = false;
         element.addEventListener('mousedown' , (event) => {
+            const IE = navigator.userAgent.indexOf("MSIE") != -1;
+            console.log(navigator.userAgent)
             const windowWidth = window.innerWidth;
             const isMoveable =  (event.target.tagName !== 'INPUT' && event.target.tagName !== 'A');
             mouseIsPressed = windowWidth >= 460 ? true : false;

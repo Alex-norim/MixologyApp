@@ -1,4 +1,4 @@
-import createElement from "../appSettings/createElement";
+import { createElement } from "../appSettings/commonFunctions";
 export const View = {
     // requred items is array of objects , for instance 
     // [{tagname : div , attr : {type : text} , content is optional , listeners is optional }]

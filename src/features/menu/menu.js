@@ -14,7 +14,6 @@ export class Menu {
         this.View = View;
         this.Model = Model;
         this.Form = new Form(this.root);
-        // return this.getMenu();
     }
 
     initMenu(){

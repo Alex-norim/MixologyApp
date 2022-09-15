@@ -1,4 +1,4 @@
-import createElement from "../appSettings/createElement";
+import {createElement} from "../appSettings/commonFunctions";
 import { View as importedView } from "../mixology/view";
 
 export const View = {
