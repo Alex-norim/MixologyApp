@@ -2,7 +2,7 @@ import { Model } from "./model";
 import { View } from "./view";
 
 export const Articles = {
-    init : function(_root) {
+    init : function(event , _root) {
         // dom elements
         const root = _root;
         const contentRoot = root.querySelector('.article');
