@@ -1,10 +1,24 @@
-
+import MenuAnimation from "./animation";
 export const Model = {
     updateState : function( newState ){
         this.menuState.path = newState;
     },
-    renderServerResponse : async function (event , currentHandler , root ) {
+    renderServerResponse :async function (event , currentHandler , root ) {
         event.preventDefault();
+        // 1---> to hide menu
+        const menuWrap = event.currentTarget.parentNode;
+            menuWrap.removeAttribute('style')
+        // <-- to hide menu
+        const clearbackground = (element) => {
+            const allMenuItems = element.parentNode.querySelectorAll('a');
+            for (const iterator of allMenuItems) {
+                iterator.removeAttribute('style');
+            }
+        }
+        clearbackground(event.target);
+        const background = "rgb(79 79 79)";
+        event.target.style.backgroundColor = background;
+
         let bodyContent = this.root.getElementsByClassName('body-content')[0];
         let HrefRequest = event.target.getAttribute('href');
         
@@ -16,86 +30,47 @@ export const Model = {
         })
         .then ( text => {
             bodyContent.innerHTML = text;
-            currentHandler && root ? currentHandler(root) : `` ;
+            currentHandler && root ? currentHandler(event , root) : `` ;
         })
         .catch( err => {
             throw err;
         })
     }, 
     mobileMenuHandler : (event) => {
-        const root = event.currentTarget.parentNode;
+        const menuWrap = event.currentTarget.parentNode;
         // toggle funcs use this var to define time till hide items
-        let timeTillHide = 400;
-        let menuListItems = root.getElementsByClassName('menu-main-link');
-        let lines = root.getElementsByClassName('line');
-        let displayStatus =  root.style.display;
-        let toggleLines = (elems , showup) => {
-            const menuLineFrames = [
-                [{transform: 'rotate(0deg)' , marginTop: 0} , {transform: 'rotate(45deg)' , marginTop: '17px'}] ,
-                [{transform: 'rotate(0deg)' ,display: 'block' , left : 0 , width : "100%"} , {transform: "rotate(360deg)", left : "50%" , width: 0}] ,
-                [{transform: "rotate(0deg)", marginBottom: "1px"} , {transform: 'rotate(-45deg)' , marginBottom: '20px' }] 
-            ];
-            let iterator = 0;
-            for (const menuItem of elems) {
-                menuItem.animate( 
-                    menuLineFrames[iterator]    
-                , {
-                    delay : 0,
-                    direction : showup ? "normal": "reverse",
-                    duration : timeTillHide , 
-                    iterations : 1 ,
-                    fill : "forwards"
-                });
-                iterator++;
-            }
-            
+        let menuListItems = menuWrap.querySelectorAll('.menu-main-link');
+        let menuLines = menuWrap.querySelectorAll('.line');
+        let displayStatus =  menuWrap.style.display;
+        const menuLineFrames = [
+            [{transform: 'rotate(0deg)' , marginTop: 0} , {transform: 'rotate(45deg)' , marginTop: '17px'}] ,
+            [{transform: 'rotate(0deg)' ,display: 'block' , left : 0 , width : "100%"} , {transform: "rotate(360deg)", left : "50%" , width: 0}] ,
+            [{transform: "rotate(0deg)", marginBottom: "1px"} , {transform: 'rotate(-45deg)' , marginBottom: '20px' }] 
+        ];
+        let menuItemsFrames = [
+            [{top : "42px" } , {top : "42px" } ],
+            [{top : "42px" } , {top : '84px' } ],
+            [{top : "42px" } , {top : '126px'} ],
+            [{top : "42px" } , {top : '168px'} ]
+        ];
+        const ManageMenuItems = new MenuAnimation(menuItemsFrames , menuListItems);
+        const ManageMenuLines = new MenuAnimation(menuLineFrames , menuLines);
+        const closeAfterClick = () => {
+            ManageMenuLines.animateBack();
         }
-        let toggleMenuItems = (obj , showup) => {
-            let menuItemsFrames = [
-                [{top : "42px" } , {top : "42px" } ],
-                [{top : "42px" } , {top : '84px' } ],
-                [{top : "42px" } , {top : '126px'} ],
-                [{top : "42px" } , {top : '168px'} ]
-            ];
-            let iterator = 0;
-            for (const menuElement of obj) {
-                menuElement.addEventListener('click' , (event) => {
-                    let windowWidth = window.innerWidth;
-                    // check if the menu is web page state
-                    if(windowWidth <= 800) { 
-                        root.style.display = '';
-                        toggleLines(lines , showup ? false : true)
-                        toggleMenuItems(obj , showup ? false : true)
-                    }
-                })
-                menuElement.animate( 
-                    menuItemsFrames[iterator]
-                , {
-                    delay : 0,
-                    direction : showup ? "normal" : "reverse",
-                    duration : timeTillHide , 
-                    iterations : 1 ,
-                    fill : "forwards"
-                });
-                if(showup){
-                    menuElement.style.display = 'block';
-                }else if(!showup){
-                    setTimeout( () => {
-                        menuElement.style.display = '';
-                    } , timeTillHide )
-                }
-                iterator++;
-                // 
-            }
-        }
+        
+        menuListItems.forEach(element => {
+            element.onclick = closeAfterClick
+        })
         if(displayStatus === 'flex'){
-            toggleLines(lines , false)
-            toggleMenuItems(menuListItems , false);
-            root.style.display = '';
+            menuWrap.style.display = '';
+            ManageMenuItems.animateBack('none');
+            ManageMenuLines.animateBack();
         }else if (displayStatus === ''){
-            toggleLines(lines , true)
-            toggleMenuItems(menuListItems , true);
-            root.style.display = 'flex';
+            
+            ManageMenuItems.animateForward('block')
+            ManageMenuLines.animateForward();
+            menuWrap.style.display = 'flex';
         }
         
     },

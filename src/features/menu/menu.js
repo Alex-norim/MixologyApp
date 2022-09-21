@@ -61,7 +61,7 @@ export class Menu {
             ...this.Setting.mobileButton,
             handler : {
                 click : (e) => {
-                    mobileMenuHandler(e , this.root)
+                    mobileMenuHandler(e)
                 }
             }
         }
