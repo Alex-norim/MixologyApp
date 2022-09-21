@@ -3,8 +3,7 @@ import { Menu } from "../menu/menu.js";
 
 export const Model = {
     likeHandler : importModel.likeHandler,
-    getRecipeItems : importModel.showSpecificList,
-    getBestRecipe : importModel.getBestRecipes,
+    showFavoriteList : importModel.showSpecificList,
     logoutHandler : ( drawModalWindow , root ) => {
         let rejectionFunction = (event) => {
             let target = event.target;

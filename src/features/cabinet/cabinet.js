@@ -3,32 +3,30 @@ import { View } from "./view";
 import Form from "../form/form";
 import { getBestRecipes as GetFavorite  } from "../appSettings/commonFunctions";
 export const Cabinet = {
-    init : ( _root) => {
+    init : ( event , _root) => {
         const root = _root;
-        const listRoot = root.querySelector('.favoriteRecipeList');
         const logOutButton = root.querySelector('.logout');
         const shareRecipeButton = root.querySelector('#suggest');
+        const listRoot = root.querySelector('.favoriteRecipeList')
         const newForm = new Form(root);
         // handlers 
-        const showBestRecipes = GetFavorite();
+        const drawFavoriteList = View.drawRecipeList;
+        // const 
         const drawWindow = View.drawModalWindow;
         const logoutHandler = Model.logoutHandler;
         // suggest new recipe
         // rendering personal cab items 
         logOutButton.addEventListener('click' , () => { logoutHandler( drawWindow , root ) });
+        // shareRecipeButton
         shareRecipeButton.addEventListener('click' , () => { 
             newForm.offerForm(); 
         })
-        // shareRecipeButton
-        showBestRecipes.then( result => {
-            const drawRecipeList = View.drawRecipeList;
-            const likeHandler = Model.likeHandler;
-            let recipes = result.res; // array
-            const listItems = drawRecipeList( recipes , recipes , likeHandler);
-            listItems.forEach( item => {
-                listRoot.append(item);
+        GetFavorite()
+            .then(result => {
+                const array = result.res;
+                drawFavoriteList(array ,listRoot,true,GetFavorite())
             })
-        });
+        
         
     }
 }
