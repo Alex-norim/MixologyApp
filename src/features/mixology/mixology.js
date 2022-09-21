@@ -3,26 +3,32 @@ import { View } from "./view.js";
 
 
 export const Mixology = {
-    init : (_root) => {
+    init : (e ,_root) => {
         const model = Model;
         const view  = View;
         const root = _root;
+        const event = e;
         // local dom elements
         const mixRoot = root.getElementsByClassName('mixologyID')[0];
         const mixMenu = mixRoot.querySelector('.mix-menu');
         const recipeList = mixRoot.querySelector('.recipe-list');
         // handlers
         const drawList = view.drawRecipeList;
-        const drawTopRecipes = model.getTenRecipes;
         const menuItemHandler = model.showSpecificList;
         const initMixologyMenu = model.initMenu;
-
+        const showTopRecipes = (ev) => {
+            menuItemHandler( ev , drawList ,recipeList)
+        };
         // menu
         const getChildSum = Model.getWidthsum;
         const bindSlider = Model.bindSliderMenu;
-        // user 
-        const userStatus = Model.getuserStatus();
-
+        
+        // showTopRecipes({
+        //     drawList : drawList,
+        //     menuItemHandler : menuItemHandler,
+        //     listPlace : recipeList,
+        // })
+        showTopRecipes();
         initMixologyMenu({
             element : mixMenu , 
             childHandler : menuItemHandler,
@@ -30,29 +36,6 @@ export const Mixology = {
             drawArticles : drawList,
             makeSlider : bindSlider,
             articleNest : recipeList
-        })
-        // drawTopRecipes.then( result => {
-        //     const topTen = result.list;
-        //     console.log(result)
-        //     userStatus.then( result=> {
-        //         const isUserLogged = result.res;
-        //         if(isUserLogged){
-        //             Model.getBestRecipes().then( result => {
-        //                 let best = result.res;
-        //                 recipeList.innerHTML = '';
-        //                 const listElements = getList( topTen , best , likeHandler );
-        //                 listElements.forEach( item => {
-        //                     recipeList.append(item);
-        //                 })
-        //             });
-        //         }else{
-        //             recipeList.innerHTML = '';
-        //             const listElements = drawList();
-        //             listElements.forEach( item => {
-        //                 recipeList.append(item);
-        //             })
-        //         };
-        //     })
-        // })
+        });
     }
 }   

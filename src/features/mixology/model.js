@@ -15,11 +15,13 @@ const Model = {
             menuItem.addEventListener(eventType , handler)   
         }
     },
-    showSpecificList : (e , drawList , root) => {
-        const target = e.currentTarget;
-        const href   = target.querySelector('a').attributes.href.value;
+    showSpecificList : (event , drawList , root) => {
+        const defaultLink = "/mixology/topten";
+        const href   = event ? 
+                            event.currentTarget.querySelector('a').attributes.href.value :
+                            defaultLink;
         const checkUserStatus = menuModel.getUserServerStatus();
-        fetch(href , init)
+        fetch(href ? href : defaultLink , init)
             .then( result => result.json())
             .then( result => {
                 let array = result.list;
@@ -31,18 +33,17 @@ const Model = {
                         const ListRoot = root;
 
                         const isLogged = result.res;
-                        let listElements;
+                        
                         title.textContent = category + ' recipes';
+                        
                         isLogged ?
-                            listElements = drawList(array , ListRoot , true , GetFavorite() ) :
-                            listElements = drawList(array , ListRoot , false);
+                            drawList(array , ListRoot , true , GetFavorite() ) :
+                            drawList(array , ListRoot , false);
                     })
                 
 
             })
     },
-    // next 
-    getTenRecipes : fetch("/mixology/topten" , init).then( result => {return result.json();}).catch( err => { throw err;}),
     // next
     getWidthsum : ArtModel.childWidthSum,
     bindSliderMenu : ArtModel.articleMenuSlider,

@@ -3,31 +3,22 @@ import {createElement} from '../appSettings/commonFunctions';
 import likeHandler from "../appSettings/likeHandler";
 
 export const View = {
-    drawRecipeList : (array, ListRoot , userLogged , getFavorite = false) => {
+    drawRecipeList : (array, ListRoot , userLogged , getFavorite = null) => {
         const createArrayElements = (array, favorites = false) => {
             const defColor = "rgb(182 179 179)";
             const highlight = '#ffffff';
             ListRoot.innerHTML = '';
             for (const [index , values ]  of array.entries() ) {
-                //errrorrr
-                const error = typeof values === 'string';
-                if( error ) { elements.push( 
-                    new createElement({
-                        tagname : 'li' ,
-                        attr : { class : 'recipe-list-item' },
-                        content : values 
-                    }));
-                    return elements;
-                };
                 // <----- errror
                 // --------> ok
                 let recipe = values.recipe;
                 let rating = values.rating !== 0 ? values.rating : '0' ;
                 let id     = values.id;
-                const matchID = favorites.find( el => {
+                
+                const matchID = favorites ? favorites.find( el => {
                     let elemID = el.id;
                     return elemID === id;
-                })
+                }) : false;
                 // childs of li 
                 let recipeText = new createElement({
                     tagname: 'span' ,
