@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     mode : 'development',
     devtool: "inline-source-map",
-    entry: './src/features/index.ts',
+    entry: './src/features/index.js',
     output: {
         filename: 'bundler.js',
         path: path.resolve(__dirname, 'src/dist/'),
@@ -22,16 +22,16 @@ module.exports = {
     ,
     module: {
         rules: [
-            // {
-            //     test: /\.m?js$/,
-            //     exclude: /node_modules/,
-            //     use: {
-            //         loader: "babel-loader",
-            //         options: {
-            //             presets: ['@babel/preset-env']
-            //         }
-            //     }
-            // },
+            {
+                test: /\.m?js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
             {
                 test: /\.(png|jpe?g|gif)$/i,
                 loader : 'file-loader',
@@ -51,10 +51,10 @@ module.exports = {
                     'sass-loader',
                 ],
             },
-            {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-            },
+            // {
+            //     test: /\.tsx?$/,
+            //     use: 'ts-loader',
+            // },
         ]
     },
     resolve: {

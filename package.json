@@ -45,7 +45,8 @@
   "scripts": {
     "watch": "webpack --watch --progress",
     "server": "nodemon ./src/server.js",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "debug" : "weinre --boundHost 172.20.10.5 --httpPort 3010"
   },
   "dependencies": {
     "remotedebug-ios-webkit-adapter": "^0.4.2"

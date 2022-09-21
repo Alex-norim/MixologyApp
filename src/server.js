@@ -4,8 +4,8 @@ const hbs = require("hbs");
 var app = express();
 const device = require('express-device');
 const bodyParser = require('body-parser')
-const PORT = 3010;
-const adress = 'localhost'
+const PORT = 3011;
+const adress = '172.20.10.5'|| '172.0.0.1' || 'localhost';
 
 
 // routers
@@ -35,13 +35,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(device.capture())
 // routers
-app.use((req,res,next) => {
-    console.log(req.device.type)
-    if(req.device.type==='phone'){
-        
-    }
-    next();
-})
 app.use("/mixology" ,  Mixology_Router);
 app.use('/articles' , ArticleRouter);
 app.use('/auth' , authorizedUserRouter);
@@ -49,9 +42,11 @@ app.use('/auth' , authorizedUserRouter);
 
 // reqs
 app.get("/", function(req,res){  
+    console.log(req.device.type)
     res.render("home.hbs" , {
         title : 'Mixology',
         name : 'In short...',
+        smallScreen : req.device.type === 'phone' ? true : false,
     }) 
     
 });

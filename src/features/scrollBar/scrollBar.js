@@ -1,7 +1,7 @@
 import { Model } from "./model";
 import { View } from "./view";
 const scrollBar = {
-    init(settings){
+    init(settings ){
         const scrollBarID = 'scrollbar';
         const progressBarID = 'progressBar';
         const defSetting = {
@@ -19,10 +19,11 @@ const scrollBar = {
         };
         const userSetting = settings ? settings : defSetting; 
         // 
-        const scrollEvent = Model.scrollEvent;
+        const scrollEvent= Model.scrollEvent;
         const drawScrollBar = View.drawScrollBar;
         //
         const bar = drawScrollBar( userSetting , scrollEvent, scrollBarID , progressBarID);
+        console.log(bar)
         //
         document.body.append(bar);
     }

@@ -1,13 +1,16 @@
-import CreateDom from './createDOM.js';
-import { Menu } from './menu/menu.js';
-import scrollBar from './scrollBar/scrollBar.js';
+import CreateDom from './createDOM';
+import { Menu } from './menu/menu';
+import scrollBar from './scrollBar/scrollBar';
 // style
 import '../public/css/style.css';
 class App{
-    constructor(initElement){
+    // readonly root: HTMLElement;
+    // _createDOM:any;
+    // MainMenu:any;
+    // scrollBar:HTMLDivElement;
+    constructor( initElement){
         // -----------
         this.root = initElement; 
-        // _createDom will be removed
         this._createDOM = new CreateDom(this.root);
         this.MainMenu = new Menu( this.root );
     }
@@ -19,6 +22,6 @@ class App{
         scrollBar.init()
     }
 }
-let app = new App(document.getElementById('root'));
 
+let app = new App(document.getElementById('root'));
 app.init();

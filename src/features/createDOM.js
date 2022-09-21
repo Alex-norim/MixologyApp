@@ -1,22 +1,19 @@
-
-// import protoClass
-
-import Protos from "./prototype";
 // images
 import hookahImage from "../public/svg/hookah.svg";
-import Validator from "../features/validator.js";
-
-
-let color = '#ffffff';
-let defColor = '#938f8f'
-export default class CreateDom extends Protos {
+import { createElement } from "./appSettings/commonFunctions";
+export default class CreateDom{
     constructor(root){
-        super(root)
         this._root = root;
     }
     logotype(){
         let logoText = `<span class="logo-name">Mixology</span>`;
-        let logo = this.newDom('div' ,'logotype-wrapper' , false , hookahImage + logoText) 
+        let logo = new createElement({
+            tagname :'div',
+            attr : {
+                class : 'logotype-wrapper'
+            },
+            content : hookahImage + logoText
+        });
         
         return logo;
     }
@@ -33,7 +30,13 @@ export default class CreateDom extends Protos {
     footer(){
         let footer = this._root.querySelector('.footer')
         footer.innerHTML = '';
-        let authorText = this.newDom('p', 'designed_by' , false, "designed by Alexej Malekov");
+        let authorText = new createElement({ 
+            tagname :'p', 
+            attr: {
+                class:'designed_by'
+            } , 
+            content: "designed by Alexej Malekov",
+        });
             
         footer.append(
             this.logotype(),

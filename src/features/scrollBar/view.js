@@ -1,4 +1,4 @@
-import {createElement} from "../appSettings/commonFunctions.js"
+import {createElement} from "../appSettings/commonFunctions"
 export const View = {
     drawScrollBar : (setting , scrollEvent , scrollBarID , progressBarID) => {
         const scrollbarSet = setting.scrollbar;

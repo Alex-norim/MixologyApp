@@ -1,9 +1,14 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "target": "es5",             
+        "watch": true,
+        "target": "ES6",           
         "module": "commonjs",
-        "outDir": "./src/dist"
+        "outDir": "./src/dist",
+        "allowJs": true,
+        "checkJs": true,
+        // "suppressImplicitAnyIndexErrors": true
+        // "strict": true
     },
     "include": ["src/features/"],
     "exclude": ["node_modules"]

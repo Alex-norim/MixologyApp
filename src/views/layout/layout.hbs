@@ -5,14 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    {{!-- <script src="http://172.20.10.5:3010/target/target-script-min.js#anonymous"></script> --}}
     <title>{{title}}</title>
 </head>
 <body id="root">
     <div class="background">
-        <video autoplay muted loop id="myVideo">
-            <source src="video/smoke.mp4" type="video/mp4">
-        </video>
-        <div class="blurpanel"></div>
+        {{#if smallScreen}}
+
+        {{else}}
+            <video autoplay muted loop id="myVideo">
+                <source src="video/smoke.mp4" type="video/mp4">
+            </video>
+            <div class="blurpanel"></div>
+        {{/if}}
     </div>
 
     <header class="header"></header>
