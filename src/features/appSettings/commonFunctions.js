@@ -1,6 +1,10 @@
+// interface stringMap { [key:string]:string}
 class createElement {
-    // props is an obj
-    // { tahName : 'div' , attr : {type : "button"} , content : 'hello' , listeners : { keyup : func }}
+    // tagName:string;
+    // attrs:stringMap;
+    // content: (a:string) => {};
+    // listeners : {};
+    // Element: HTMLElement;
     constructor ( props ) {
         this.tagName = props.tagname;
         this.attrs = props.attr;
@@ -32,8 +36,9 @@ class createElement {
                 element.addEventListener(eventName , func);
             }
         }
+        this.Element = element;
         return element;
-    } 
+    }
 }
 const getBestRecipes = async () => {
     return await fetch( '/auth/getBestRecipes' , {
