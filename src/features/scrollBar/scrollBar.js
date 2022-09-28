@@ -23,7 +23,7 @@ const scrollBar = {
         const drawScrollBar = View.drawScrollBar;
         //
         const bar = drawScrollBar( userSetting , scrollEvent, scrollBarID , progressBarID);
-        console.log(bar)
+        // console.log(bar)
         //
         document.body.append(bar);
     }

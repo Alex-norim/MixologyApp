@@ -30,19 +30,39 @@ async function getTasteBy(sqlReq){
 
 // ------------------------------ ROUTERS
 Mixology_Router.get("/" , (req,res) => {
-    const sqlRequest = `SELECT id,recipe,rating FROM coctails where 1 ORDER BY rating DESC LIMIT 10`;
-    
+    const sqlRequest = `SELECT id,recipe,rating FROM coctails where 1 ORDER BY rating DESC LIMIT 10`;  
     getTasteBy(sqlRequest).then(result => {
         if(result.success){
             res.render('mixology.hbs' , {
-                layout: false ,
+                layout: 'layout.hbs' ,
                 IsDatabase : true,
                 title : 'mixology',
                 topTen : result.responce,
             })
         }else{
             res.render('mixology.hbs' , {
-                layout: false ,
+                layout: 'layout.hbs' ,
+                IsDatabase : false,
+                title : 'mixology',
+                topTen : 'Server not found',
+            })
+        }
+    })
+});
+Mixology_Router.post("/" , (req,res) => {
+    const isLayout = req.body.layout;
+    const sqlRequest = `SELECT id,recipe,rating FROM coctails where 1 ORDER BY rating DESC LIMIT 10`;  
+    getTasteBy(sqlRequest).then(result => {
+        if(result.success){
+            res.render('mixology.hbs' , {
+                layout: isLayout ,
+                IsDatabase : true,
+                title : 'mixology',
+                topTen : result.responce,
+            })
+        }else{
+            res.render('mixology.hbs' , {
+                layout: isLayout ,
                 IsDatabase : false,
                 title : 'mixology',
                 topTen : 'Server not found',

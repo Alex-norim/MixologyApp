@@ -41,12 +41,19 @@ ArticleRouter.use( async (req,res,next) => {
 })
 // common requests
 ArticleRouter.get("/" , (req,res) => {
-    console.log(req.ArticlesArray)
+    // console.log(req.ArticlesArray)
     res.render('article' , {
-        layout : false,
+        layout : 'layout.hbs',
         category : req.ArticlesArray
     });
 });
+ArticleRouter.post('/' , (req,res) => {
+    const isLayout = req.body.layout;
+    res.render('article' ,{
+        layout: isLayout,
+        category : req.ArticlesArray
+    })
+})
 ArticleRouter.get('/get_highest_article' , (req, res) => {
     getHighRatingArticle()
         .then( result => {

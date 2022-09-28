@@ -1,29 +1,28 @@
 import MenuAnimation from "./animation";
+// import Router from "../router/router";
 export const Model = {
     updateState : function( newState ){
         this.menuState.path = newState;
     },
-    renderServerResponse :async function (event , currentHandler , root ) {
+    renderServerResponse :async function (event , currentHandler , root ,saveRoute) {
         event.preventDefault();
+        console.log('rrrrrrrrrrrrrrrrr')
+        // const router = new Router();
         // 1---> to hide menu
         const menuWrap = event.currentTarget.parentNode;
             menuWrap.removeAttribute('style')
         // <-- to hide menu
-        const clearbackground = (element) => {
-            const allMenuItems = element.parentNode.querySelectorAll('a');
-            for (const iterator of allMenuItems) {
-                iterator.removeAttribute('style');
-            }
-        }
-        clearbackground(event.target);
-        const background = "rgb(79 79 79)";
-        event.target.style.backgroundColor = background;
-
-        let bodyContent = this.root.getElementsByClassName('body-content')[0];
-        let HrefRequest = event.target.getAttribute('href');
-        
-        await fetch(HrefRequest , {
-            method : "GET"
+        let bodyContent = this.root.querySelector('#body-content');;
+        const Href = event.target.getAttribute('href');
+        sessionStorage.setItem('url' , Href)
+        await fetch(Href , {
+            method : "POST",
+            headers:{
+                'content-type':'application/json'
+            },
+            body : JSON.stringify({
+                layout : false
+            })
         })
         .then( result => {
             return result.text();
@@ -31,6 +30,7 @@ export const Model = {
         .then ( text => {
             bodyContent.innerHTML = text;
             currentHandler && root ? currentHandler(event , root) : `` ;
+            saveRoute(Href , text)
         })
         .catch( err => {
             throw err;
@@ -55,8 +55,9 @@ export const Model = {
         ];
         const ManageMenuItems = new MenuAnimation(menuItemsFrames , menuListItems);
         const ManageMenuLines = new MenuAnimation(menuLineFrames , menuLines);
-        const closeAfterClick = () => {
+        const closeAfterClick = (e) => {
             ManageMenuLines.animateBack();
+            ManageMenuItems.animateBack('none')
         }
         
         menuListItems.forEach(element => {

@@ -11,7 +11,7 @@ const likeHandler = (e) => {
     let target = e.currentTarget;
 
     let addToFavoriteList = (id) => {
-        console.log("add")
+        // console.log("add")
         fetch("/auth/putlike" ,{
             method : "PUT",
             headers : {
@@ -30,8 +30,8 @@ const likeHandler = (e) => {
             let response = result.response;
             let svg = target.querySelector('.svgpath');
             let ratingText = target.querySelector('.recipeRating');
-            console.log(ratingText)
-            console.log(response)
+            // console.log(ratingText)
+            // console.log(response)
             if(response){
                 svg.setAttribute('fill' , color);
                 ratingText.textContent = response;
@@ -43,7 +43,7 @@ const likeHandler = (e) => {
         })
     }
     let removeFromFavoriteList = (id) => {
-        console.log("remove")
+        // console.log("remove")
         fetch("/auth/putlike" , {
             method : "DELETE",
             headers : {
@@ -62,7 +62,7 @@ const likeHandler = (e) => {
             let response = result.response;
             let svg = target.querySelector('.svgpath');
             let ratingText = target.querySelector('.recipeRating');
-            console.log(response)
+            // console.log(response)
             if(response || response === 0){
                 svg.setAttribute('fill' , defColor);
                 ratingText.textContent = response;

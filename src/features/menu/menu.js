@@ -5,7 +5,9 @@ import { Setting } from './setting.js';
 import { Mixology } from '../mixology/mixology.js';
 import { Cabinet  } from '../cabinet/cabinet.js';
 import { Articles } from '../articles/articles.js';
-
+import { Home } from '../home/home'; 
+//router
+import Router from '../router/router';
 import Form from '../form/form.js';
 export class Menu {
     constructor (root) {
@@ -17,12 +19,16 @@ export class Menu {
     }
 
     initMenu(){
+        // Router
+        const Rout = new Router(this.root);
+        const saveRoute = Rout.saveState.bind(Rout);
         // the functions of initialization after getting new content 
         const Header = this.root.querySelector('header');
         const menu = Header.querySelector('.mainMenuWrap');
         if(menu){
             menu.remove();
         }
+        const useHome = Home.init;
         const useMixology = Mixology.init;
         const useCabinet  = Cabinet.init;
         const useArticles = Articles.init;
@@ -37,7 +43,9 @@ export class Menu {
             ...this.Setting.home,
             handler : {
                 click : (e) => {
-                    menuHandler(e);
+                    // console.log(e.currentTarget.getAttribute('href'))
+                    menuHandler(e , useHome , this.root ,saveRoute);
+                    
                 }
             }
         };
@@ -45,7 +53,8 @@ export class Menu {
             ...this.Setting.mixology,
             handler : {
                 click : (e) => {
-                    menuHandler( e , useMixology , this.root );
+                    menuHandler( e , useMixology , this.root , saveRoute );
+                    
                 }
             }
         };
@@ -53,7 +62,9 @@ export class Menu {
             ...this.Setting.article,
             handler :{
                 click : (e) => {
-                    menuHandler(e , useArticles , this.root);
+                    const href = e.currentTarget.getAttribute('href')
+                    menuHandler(e , useArticles , this.root , saveRoute);
+
                 }
             }
         };
@@ -88,7 +99,8 @@ export class Menu {
                 ...this.Setting.cabinet,
                 handler :{
                     click : (e) => {
-                        menuHandler(e , useCabinet , this.root);
+                        const href = e.currentTarget.getAttribute('href')
+                        menuHandler(e , useCabinet , this.root , saveRoute);
                     }
                 }
             } ,
@@ -107,6 +119,7 @@ export class Menu {
             .catch(err => {
                 Header.append( this.View.drawMenu( initMenu ) );
             })
+        saveRoute( window.location.pathname , this.root.querySelector('#body-content').innerHTML)
     }
 }
 

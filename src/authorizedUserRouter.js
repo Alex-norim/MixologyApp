@@ -5,7 +5,7 @@ const EventEmitter  = require('events');
 const evEmitter = new EventEmitter();
 
 const cookieParser = require('cookie-parser');
-let bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const connectionConfig = require('./connection/mysql_connection.js') ;
 const bcrypt = require('bcrypt');
 //
@@ -39,6 +39,7 @@ passport.deserializeUser(function(user, cb) {
 
 });
 
+authorizedUserRouter.use(express.static(__dirname + "/dist"));
 authorizedUserRouter.use(bodyParser.urlencoded({extended: false}));
 authorizedUserRouter.use(bodyParser.json());
 authorizedUserRouter.use(cookieParser())
@@ -90,6 +91,34 @@ passport.use(new LocalStrategy(
         })
 }));
 // 
+authorizedUserRouter.get('/personalCabinet', (req,res) => {
+    const name = req.user.name;
+    const login = req.user.login;
+    const email = req.user.email;
+    
+    res.render('cabinet.hbs' , {
+        layout:'layout.hbs',
+        UserName: name,
+        UserLogin : login,
+        UserEmail: email
+    })
+    
+})
+authorizedUserRouter.post('/personalCabinet', (req,res) => {
+    
+    const isLayout = req.body.layout;
+    const name = req.user.name;
+    const login = req.user.login;
+    const email = req.user.email;
+    
+    res.render('cabinet.hbs' , {
+        layout : isLayout,
+        UserName: name,
+        UserLogin : login,
+        UserEmail: email
+    })
+    
+})
 authorizedUserRouter.post('/signin' , 
     passport.authenticate('local' , { successMessage :'you are logged'}) ,
     (req,res) => {
@@ -154,19 +183,7 @@ authorizedUserRouter.get('/auth_Status', (req,res) => {
     }
     
 })
-authorizedUserRouter.get('/personalCabinet', (req,res) => {
-    const name = req.user.name;
-    const login = req.user.login;
-    const email = req.user.email;
-    console.log(req.user)
-    res.render('cabinet.hbs' , {
-        layout:false,
-        UserName: name,
-        UserLogin : login,
-        UserEmail: email
-    })
-    
-})
+
 // make default request to the db
 
 async function makeRequestToServer (sql) {

@@ -88,7 +88,7 @@ export const Model = {
             let parentWidth  = menuList.parentNode.offsetWidth;
             document.onmousemove = (event) => {
                 let currXpos = event.pageX;
-                console.log(childsWidth , parentWidth)
+                // console.log(childsWidth , parentWidth)
                 if(isPressed && childsWidth > parentWidth){
                     let direction = initXpos - currXpos;
                     // console.log(direction)
@@ -127,9 +127,10 @@ export const Model = {
             return false;
         }
         const ChildsWidth = calculateWidth(childs);
-        const windowWidth = window.innerWidth;
+        const container = document.querySelector('.container') ;
+        const containerWidth = container.offsetWidth;
 
-        if(ChildsWidth >= windowWidth){
+        if(ChildsWidth >= containerWidth){
             // console.log('x')
             Menu.style.width = '100%'
         }else{

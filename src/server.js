@@ -28,9 +28,6 @@ hbs.registerPartials(__dirname + "/views/partials");
 app.use(express.static(__dirname))
 app.use(express.static( __dirname + "/public"));
 app.use(express.static(__dirname + "/dist"))
-Mixology_Router.use(express.static(__dirname + "/public"));
-Mixology_Router.use(express.static(__dirname + "/dist"));
-ArticleRouter.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(device.capture())
@@ -41,25 +38,30 @@ app.use('/auth' , authorizedUserRouter);
 // 
 
 // reqs
-app.get("/", function(req,res){  
-    console.log(req.device.type)
+app.get( '/' , function(req,res){  
     res.render("home.hbs" , {
-        title : 'Mixology',
         name : 'In short...',
         smallScreen : req.device.type === 'phone' ? true : false,
     }) 
     
-});
-app.get('/bundler.js' , (req,res) => {
-    console.log('bundle')
 })
+
 app.get("/home", function(req,res){  
     res.render('home.hbs' , {
-        layout : false , 
+        layout : 'layout.hbs' , 
         name : 'In short...'
     });
     
 });
+app.post("/home", function(req,res){  
+    const isLayout = req.body.layout;
+    res.render('home.hbs' , {
+        layout : isLayout , 
+        name : 'In short...'
+    });
+    
+});
+
 // other reqs
 
 app.listen(PORT , adress , () => {
