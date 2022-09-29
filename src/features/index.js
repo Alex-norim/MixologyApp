@@ -29,14 +29,7 @@ class App{
                 body : JSON.stringify( {pattern : currentUrl})
             })
         }
-        
-        this.RouterPath = {
-            '/' : Home,
-            '/home' : Home ,
-            '/articles' : Articles,
-            '/mixology' : Mixology,
-            '/auth/personalCabinet'  : Cabinet,
-        }
+    
     }
     init(){
         this._createDOM.header(this.MainMenu);
@@ -45,12 +38,17 @@ class App{
         // scrollbar
         scrollBar.init()
         
-        window.onbeforeunload = async (e) => {
-            const URL = sessionStorage.getItem('url') ? sessionStorage.getItem('url') : '/';
-            
-        } 
-        window.onpageshow = (e) => {
-
+        window.onload = (e) => {
+            const RouterPath = {
+                '/' : Home,
+                '/home' : Home ,
+                '/articles' : Articles,
+                '/mixology' : Mixology,
+                '/auth/personalCabinet'  : Cabinet,
+            }
+            const currentURL = window.location.pathname;
+            currentURL !== '/' ? 
+                RouterPath[currentURL].init(e , this.root) : '';
         }
     }
 }

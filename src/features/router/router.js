@@ -3,7 +3,7 @@ import { Mixology } from '../mixology/mixology.js';
 import { Cabinet  } from '../cabinet/cabinet.js';
 import { Articles } from '../articles/articles.js';
 import { Home } from '../home/home.js';
-import { Menu } from '../menu/menu.js';
+
 class Router {
     /**
      * @param {HTMLDivElement} root
@@ -33,7 +33,6 @@ class Router {
             const html = e.state ? e.state.html : 'should add save dom';
             // console.log(html)
             bodyContent.innerHTML = html;
-            console.log(path)
             this.RouterPath[path].init(e , this.root);
         }
         window.onpopstate = this.pageHandler;
