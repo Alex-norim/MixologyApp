@@ -6,7 +6,6 @@ export const Model = {
     },
     renderServerResponse :async function (event , currentHandler , root ,saveRoute) {
         event.preventDefault();
-        console.log('rrrrrrrrrrrrrrrrr')
         // const router = new Router();
         // 1---> to hide menu
         const menuWrap = event.currentTarget.parentNode;
@@ -29,7 +28,7 @@ export const Model = {
         })
         .then ( text => {
             bodyContent.innerHTML = text;
-            currentHandler && root ? currentHandler(event , root) : `` ;
+            currentHandler && root ? currentHandler(event , root, saveRoute) : `` ;
             saveRoute(Href , text)
         })
         .catch( err => {
