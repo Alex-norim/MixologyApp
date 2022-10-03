@@ -39,7 +39,7 @@ To run this project do next steps:
 $ download files from this repository
 $ open it by your text editor
 $ install dependencies
-$ deploy db on an individual mysql server
+$ deploy dump file 'src/db/mixology.sql' on an individual mysql server
 $ replace db credentials in **mysql_connection file** 
 $ launch server using command yarn sever/npm run server
 $ you will see in terminal an address , follow this link
