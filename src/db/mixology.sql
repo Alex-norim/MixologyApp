@@ -200,12 +200,6 @@ ALTER TABLE `coctails`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `sessions`
---
-ALTER TABLE `sessions`
-  ADD PRIMARY KEY (`session_id`);
-
---
 -- Индексы таблицы `users`
 --
 ALTER TABLE `users`
