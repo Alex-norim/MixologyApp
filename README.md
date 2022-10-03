@@ -20,13 +20,13 @@ Project is created with:
 * mysql2 : 2.3.3
 
 ## Features
-Class 'createElement' takes an object that has next keys:
+__Class 'createElement'__ takes an object that has next keys:
   tagname : (type:string), should be html tag name,
   attr : (type:obj) it includes keys as css property name but values are correct css values,
   content : (type:string) optional key to add some text content inside a created element,
-  handler : (type:obj) the key of this object should be event type name but value is a function  
-Class 'Form' takes root element and it has three methods , each one creates a moveable form.
-Class 'Menu' creates menu that depends on whether the user is logged in.
+  handler : (type:obj) the key of this object should be event type name but value is a function    
+__Class 'Form'__ takes root element and it has three methods , each one creates a moveable form.  
+__Class 'Menu'__ creates menu that depends on whether the user is logged in.  
 ## Pages
 __1.Home__ - defoult menu section that opens as the app is loaded(not realized completely )  
 __2.Mixology__ - main section of this app , customers can view all recipes the database has in current time.
