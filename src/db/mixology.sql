@@ -141,25 +141,6 @@ INSERT INTO `coctails` (`id`, `strength`, `recipe`, `category`, `brand`, `rating
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `sessions`
---
-
-CREATE TABLE `sessions` (
-  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `expires` int UNSIGNED NOT NULL,
-  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Дамп данных таблицы `sessions`
---
-
-INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
-('p3QtpjX5d8mLd090b1VYcddJDz4Jb7uk', 1664641879, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"passport\":{\"user\":{\"id\":32,\"login\":\"malekov\",\"name\":\"aleksej\",\"favoriteRecipe\":\"13,6,23,4,5,3,24,2\"}}}');
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `users`
 --
 
