@@ -1,7 +1,7 @@
-import CreateDom from './createDOM';
 import { Menu } from './menu/menu';
+import Header from './header/header';
+import Footer from './footer/footer';
 import scrollBar from './scrollBar/scrollBar';
-
 //
 import { Mixology } from './mixology/mixology';
 import { Cabinet  } from './cabinet/cabinet.js';
@@ -10,14 +10,14 @@ import { Home } from './home/home.js';
 // style
 import '../public/css/style.css';
 class App{
-    // readonly root: HTMLElement;
-    // _createDOM:any;
-    // MainMenu:any;
-    // scrollBar:HTMLDivElement;
+    /**
+     * @param {HTMLDivElement} initElement
+     */
     constructor( initElement){
         // -----------
         this.root = initElement; 
-        this._createDOM = new CreateDom(this.root);
+        this.initHeader = Header.init;
+        this.initFooter = Footer.init;
         this.MainMenu = new Menu( this.root );
         this.generalLayout = async () => {
             const currentUrl = sessionStorage.getItem('url').slice(1);
@@ -32,9 +32,8 @@ class App{
     
     }
     init(){
-        this._createDOM.header(this.MainMenu);
-        // 
-        this._createDOM.footer();
+        this.initHeader(this.root , this.MainMenu)
+        this.initFooter(this.root)
         // scrollbar
         scrollBar.init()
         
