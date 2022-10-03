@@ -31,7 +31,7 @@ __2.Mixology__ - main section of this app , customers can view all recipes the d
 Also customer can view specifyc recipes that proveded by taste in mixology menu.
 Authorized user can like a mix , it automatically saves recipe in favorite list.  
 __3.Articles__ - this section provides articles uploaded by users who have decided to share opinions or give an advice of improving a smoking process  
-__4.Cabinet - this section has your personal information and favorite mix list.  
+__4.Cabinet__ - this section has your personal information and favorite mix list.  
 ## Setup
 To run this project do next steps:
 
